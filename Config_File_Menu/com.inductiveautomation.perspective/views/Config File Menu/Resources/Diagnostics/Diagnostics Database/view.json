@@ -1,0 +1,691 @@
+{
+  "custom": {},
+  "params": {
+    "database": ""
+  },
+  "propConfig": {
+    "params.database": {
+      "paramDirection": "input",
+      "persistent": true
+    }
+  },
+  "props": {
+    "defaultSize": {
+      "height": 200,
+      "width": 300
+    }
+  },
+  "root": {
+    "children": [
+      {
+        "children": [
+          {
+            "meta": {
+              "name": "Value"
+            },
+            "position": {
+              "basis": "auto",
+              "display": true,
+              "grow": 0,
+              "shrink": 0
+            },
+            "propConfig": {
+              "props.text": {
+                "binding": {
+                  "config": {
+                    "path": "view.params.database"
+                  },
+                  "type": "property"
+                }
+              }
+            },
+            "props": {
+              "style": {
+                "classes": "cfm-diag__value"
+              }
+            },
+            "type": "ia.display.label"
+          }
+        ],
+        "meta": {
+          "name": "Name"
+        },
+        "position": {
+          "basis": "auto",
+          "display": true,
+          "grow": 0,
+          "shrink": 0
+        },
+        "props": {
+          "style": {
+            "borderBottomColor": "#D5D5D5",
+            "borderBottomStyle": "solid",
+            "borderBottomWidth": "1px",
+            "classes": "cfm-diag__row"
+          },
+          "wrap": "wrap"
+        },
+        "type": "ia.container.flex"
+      },
+      {
+        "children": [
+          {
+            "meta": {
+              "name": "Label"
+            },
+            "position": {
+              "basis": "auto",
+              "display": true,
+              "grow": 1,
+              "shrink": 1
+            },
+            "props": {
+              "style": {
+                "classes": "cfm-diag__label"
+              },
+              "text": "Is Available"
+            },
+            "type": "ia.display.label"
+          },
+          {
+            "meta": {
+              "name": "Value"
+            },
+            "position": {
+              "basis": "30px",
+              "display": true,
+              "grow": 0,
+              "shrink": 0
+            },
+            "propConfig": {
+              "props.style.backgroundColor": {
+                "binding": {
+                  "config": {
+                    "fallbackDelay": 2.5,
+                    "mode": "indirect",
+                    "references": {
+                      "database": "{view.params.database}"
+                    },
+                    "tagPath": "[System]Gateway/Database/{database}/Available"
+                  },
+                  "transforms": [
+                    {
+                      "fallback": "#808080",
+                      "inputType": "scalar",
+                      "mappings": [
+                        {
+                          "input": false,
+                          "output": "#D90000"
+                        },
+                        {
+                          "input": true,
+                          "output": "#00AC00"
+                        }
+                      ],
+                      "outputType": "color",
+                      "type": "map"
+                    }
+                  ],
+                  "type": "tag"
+                }
+              },
+              "props.text": {
+                "binding": {
+                  "config": {
+                    "fallbackDelay": 2.5,
+                    "mode": "indirect",
+                    "references": {
+                      "database": "{view.params.database}"
+                    },
+                    "tagPath": "[System]Gateway/Database/{database}/Available"
+                  },
+                  "transforms": [
+                    {
+                      "fallback": "No",
+                      "inputType": "scalar",
+                      "mappings": [
+                        {
+                          "input": false,
+                          "output": "No"
+                        },
+                        {
+                          "input": true,
+                          "output": "Yes"
+                        }
+                      ],
+                      "outputType": "scalar",
+                      "type": "map"
+                    }
+                  ],
+                  "type": "tag"
+                }
+              }
+            },
+            "props": {
+              "style": {
+                "borderRadius": "4px",
+                "classes": "cfm-diag__value",
+                "color": "#FFFFFF",
+                "textAlign": "center"
+              }
+            },
+            "type": "ia.display.label"
+          }
+        ],
+        "meta": {
+          "name": "Is Available"
+        },
+        "position": {
+          "basis": "auto",
+          "display": true,
+          "grow": 0,
+          "shrink": 0
+        },
+        "props": {
+          "style": {
+            "classes": "cfm-diag__row"
+          },
+          "wrap": "wrap"
+        },
+        "type": "ia.container.flex"
+      },
+      {
+        "children": [
+          {
+            "meta": {
+              "name": "Label"
+            },
+            "position": {
+              "basis": "auto",
+              "display": true,
+              "grow": 1,
+              "shrink": 1
+            },
+            "props": {
+              "style": {
+                "classes": "cfm-diag__label"
+              },
+              "text": "Is Available Through Failover"
+            },
+            "type": "ia.display.label"
+          },
+          {
+            "meta": {
+              "name": "Value"
+            },
+            "position": {
+              "basis": "30px",
+              "display": true,
+              "grow": 0,
+              "shrink": 0
+            },
+            "propConfig": {
+              "props.style.backgroundColor": {
+                "binding": {
+                  "config": {
+                    "fallbackDelay": 2.5,
+                    "mode": "indirect",
+                    "references": {
+                      "database": "{view.params.database}"
+                    },
+                    "tagPath": "[System]Gateway/Database/{database}/AvailableThroughFailover"
+                  },
+                  "transforms": [
+                    {
+                      "fallback": "#808080",
+                      "inputType": "scalar",
+                      "mappings": [
+                        {
+                          "input": false,
+                          "output": "#D90000"
+                        },
+                        {
+                          "input": true,
+                          "output": "#00AC00"
+                        }
+                      ],
+                      "outputType": "color",
+                      "type": "map"
+                    }
+                  ],
+                  "type": "tag"
+                }
+              },
+              "props.text": {
+                "binding": {
+                  "config": {
+                    "fallbackDelay": 2.5,
+                    "mode": "indirect",
+                    "references": {
+                      "database": "{view.params.database}"
+                    },
+                    "tagPath": "[System]Gateway/Database/{database}/AvailableThroughFailover"
+                  },
+                  "transforms": [
+                    {
+                      "fallback": "No",
+                      "inputType": "scalar",
+                      "mappings": [
+                        {
+                          "input": false,
+                          "output": "No"
+                        },
+                        {
+                          "input": true,
+                          "output": "Yes"
+                        }
+                      ],
+                      "outputType": "scalar",
+                      "type": "map"
+                    }
+                  ],
+                  "type": "tag"
+                }
+              }
+            },
+            "props": {
+              "style": {
+                "borderRadius": "4px",
+                "classes": "cfm-diag__value",
+                "color": "#FFFFFF",
+                "textAlign": "center"
+              }
+            },
+            "type": "ia.display.label"
+          }
+        ],
+        "meta": {
+          "name": "Is Available Through Failover"
+        },
+        "position": {
+          "basis": "auto",
+          "display": true,
+          "grow": 0,
+          "shrink": 0
+        },
+        "props": {
+          "style": {
+            "classes": "cfm-diag__row"
+          },
+          "wrap": "wrap"
+        },
+        "type": "ia.container.flex"
+      },
+      {
+        "children": [
+          {
+            "meta": {
+              "name": "Label"
+            },
+            "position": {
+              "basis": "auto",
+              "display": true,
+              "grow": 1,
+              "shrink": 1
+            },
+            "props": {
+              "style": {
+                "classes": "cfm-diag__label"
+              },
+              "text": "Active Connections"
+            },
+            "type": "ia.display.label"
+          },
+          {
+            "meta": {
+              "name": "Value"
+            },
+            "position": {
+              "basis": "auto",
+              "display": true,
+              "grow": 0,
+              "shrink": 0
+            },
+            "propConfig": {
+              "props.text": {
+                "binding": {
+                  "config": {
+                    "fallbackDelay": 2.5,
+                    "mode": "indirect",
+                    "references": {
+                      "database": "{view.params.database}"
+                    },
+                    "tagPath": "[System]Gateway/Database/{database}/ActiveConnections"
+                  },
+                  "transforms": [
+                    {
+                      "expression": "if({value} = null, \"--\", numberFormat({value}, \"#,##0.##\"))",
+                      "type": "expression"
+                    }
+                  ],
+                  "type": "tag"
+                }
+              }
+            },
+            "props": {
+              "style": {
+                "classes": "cfm-diag__value"
+              }
+            },
+            "type": "ia.display.label"
+          }
+        ],
+        "meta": {
+          "name": "Active Connections"
+        },
+        "position": {
+          "basis": "auto",
+          "display": true,
+          "grow": 0,
+          "shrink": 0
+        },
+        "props": {
+          "style": {
+            "classes": "cfm-diag__row"
+          },
+          "wrap": "wrap"
+        },
+        "type": "ia.container.flex"
+      },
+      {
+        "children": [
+          {
+            "meta": {
+              "name": "Label"
+            },
+            "position": {
+              "basis": "auto",
+              "display": true,
+              "grow": 1,
+              "shrink": 1
+            },
+            "props": {
+              "style": {
+                "classes": "cfm-diag__label"
+              },
+              "text": "Queries / Second"
+            },
+            "type": "ia.display.label"
+          },
+          {
+            "meta": {
+              "name": "Value"
+            },
+            "position": {
+              "basis": "auto",
+              "display": true,
+              "grow": 0,
+              "shrink": 0
+            },
+            "propConfig": {
+              "props.text": {
+                "binding": {
+                  "config": {
+                    "fallbackDelay": 2.5,
+                    "mode": "indirect",
+                    "references": {
+                      "database": "{view.params.database}"
+                    },
+                    "tagPath": "[System]Gateway/Database/{database}/QueriesPerSecond"
+                  },
+                  "transforms": [
+                    {
+                      "expression": "if({value} = null, \"--\", numberFormat({value}, \"#,##0.##\"))",
+                      "type": "expression"
+                    }
+                  ],
+                  "type": "tag"
+                }
+              }
+            },
+            "props": {
+              "style": {
+                "classes": "cfm-diag__value"
+              }
+            },
+            "type": "ia.display.label"
+          }
+        ],
+        "meta": {
+          "name": "Queries Per Second"
+        },
+        "position": {
+          "basis": "auto",
+          "display": true,
+          "grow": 0,
+          "shrink": 0
+        },
+        "props": {
+          "style": {
+            "classes": "cfm-diag__row"
+          },
+          "wrap": "wrap"
+        },
+        "type": "ia.container.flex"
+      },
+      {
+        "children": [
+          {
+            "meta": {
+              "name": "Label"
+            },
+            "position": {
+              "basis": "auto",
+              "display": true,
+              "grow": 1,
+              "shrink": 1
+            },
+            "props": {
+              "style": {
+                "classes": "cfm-diag__label"
+              },
+              "text": "Avg Query Time"
+            },
+            "type": "ia.display.label"
+          },
+          {
+            "meta": {
+              "name": "Value"
+            },
+            "position": {
+              "basis": "auto",
+              "display": true,
+              "grow": 0,
+              "shrink": 0
+            },
+            "propConfig": {
+              "props.text": {
+                "binding": {
+                  "config": {
+                    "fallbackDelay": 2.5,
+                    "mode": "indirect",
+                    "references": {
+                      "database": "{view.params.database}"
+                    },
+                    "tagPath": "[System]Gateway/Database/{database}/AvgQueryTime"
+                  },
+                  "transforms": [
+                    {
+                      "expression": "if({value} = null, \"--\", numberFormat({value}, \"#,##0.##\"))",
+                      "type": "expression"
+                    }
+                  ],
+                  "type": "tag"
+                }
+              }
+            },
+            "props": {
+              "style": {
+                "classes": "cfm-diag__value"
+              }
+            },
+            "type": "ia.display.label"
+          }
+        ],
+        "meta": {
+          "name": "Avg Query Time"
+        },
+        "position": {
+          "basis": "auto",
+          "display": true,
+          "grow": 0,
+          "shrink": 0
+        },
+        "props": {
+          "style": {
+            "classes": "cfm-diag__row"
+          },
+          "wrap": "wrap"
+        },
+        "type": "ia.container.flex"
+      },
+      {
+        "children": [
+          {
+            "meta": {
+              "name": "Label"
+            },
+            "position": {
+              "basis": "auto",
+              "display": true,
+              "grow": 1,
+              "shrink": 1
+            },
+            "props": {
+              "style": {
+                "classes": "cfm-diag__label"
+              },
+              "text": "Connection Saturation"
+            },
+            "type": "ia.display.label"
+          },
+          {
+            "meta": {
+              "name": "Value"
+            },
+            "position": {
+              "basis": "55px",
+              "display": true,
+              "grow": 0,
+              "shrink": 0
+            },
+            "propConfig": {
+              "props.style.backgroundColor": {
+                "binding": {
+                  "config": {
+                    "fallbackDelay": 2.5,
+                    "mode": "direct",
+                    "tagPath": "[System]Gateway/Performance/CPU Usage"
+                  },
+                  "transforms": [
+                    {
+                      "expression": "{value} * 100.0",
+                      "type": "expression"
+                    },
+                    {
+                      "fallback": "#808080",
+                      "inputType": "range",
+                      "mappings": [
+                        {
+                          "input": {
+                            "max": 70,
+                            "min": 0
+                          },
+                          "output": "#00AC00"
+                        },
+                        {
+                          "input": {
+                            "max": 80,
+                            "min": 70
+                          },
+                          "output": "#D9D900"
+                        },
+                        {
+                          "input": {
+                            "max": 100,
+                            "min": 90
+                          },
+                          "output": "#D90000"
+                        }
+                      ],
+                      "outputType": "color",
+                      "type": "map"
+                    }
+                  ],
+                  "type": "tag"
+                }
+              },
+              "props.text": {
+                "binding": {
+                  "config": {
+                    "fallbackDelay": 2.5,
+                    "mode": "indirect",
+                    "references": {
+                      "database": "{view.params.database}"
+                    },
+                    "tagPath": "[System]Gateway/Database/{database}/ConnectionSaturation"
+                  },
+                  "transforms": [
+                    {
+                      "expression": "if({value} = null, \"--\", numberFormat({value}, \"#,##0.##%\"))",
+                      "type": "expression"
+                    }
+                  ],
+                  "type": "tag"
+                }
+              }
+            },
+            "props": {
+              "style": {
+                "borderRadius": "4px",
+                "classes": "cfm-diag__value",
+                "color": "#FFFFFF",
+                "textAlign": "center"
+              }
+            },
+            "type": "ia.display.label"
+          }
+        ],
+        "meta": {
+          "name": "Connection Saturation"
+        },
+        "position": {
+          "basis": "auto",
+          "display": true,
+          "grow": 0,
+          "shrink": 0
+        },
+        "props": {
+          "style": {
+            "classes": "cfm-diag__row"
+          },
+          "wrap": "wrap"
+        },
+        "type": "ia.container.flex"
+      },
+      {
+        "meta": {
+          "name": "Spacer"
+        },
+        "position": {
+          "basis": "5px",
+          "display": true,
+          "grow": 0,
+          "shrink": 0
+        },
+        "type": "ia.display.label"
+      }
+    ],
+    "meta": {
+      "name": "root"
+    },
+    "props": {
+      "direction": "column",
+      "gap": 4,
+      "style": {
+        "classes": "cfm-diag__section"
+      }
+    },
+    "type": "ia.container.flex"
+  }
+}

@@ -1,0 +1,26 @@
+/*
+  Config File Menu — site token overrides (Ignition 8.3+)
+
+  Copy to your custom gateway theme folder as cfm-overrides.css.
+  Loaded last in gateway-theme-cfm-light/index.css so these values win.
+
+  Uncomment and edit only the tokens you need. Omitted tokens use defaults
+  from cfm-menu-theme-merge.css.
+*/
+
+:root {
+  /* Menu dock */
+  /* --cfm-menu-width-open: 280px; */
+  /* --cfm-menu-tree-indent: 20px; */
+
+  /* Settings tabs */
+  /* --cfm-settings-tabbar-bg: var(--container--background, var(--neutral-10, #f7f8fa)); */
+  /* --cfm-settings-tab-bg: var(--neutral-30, #d6dce3); */
+  /* --cfm-settings-tab-active-bg: #ffffff; */
+  /* --cfm-settings-tab-border: var(--neutral-40, #b8c0cc); */
+  /* --cfm-settings-tab-active-color: var(--callToAction--color, #005eb8); */
+
+  /* Diagnostics cards */
+  /* --cfm-diag-card-bg: var(--container--background, #ffffff); */
+  /* --cfm-diag-title-bg: rgba(0, 94, 184, 0.12); */
+}

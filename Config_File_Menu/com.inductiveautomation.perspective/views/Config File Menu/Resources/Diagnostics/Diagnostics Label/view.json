@@ -1,0 +1,73 @@
+{
+  "custom": {},
+  "params": {
+    "align": "start",
+    "value": "Hello World!"
+  },
+  "propConfig": {
+    "params.align": {
+      "paramDirection": "input",
+      "persistent": true
+    },
+    "params.value": {
+      "paramDirection": "input",
+      "persistent": true
+    }
+  },
+  "props": {
+    "defaultSize": {
+      "height": 26,
+      "width": 299
+    }
+  },
+  "root": {
+    "children": [
+      {
+        "meta": {
+          "name": "Value"
+        },
+        "position": {
+          "basis": "auto",
+          "display": true,
+          "grow": 0,
+          "shrink": 0
+        },
+        "propConfig": {
+          "props.style.textAlign": {
+            "binding": {
+              "config": {
+                "path": "view.params.align"
+              },
+              "type": "property"
+            }
+          },
+          "props.text": {
+            "binding": {
+              "config": {
+                "path": "view.params.value"
+              },
+              "type": "property"
+            }
+          }
+        },
+        "props": {
+          "style": {
+            "classes": "cfm-diag__value"
+          }
+        },
+        "type": "ia.display.label"
+      }
+    ],
+    "meta": {
+      "name": "root"
+    },
+    "props": {
+      "direction": "column",
+      "gap": 4,
+      "style": {
+        "classes": "cfm-diag__section"
+      }
+    },
+    "type": "ia.container.flex"
+  }
+}

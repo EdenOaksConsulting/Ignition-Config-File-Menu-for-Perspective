@@ -1,0 +1,63 @@
+{
+  "custom": {},
+  "params": {},
+  "props": {
+    "defaultSize": {
+      "width": 265
+    }
+  },
+  "root": {
+    "children": [
+      {
+        "meta": {
+          "name": "FlexRepeater"
+        },
+        "position": {
+          "basis": "auto",
+          "display": true,
+          "grow": 0,
+          "shrink": 0
+        },
+        "propConfig": {
+          "props.instances": {
+            "binding": {
+              "config": {
+                "expression": "now(0)"
+              },
+              "transforms": [
+                {
+                  "code": "\tinstances = []\n\tres = system.tag.browse(path=\"[System]Gateway/Gateway Network\")\n\tfor result in res.getResults():\n\t\tinstances.append({\"server\":result[\"name\"]})\n\treturn instances",
+                  "type": "script"
+                }
+              ],
+              "type": "expr"
+            }
+          }
+        },
+        "props": {
+          "direction": "column",
+          "elementPosition": {
+            "basis": "auto",
+            "grow": 0,
+            "shrink": 0
+          },
+          "path": "Config File Menu/Resources/Diagnostics/Diagnostics Gateway Network Connection",
+          "useDefaultViewHeight": false,
+          "useDefaultViewWidth": false
+        },
+        "type": "ia.display.flex-repeater"
+      }
+    ],
+    "meta": {
+      "name": "root"
+    },
+    "props": {
+      "direction": "column",
+      "gap": 4,
+      "style": {
+        "classes": "cfm-diag__section"
+      }
+    },
+    "type": "ia.container.flex"
+  }
+}

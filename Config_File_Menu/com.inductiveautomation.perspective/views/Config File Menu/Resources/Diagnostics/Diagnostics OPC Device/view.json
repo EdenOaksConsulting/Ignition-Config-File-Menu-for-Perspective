@@ -1,0 +1,352 @@
+{
+  "custom": {},
+  "params": {
+    "driver": "Simulator",
+    "enabled": true,
+    "name": "Device",
+    "state": "Connected"
+  },
+  "propConfig": {
+    "params.driver": {
+      "paramDirection": "input",
+      "persistent": true
+    },
+    "params.enabled": {
+      "paramDirection": "input",
+      "persistent": true
+    },
+    "params.name": {
+      "paramDirection": "input",
+      "persistent": true
+    },
+    "params.state": {
+      "paramDirection": "input",
+      "persistent": true
+    }
+  },
+  "props": {
+    "defaultSize": {
+      "height": 200,
+      "width": 300
+    }
+  },
+  "root": {
+    "children": [
+      {
+        "children": [
+          {
+            "meta": {
+              "name": "Value"
+            },
+            "position": {
+              "basis": "auto",
+              "display": true,
+              "grow": 0,
+              "shrink": 0
+            },
+            "propConfig": {
+              "props.text": {
+                "binding": {
+                  "config": {
+                    "path": "view.params.name"
+                  },
+                  "type": "property"
+                }
+              }
+            },
+            "props": {
+              "style": {
+                "classes": "cfm-diag__value"
+              }
+            },
+            "type": "ia.display.label"
+          }
+        ],
+        "meta": {
+          "name": "Name"
+        },
+        "position": {
+          "basis": "auto",
+          "display": true,
+          "grow": 0,
+          "shrink": 0
+        },
+        "props": {
+          "style": {
+            "borderBottomColor": "#D5D5D5",
+            "borderBottomStyle": "solid",
+            "borderBottomWidth": "1px",
+            "classes": "cfm-diag__row"
+          },
+          "wrap": "wrap"
+        },
+        "type": "ia.container.flex"
+      },
+      {
+        "children": [
+          {
+            "meta": {
+              "name": "Label"
+            },
+            "position": {
+              "basis": "auto",
+              "display": true,
+              "grow": 1,
+              "shrink": 1
+            },
+            "props": {
+              "style": {
+                "classes": "cfm-diag__label"
+              },
+              "text": "Driver"
+            },
+            "type": "ia.display.label"
+          },
+          {
+            "meta": {
+              "name": "Value"
+            },
+            "position": {
+              "basis": "auto",
+              "display": true,
+              "grow": 0,
+              "shrink": 0
+            },
+            "propConfig": {
+              "props.text": {
+                "binding": {
+                  "config": {
+                    "path": "view.params.driver"
+                  },
+                  "type": "property"
+                }
+              }
+            },
+            "props": {
+              "style": {
+                "classes": "cfm-diag__value"
+              }
+            },
+            "type": "ia.display.label"
+          }
+        ],
+        "meta": {
+          "name": "Driver"
+        },
+        "position": {
+          "basis": "auto",
+          "display": true,
+          "grow": 0,
+          "shrink": 0
+        },
+        "props": {
+          "style": {
+            "classes": "cfm-diag__row"
+          },
+          "wrap": "wrap"
+        },
+        "type": "ia.container.flex"
+      },
+      {
+        "children": [
+          {
+            "meta": {
+              "name": "Label"
+            },
+            "position": {
+              "basis": "auto",
+              "display": true,
+              "grow": 1,
+              "shrink": 1
+            },
+            "props": {
+              "style": {
+                "classes": "cfm-diag__label"
+              },
+              "text": "Is Enabled"
+            },
+            "type": "ia.display.label"
+          },
+          {
+            "meta": {
+              "name": "Value"
+            },
+            "position": {
+              "basis": "30px",
+              "display": true,
+              "grow": 0,
+              "shrink": 0
+            },
+            "propConfig": {
+              "props.style.backgroundColor": {
+                "binding": {
+                  "config": {
+                    "path": "view.params.enabled"
+                  },
+                  "transforms": [
+                    {
+                      "fallback": "#808080",
+                      "inputType": "scalar",
+                      "mappings": [
+                        {
+                          "input": false,
+                          "output": "#808080"
+                        },
+                        {
+                          "input": true,
+                          "output": "#00AC00"
+                        }
+                      ],
+                      "outputType": "color",
+                      "type": "map"
+                    }
+                  ],
+                  "type": "property"
+                }
+              },
+              "props.text": {
+                "binding": {
+                  "config": {
+                    "path": "view.params.enabled"
+                  },
+                  "transforms": [
+                    {
+                      "fallback": "No",
+                      "inputType": "scalar",
+                      "mappings": [
+                        {
+                          "input": false,
+                          "output": "No"
+                        },
+                        {
+                          "input": true,
+                          "output": "Yes"
+                        }
+                      ],
+                      "outputType": "scalar",
+                      "type": "map"
+                    }
+                  ],
+                  "type": "property"
+                }
+              }
+            },
+            "props": {
+              "style": {
+                "borderRadius": "4px",
+                "classes": "cfm-diag__value",
+                "color": "#FFFFFF",
+                "textAlign": "center"
+              }
+            },
+            "type": "ia.display.label"
+          }
+        ],
+        "meta": {
+          "name": "Is Enabled"
+        },
+        "position": {
+          "basis": "auto",
+          "display": true,
+          "grow": 0,
+          "shrink": 0
+        },
+        "props": {
+          "style": {
+            "classes": "cfm-diag__row"
+          },
+          "wrap": "wrap"
+        },
+        "type": "ia.container.flex"
+      },
+      {
+        "children": [
+          {
+            "meta": {
+              "name": "Label"
+            },
+            "position": {
+              "basis": "auto",
+              "display": true,
+              "grow": 1,
+              "shrink": 1
+            },
+            "props": {
+              "style": {
+                "classes": "cfm-diag__label"
+              },
+              "text": "State"
+            },
+            "type": "ia.display.label"
+          },
+          {
+            "meta": {
+              "name": "Value"
+            },
+            "position": {
+              "basis": "auto",
+              "display": true,
+              "grow": 0,
+              "shrink": 0
+            },
+            "propConfig": {
+              "props.text": {
+                "binding": {
+                  "config": {
+                    "path": "view.params.state"
+                  },
+                  "type": "property"
+                }
+              }
+            },
+            "props": {
+              "style": {
+                "classes": "cfm-diag__value"
+              }
+            },
+            "type": "ia.display.label"
+          }
+        ],
+        "meta": {
+          "name": "State"
+        },
+        "position": {
+          "basis": "auto",
+          "display": true,
+          "grow": 0,
+          "shrink": 0
+        },
+        "props": {
+          "style": {
+            "classes": "cfm-diag__row"
+          },
+          "wrap": "wrap"
+        },
+        "type": "ia.container.flex"
+      },
+      {
+        "meta": {
+          "name": "Spacer"
+        },
+        "position": {
+          "basis": "5px",
+          "display": true,
+          "grow": 0,
+          "shrink": 0
+        },
+        "type": "ia.display.label"
+      }
+    ],
+    "meta": {
+      "name": "root"
+    },
+    "props": {
+      "direction": "column",
+      "gap": 4,
+      "style": {
+        "classes": "cfm-diag__section"
+      }
+    },
+    "type": "ia.container.flex"
+  }
+}

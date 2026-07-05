@@ -1,0 +1,464 @@
+{
+  "custom": {
+    "currentTabIndex": 0
+  },
+  "params": {
+    "menuDockId": "config-file-menu",
+    "closeMenuOnOutsideClick": true,
+    "currentTabIndex": 0
+  },
+  "propConfig": {
+    "params.menuDockId": {
+      "paramDirection": "input",
+      "persistent": true
+    },
+    "params.closeMenuOnOutsideClick": {
+      "paramDirection": "input",
+      "persistent": true
+    },
+    "params.currentTabIndex": {
+      "paramDirection": "input",
+      "persistent": true
+    }
+  },
+  "props": {
+    "defaultSize": {
+      "height": 720,
+      "width": 1200
+    }
+  },
+  "root": {
+    "children": [
+      {
+        "children": [
+          {
+            "children": [
+              {
+                "meta": {
+                  "name": "TabLabel"
+                },
+                "position": {
+                  "grow": 1
+                },
+                "props": {
+                  "text": "Settings",
+                  "textStyle": {
+                    "fontSize": "14px",
+                    "textAlign": "center",
+                    "whiteSpace": "nowrap"
+                  }
+                },
+                "type": "ia.display.label"
+              }
+            ],
+            "events": {
+              "dom": {
+                "onClick": {
+                  "config": {
+                    "script": "\tself.view.custom.currentTabIndex = 0"
+                  },
+                  "scope": "G",
+                  "type": "script"
+                }
+              }
+            },
+            "meta": {
+              "name": "TabSettings"
+            },
+            "position": {
+              "shrink": 0
+            },
+            "propConfig": {
+              "props.style.classes": {
+                "binding": {
+                  "config": {
+                    "struct": {
+                      "tabIndex": 0,
+                      "activeIndex": "{view.custom.currentTabIndex}"
+                    },
+                    "waitOnAll": true
+                  },
+                  "transforms": [
+                    {
+                      "code": "\treturn exchange.cfm.runtime.settings_tab_class(value.get('tabIndex'), value.get('activeIndex'))\n",
+                      "type": "script"
+                    }
+                  ],
+                  "type": "expr-struct"
+                }
+              }
+            },
+            "props": {
+              "alignItems": "center",
+              "justify": "center",
+              "style": {
+                "classes": "cfm-menu__settings-tab",
+                "cursor": "pointer",
+                "minWidth": "120px",
+                "padding": "0 16px"
+              }
+            },
+            "type": "ia.container.flex"
+          },
+          {
+            "children": [
+              {
+                "meta": {
+                  "name": "TabLabel"
+                },
+                "position": {
+                  "grow": 1
+                },
+                "props": {
+                  "text": "Help",
+                  "textStyle": {
+                    "fontSize": "14px",
+                    "textAlign": "center",
+                    "whiteSpace": "nowrap"
+                  }
+                },
+                "type": "ia.display.label"
+              }
+            ],
+            "events": {
+              "dom": {
+                "onClick": {
+                  "config": {
+                    "script": "\tself.view.custom.currentTabIndex = 1"
+                  },
+                  "scope": "G",
+                  "type": "script"
+                }
+              }
+            },
+            "meta": {
+              "name": "TabHelp"
+            },
+            "position": {
+              "shrink": 0
+            },
+            "propConfig": {
+              "props.style.classes": {
+                "binding": {
+                  "config": {
+                    "struct": {
+                      "tabIndex": 1,
+                      "activeIndex": "{view.custom.currentTabIndex}"
+                    },
+                    "waitOnAll": true
+                  },
+                  "transforms": [
+                    {
+                      "code": "\treturn exchange.cfm.runtime.settings_tab_class(value.get('tabIndex'), value.get('activeIndex'))\n",
+                      "type": "script"
+                    }
+                  ],
+                  "type": "expr-struct"
+                }
+              }
+            },
+            "props": {
+              "alignItems": "center",
+              "justify": "center",
+              "style": {
+                "classes": "cfm-menu__settings-tab",
+                "cursor": "pointer",
+                "minWidth": "100px",
+                "padding": "0 16px"
+              }
+            },
+            "type": "ia.container.flex"
+          },
+          {
+            "children": [
+              {
+                "meta": {
+                  "name": "TabLabel"
+                },
+                "position": {
+                  "grow": 1
+                },
+                "props": {
+                  "text": "Tag \u2192 Menu",
+                  "textStyle": {
+                    "fontSize": "14px",
+                    "textAlign": "center",
+                    "whiteSpace": "nowrap"
+                  }
+                },
+                "type": "ia.display.label"
+              }
+            ],
+            "events": {
+              "dom": {
+                "onClick": {
+                  "config": {
+                    "script": "\tself.view.custom.currentTabIndex = 2"
+                  },
+                  "scope": "G",
+                  "type": "script"
+                }
+              }
+            },
+            "meta": {
+              "name": "TabTagMenu"
+            },
+            "position": {
+              "shrink": 0
+            },
+            "propConfig": {
+              "props.style.classes": {
+                "binding": {
+                  "config": {
+                    "struct": {
+                      "tabIndex": 2,
+                      "activeIndex": "{view.custom.currentTabIndex}"
+                    },
+                    "waitOnAll": true
+                  },
+                  "transforms": [
+                    {
+                      "code": "\treturn exchange.cfm.runtime.settings_tab_class(value.get('tabIndex'), value.get('activeIndex'))\n",
+                      "type": "script"
+                    }
+                  ],
+                  "type": "expr-struct"
+                }
+              }
+            },
+            "props": {
+              "alignItems": "center",
+              "justify": "center",
+              "style": {
+                "classes": "cfm-menu__settings-tab",
+                "cursor": "pointer",
+                "minWidth": "130px",
+                "padding": "0 16px"
+              }
+            },
+            "type": "ia.container.flex"
+          },
+          {
+            "children": [
+              {
+                "meta": {
+                  "name": "TabLabel"
+                },
+                "position": {
+                  "grow": 1
+                },
+                "props": {
+                  "text": "Menu \u2192 Routes",
+                  "textStyle": {
+                    "fontSize": "14px",
+                    "textAlign": "center",
+                    "whiteSpace": "nowrap"
+                  }
+                },
+                "type": "ia.display.label"
+              }
+            ],
+            "events": {
+              "dom": {
+                "onClick": {
+                  "config": {
+                    "script": "\tself.view.custom.currentTabIndex = 3"
+                  },
+                  "scope": "G",
+                  "type": "script"
+                }
+              }
+            },
+            "meta": {
+              "name": "TabMenuRoutes"
+            },
+            "position": {
+              "shrink": 0
+            },
+            "propConfig": {
+              "props.style.classes": {
+                "binding": {
+                  "config": {
+                    "struct": {
+                      "tabIndex": 3,
+                      "activeIndex": "{view.custom.currentTabIndex}"
+                    },
+                    "waitOnAll": true
+                  },
+                  "transforms": [
+                    {
+                      "code": "\treturn exchange.cfm.runtime.settings_tab_class(value.get('tabIndex'), value.get('activeIndex'))\n",
+                      "type": "script"
+                    }
+                  ],
+                  "type": "expr-struct"
+                }
+              }
+            },
+            "props": {
+              "alignItems": "center",
+              "justify": "center",
+              "style": {
+                "classes": "cfm-menu__settings-tab",
+                "cursor": "pointer",
+                "minWidth": "150px",
+                "padding": "0 16px"
+              }
+            },
+            "type": "ia.container.flex"
+          },
+          {
+            "children": [
+              {
+                "meta": {
+                  "name": "TabLabel"
+                },
+                "position": {
+                  "grow": 1
+                },
+                "props": {
+                  "text": "YAML to JSON",
+                  "textStyle": {
+                    "fontSize": "14px",
+                    "textAlign": "center",
+                    "whiteSpace": "nowrap"
+                  }
+                },
+                "type": "ia.display.label"
+              }
+            ],
+            "events": {
+              "dom": {
+                "onClick": {
+                  "config": {
+                    "script": "\tself.view.custom.currentTabIndex = 4"
+                  },
+                  "scope": "G",
+                  "type": "script"
+                }
+              }
+            },
+            "meta": {
+              "name": "TabConverter"
+            },
+            "position": {
+              "shrink": 0
+            },
+            "propConfig": {
+              "props.style.classes": {
+                "binding": {
+                  "config": {
+                    "struct": {
+                      "tabIndex": 4,
+                      "activeIndex": "{view.custom.currentTabIndex}"
+                    },
+                    "waitOnAll": true
+                  },
+                  "transforms": [
+                    {
+                      "code": "\treturn exchange.cfm.runtime.settings_tab_class(value.get('tabIndex'), value.get('activeIndex'))\n",
+                      "type": "script"
+                    }
+                  ],
+                  "type": "expr-struct"
+                }
+              }
+            },
+            "props": {
+              "alignItems": "center",
+              "justify": "center",
+              "style": {
+                "classes": "cfm-menu__settings-tab",
+                "cursor": "pointer",
+                "minWidth": "140px",
+                "padding": "0 16px"
+              }
+            },
+            "type": "ia.container.flex"
+          }
+        ],
+        "meta": {
+          "name": "TabBar"
+        },
+        "position": {
+          "shrink": 0
+        },
+        "props": {
+          "alignItems": "flex-end",
+          "direction": "row",
+          "style": {
+            "classes": "cfm-menu__settings-tabbar"
+          }
+        },
+        "type": "ia.container.flex"
+      },
+      {
+        "meta": {
+          "name": "TabContent"
+        },
+        "position": {
+          "grow": 1,
+          "shrink": 1
+        },
+        "propConfig": {
+          "props.path": {
+            "binding": {
+              "config": {
+                "path": "view.custom.currentTabIndex"
+              },
+              "transforms": [
+                {
+                  "code": "\treturn exchange.cfm.runtime.settings_tab_view_path(value)\n",
+                  "type": "script"
+                }
+              ],
+              "type": "property"
+            }
+          }
+        },
+        "props": {
+          "path": "Config File Menu/Resources/Menu/Menu Settings General",
+          "style": {
+            "classes": "cfm-menu__settings-content",
+            "height": "100%",
+            "width": "100%"
+          },
+          "useDefaultViewHeight": false,
+          "useDefaultViewWidth": false
+        },
+        "type": "ia.display.view"
+      }
+    ],
+    "events": {
+      "component": {
+        "onStartup": {
+          "config": {
+            "script": "\texchange.cfm.runtime.init_settings_shell_state(self)\n"
+          },
+          "scope": "G",
+          "type": "script"
+        }
+      },
+      "dom": {
+        "onClick": {
+          "config": {
+            "script": "\texchange.cfm.runtime.close_on_outside_click(self)\n"
+          },
+          "scope": "G",
+          "type": "script"
+        }
+      }
+    },
+    "meta": {
+      "name": "root"
+    },
+    "props": {
+      "direction": "column",
+      "style": {
+        "classes": "cfm-menu__settings",
+        "height": "100%"
+      }
+    },
+    "type": "ia.container.flex"
+  }
+}

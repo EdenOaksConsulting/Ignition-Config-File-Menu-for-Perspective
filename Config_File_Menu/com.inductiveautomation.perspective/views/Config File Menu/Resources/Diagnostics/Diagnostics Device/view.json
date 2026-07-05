@@ -1,0 +1,1812 @@
+{
+  "custom": {},
+  "params": {},
+  "props": {
+    "defaultSize": {
+      "height": 429,
+      "width": 300
+    }
+  },
+  "root": {
+    "children": [
+      {
+        "children": [
+          {
+            "meta": {
+              "name": "Label"
+            },
+            "position": {
+              "basis": "auto",
+              "display": true,
+              "grow": 1,
+              "shrink": 1
+            },
+            "props": {
+              "style": {
+                "classes": "cfm-diag__label"
+              },
+              "text": "Type"
+            },
+            "type": "ia.display.label"
+          },
+          {
+            "meta": {
+              "name": "Value"
+            },
+            "position": {
+              "basis": "auto",
+              "display": true,
+              "grow": 0,
+              "shrink": 0
+            },
+            "propConfig": {
+              "props.text": {
+                "binding": {
+                  "config": {
+                    "path": "session.props.device.type"
+                  },
+                  "type": "property"
+                }
+              }
+            },
+            "props": {
+              "style": {
+                "classes": "cfm-diag__value"
+              }
+            },
+            "type": "ia.display.label"
+          }
+        ],
+        "meta": {
+          "name": "Type"
+        },
+        "position": {
+          "basis": "auto",
+          "display": true,
+          "grow": 0,
+          "shrink": 0
+        },
+        "props": {
+          "style": {
+            "classes": "cfm-diag__row"
+          },
+          "wrap": "wrap"
+        },
+        "type": "ia.container.flex"
+      },
+      {
+        "children": [
+          {
+            "meta": {
+              "name": "Label"
+            },
+            "position": {
+              "basis": "auto",
+              "display": true,
+              "grow": 1,
+              "shrink": 1
+            },
+            "props": {
+              "style": {
+                "classes": "cfm-diag__label"
+              },
+              "text": "Id"
+            },
+            "type": "ia.display.label"
+          },
+          {
+            "meta": {
+              "name": "Value"
+            },
+            "position": {
+              "basis": "150px",
+              "display": true,
+              "grow": 0,
+              "shrink": 0
+            },
+            "propConfig": {
+              "props.text": {
+                "binding": {
+                  "config": {
+                    "path": "session.props.device.identifier"
+                  },
+                  "type": "property"
+                }
+              }
+            },
+            "props": {
+              "style": {
+                "classes": "cfm-diag__value",
+                "overflow": "auto",
+                "overflowWrap": "break-word",
+                "textAlign": "end"
+              }
+            },
+            "type": "ia.display.label"
+          }
+        ],
+        "meta": {
+          "name": "Id"
+        },
+        "position": {
+          "basis": "auto",
+          "display": true,
+          "grow": 0,
+          "shrink": 0
+        },
+        "props": {
+          "style": {
+            "classes": "cfm-diag__row"
+          },
+          "wrap": "wrap"
+        },
+        "type": "ia.container.flex"
+      },
+      {
+        "children": [
+          {
+            "meta": {
+              "name": "Label"
+            },
+            "position": {
+              "basis": "auto",
+              "display": true,
+              "grow": 1,
+              "shrink": 1
+            },
+            "props": {
+              "style": {
+                "classes": "cfm-diag__label"
+              },
+              "text": "User Agent"
+            },
+            "type": "ia.display.label"
+          },
+          {
+            "meta": {
+              "name": "Value"
+            },
+            "position": {
+              "basis": "150px",
+              "display": true,
+              "grow": 0,
+              "shrink": 0
+            },
+            "propConfig": {
+              "props.text": {
+                "binding": {
+                  "config": {
+                    "path": "session.props.device.userAgent"
+                  },
+                  "type": "property"
+                }
+              }
+            },
+            "props": {
+              "style": {
+                "classes": "cfm-diag__value",
+                "overflow": "auto",
+                "overflowWrap": "break-word",
+                "textAlign": "end"
+              }
+            },
+            "type": "ia.display.label"
+          }
+        ],
+        "meta": {
+          "name": "User Agent"
+        },
+        "position": {
+          "basis": "auto",
+          "display": true,
+          "grow": 0,
+          "shrink": 0
+        },
+        "props": {
+          "style": {
+            "classes": "cfm-diag__row"
+          },
+          "wrap": "wrap"
+        },
+        "type": "ia.container.flex"
+      },
+      {
+        "children": [
+          {
+            "meta": {
+              "name": "Label"
+            },
+            "position": {
+              "basis": "auto",
+              "display": true,
+              "grow": 1,
+              "shrink": 1
+            },
+            "props": {
+              "style": {
+                "classes": "cfm-diag__label"
+              },
+              "text": "Accelerometer"
+            },
+            "type": "ia.display.label"
+          },
+          {
+            "meta": {
+              "name": "Value"
+            },
+            "position": {
+              "basis": "30px",
+              "display": true,
+              "grow": 0,
+              "shrink": 0
+            },
+            "propConfig": {
+              "props.style.backgroundColor": {
+                "binding": {
+                  "config": {
+                    "path": "session.props.device.accelerometer.timestamp"
+                  },
+                  "transforms": [
+                    {
+                      "expression": "if({value} = 0, false, true)",
+                      "type": "expression"
+                    },
+                    {
+                      "fallback": "#808080",
+                      "inputType": "scalar",
+                      "mappings": [
+                        {
+                          "input": false,
+                          "output": "#808080"
+                        },
+                        {
+                          "input": true,
+                          "output": "#00AC00"
+                        }
+                      ],
+                      "outputType": "color",
+                      "type": "map"
+                    }
+                  ],
+                  "type": "property"
+                }
+              },
+              "props.text": {
+                "binding": {
+                  "config": {
+                    "path": "session.props.device.accelerometer.timestamp"
+                  },
+                  "transforms": [
+                    {
+                      "expression": "if({value} = 0, false, true)",
+                      "type": "expression"
+                    },
+                    {
+                      "fallback": "No",
+                      "inputType": "scalar",
+                      "mappings": [
+                        {
+                          "input": false,
+                          "output": "No"
+                        },
+                        {
+                          "input": true,
+                          "output": "Yes"
+                        }
+                      ],
+                      "outputType": "scalar",
+                      "type": "map"
+                    }
+                  ],
+                  "type": "property"
+                }
+              }
+            },
+            "props": {
+              "style": {
+                "borderRadius": "4px",
+                "classes": "cfm-diag__value",
+                "color": "#FFFFFF",
+                "textAlign": "center"
+              }
+            },
+            "type": "ia.display.label"
+          }
+        ],
+        "meta": {
+          "name": "Accelerometer"
+        },
+        "position": {
+          "basis": "auto",
+          "display": true,
+          "grow": 0,
+          "shrink": 0
+        },
+        "props": {
+          "style": {
+            "classes": "cfm-diag__row"
+          },
+          "wrap": "wrap"
+        },
+        "type": "ia.container.flex"
+      },
+      {
+        "children": [
+          {
+            "meta": {
+              "name": "Label"
+            },
+            "position": {
+              "basis": "auto",
+              "display": true,
+              "grow": 1,
+              "shrink": 1
+            },
+            "props": {
+              "style": {
+                "classes": "cfm-diag__label"
+              },
+              "text": "Accelerometer Update"
+            },
+            "type": "ia.display.label"
+          },
+          {
+            "meta": {
+              "name": "Value"
+            },
+            "position": {
+              "basis": "auto",
+              "display": true,
+              "grow": 0,
+              "shrink": 0
+            },
+            "propConfig": {
+              "props.text": {
+                "binding": {
+                  "config": {
+                    "path": "session.props.device.accelerometer.timestamp"
+                  },
+                  "transforms": [
+                    {
+                      "expression": "if({value} = 0, \"--\", dateFormat({value}, \"yyyy-MM-dd hh:mm:ss a\"))",
+                      "type": "expression"
+                    }
+                  ],
+                  "type": "property"
+                }
+              }
+            },
+            "props": {
+              "style": {
+                "classes": "cfm-diag__value"
+              }
+            },
+            "type": "ia.display.label"
+          }
+        ],
+        "meta": {
+          "name": "Accelerometer Time"
+        },
+        "position": {
+          "basis": "auto",
+          "display": true,
+          "grow": 0,
+          "shrink": 0
+        },
+        "props": {
+          "style": {
+            "classes": "cfm-diag__row"
+          },
+          "wrap": "wrap"
+        },
+        "type": "ia.container.flex"
+      },
+      {
+        "children": [
+          {
+            "meta": {
+              "name": "Label"
+            },
+            "position": {
+              "basis": "auto",
+              "display": true,
+              "grow": 1,
+              "shrink": 1
+            },
+            "props": {
+              "style": {
+                "classes": "cfm-diag__label"
+              },
+              "text": "Accelerometer X"
+            },
+            "type": "ia.display.label"
+          },
+          {
+            "meta": {
+              "name": "Value"
+            },
+            "position": {
+              "basis": "auto",
+              "display": true,
+              "grow": 0,
+              "shrink": 0
+            },
+            "propConfig": {
+              "props.text": {
+                "binding": {
+                  "config": {
+                    "path": "session.props.device.accelerometer.x"
+                  },
+                  "transforms": [
+                    {
+                      "expression": "numberFormat({value}, \"#,##0.##\")",
+                      "type": "expression"
+                    }
+                  ],
+                  "type": "property"
+                }
+              }
+            },
+            "props": {
+              "style": {
+                "classes": "cfm-diag__value"
+              }
+            },
+            "type": "ia.display.label"
+          }
+        ],
+        "meta": {
+          "name": "Accelerometer X"
+        },
+        "position": {
+          "basis": "auto",
+          "display": true,
+          "grow": 0,
+          "shrink": 0
+        },
+        "props": {
+          "style": {
+            "classes": "cfm-diag__row"
+          },
+          "wrap": "wrap"
+        },
+        "type": "ia.container.flex"
+      },
+      {
+        "children": [
+          {
+            "meta": {
+              "name": "Label"
+            },
+            "position": {
+              "basis": "auto",
+              "display": true,
+              "grow": 1,
+              "shrink": 1
+            },
+            "props": {
+              "style": {
+                "classes": "cfm-diag__label"
+              },
+              "text": "Accelerometer Y"
+            },
+            "type": "ia.display.label"
+          },
+          {
+            "meta": {
+              "name": "Value"
+            },
+            "position": {
+              "basis": "auto",
+              "display": true,
+              "grow": 0,
+              "shrink": 0
+            },
+            "propConfig": {
+              "props.text": {
+                "binding": {
+                  "config": {
+                    "path": "session.props.device.accelerometer.y"
+                  },
+                  "transforms": [
+                    {
+                      "expression": "numberFormat({value}, \"#,##0.##\")",
+                      "type": "expression"
+                    }
+                  ],
+                  "type": "property"
+                }
+              }
+            },
+            "props": {
+              "style": {
+                "classes": "cfm-diag__value"
+              }
+            },
+            "type": "ia.display.label"
+          }
+        ],
+        "meta": {
+          "name": "Accelerometer Y"
+        },
+        "position": {
+          "basis": "auto",
+          "display": true,
+          "grow": 0,
+          "shrink": 0
+        },
+        "props": {
+          "style": {
+            "classes": "cfm-diag__row"
+          },
+          "wrap": "wrap"
+        },
+        "type": "ia.container.flex"
+      },
+      {
+        "children": [
+          {
+            "meta": {
+              "name": "Label"
+            },
+            "position": {
+              "basis": "auto",
+              "display": true,
+              "grow": 1,
+              "shrink": 1
+            },
+            "props": {
+              "style": {
+                "classes": "cfm-diag__label"
+              },
+              "text": "Accelerometer Z"
+            },
+            "type": "ia.display.label"
+          },
+          {
+            "meta": {
+              "name": "Value"
+            },
+            "position": {
+              "basis": "auto",
+              "display": true,
+              "grow": 0,
+              "shrink": 0
+            },
+            "propConfig": {
+              "props.text": {
+                "binding": {
+                  "config": {
+                    "path": "session.props.device.accelerometer.z"
+                  },
+                  "transforms": [
+                    {
+                      "expression": "numberFormat({value}, \"#,##0.##\")",
+                      "type": "expression"
+                    }
+                  ],
+                  "type": "property"
+                }
+              }
+            },
+            "props": {
+              "style": {
+                "classes": "cfm-diag__value"
+              }
+            },
+            "type": "ia.display.label"
+          }
+        ],
+        "meta": {
+          "name": "Accelerometer Z"
+        },
+        "position": {
+          "basis": "auto",
+          "display": true,
+          "grow": 0,
+          "shrink": 0
+        },
+        "props": {
+          "style": {
+            "classes": "cfm-diag__row"
+          },
+          "wrap": "wrap"
+        },
+        "type": "ia.container.flex"
+      },
+      {
+        "children": [
+          {
+            "meta": {
+              "name": "Label"
+            },
+            "position": {
+              "basis": "auto",
+              "display": true,
+              "grow": 1,
+              "shrink": 1
+            },
+            "props": {
+              "style": {
+                "classes": "cfm-diag__label"
+              },
+              "text": "Bluetooth"
+            },
+            "type": "ia.display.label"
+          },
+          {
+            "meta": {
+              "name": "Value"
+            },
+            "position": {
+              "basis": "30px",
+              "display": true,
+              "grow": 0,
+              "shrink": 0
+            },
+            "propConfig": {
+              "props.style.backgroundColor": {
+                "binding": {
+                  "config": {
+                    "path": "session.props.bluetooth.enabled"
+                  },
+                  "transforms": [
+                    {
+                      "fallback": "#808080",
+                      "inputType": "scalar",
+                      "mappings": [
+                        {
+                          "input": false,
+                          "output": "#808080"
+                        },
+                        {
+                          "input": true,
+                          "output": "#00AC00"
+                        }
+                      ],
+                      "outputType": "color",
+                      "type": "map"
+                    }
+                  ],
+                  "type": "property"
+                }
+              },
+              "props.text": {
+                "binding": {
+                  "config": {
+                    "path": "session.props.bluetooth.enabled"
+                  },
+                  "transforms": [
+                    {
+                      "fallback": "No",
+                      "inputType": "scalar",
+                      "mappings": [
+                        {
+                          "input": false,
+                          "output": "No"
+                        },
+                        {
+                          "input": true,
+                          "output": "Yes"
+                        }
+                      ],
+                      "outputType": "scalar",
+                      "type": "map"
+                    }
+                  ],
+                  "type": "property"
+                }
+              }
+            },
+            "props": {
+              "style": {
+                "borderRadius": "4px",
+                "classes": "cfm-diag__value",
+                "color": "#FFFFFF",
+                "textAlign": "center"
+              }
+            },
+            "type": "ia.display.label"
+          }
+        ],
+        "meta": {
+          "name": "Bluetooth"
+        },
+        "position": {
+          "basis": "auto",
+          "display": true,
+          "grow": 0,
+          "shrink": 0
+        },
+        "props": {
+          "style": {
+            "classes": "cfm-diag__row"
+          },
+          "wrap": "wrap"
+        },
+        "type": "ia.container.flex"
+      },
+      {
+        "children": [
+          {
+            "meta": {
+              "name": "Label"
+            },
+            "position": {
+              "basis": "auto",
+              "display": true,
+              "grow": 1,
+              "shrink": 1
+            },
+            "props": {
+              "style": {
+                "classes": "cfm-diag__label"
+              },
+              "text": "Bluetooth Update Interval"
+            },
+            "type": "ia.display.label"
+          },
+          {
+            "meta": {
+              "name": "Value"
+            },
+            "position": {
+              "basis": "auto",
+              "display": true,
+              "grow": 0,
+              "shrink": 0
+            },
+            "propConfig": {
+              "props.text": {
+                "binding": {
+                  "config": {
+                    "path": "session.props.bluetooth.options.updateInterval"
+                  },
+                  "transforms": [
+                    {
+                      "expression": "numberFormat({value}, \"#,##0.##\") + \"ms\"",
+                      "type": "expression"
+                    }
+                  ],
+                  "type": "property"
+                }
+              }
+            },
+            "props": {
+              "style": {
+                "classes": "cfm-diag__value"
+              }
+            },
+            "type": "ia.display.label"
+          }
+        ],
+        "meta": {
+          "name": "Bluetooth Update Interval"
+        },
+        "position": {
+          "basis": "auto",
+          "display": true,
+          "grow": 0,
+          "shrink": 0
+        },
+        "props": {
+          "style": {
+            "classes": "cfm-diag__row"
+          },
+          "wrap": "wrap"
+        },
+        "type": "ia.container.flex"
+      },
+      {
+        "children": [
+          {
+            "meta": {
+              "name": "Label"
+            },
+            "position": {
+              "basis": "auto",
+              "display": true,
+              "grow": 1,
+              "shrink": 1
+            },
+            "props": {
+              "style": {
+                "classes": "cfm-diag__label"
+              },
+              "text": "Bluetooth Limit"
+            },
+            "type": "ia.display.label"
+          },
+          {
+            "meta": {
+              "name": "Value"
+            },
+            "position": {
+              "basis": "auto",
+              "display": true,
+              "grow": 0,
+              "shrink": 0
+            },
+            "propConfig": {
+              "props.text": {
+                "binding": {
+                  "config": {
+                    "path": "session.props.bluetooth.options.limit"
+                  },
+                  "transforms": [
+                    {
+                      "expression": "numberFormat({value}, \"#,##0.##\")",
+                      "type": "expression"
+                    }
+                  ],
+                  "type": "property"
+                }
+              }
+            },
+            "props": {
+              "style": {
+                "classes": "cfm-diag__value"
+              }
+            },
+            "type": "ia.display.label"
+          }
+        ],
+        "meta": {
+          "name": "Bluetooth Limit"
+        },
+        "position": {
+          "basis": "auto",
+          "display": true,
+          "grow": 0,
+          "shrink": 0
+        },
+        "props": {
+          "style": {
+            "classes": "cfm-diag__row"
+          },
+          "wrap": "wrap"
+        },
+        "type": "ia.container.flex"
+      },
+      {
+        "children": [
+          {
+            "meta": {
+              "name": "Label"
+            },
+            "position": {
+              "basis": "auto",
+              "display": true,
+              "grow": 1,
+              "shrink": 1
+            },
+            "props": {
+              "style": {
+                "classes": "cfm-diag__label"
+              },
+              "text": "Geolocation"
+            },
+            "type": "ia.display.label"
+          },
+          {
+            "meta": {
+              "name": "Value"
+            },
+            "position": {
+              "basis": "30px",
+              "display": true,
+              "grow": 0,
+              "shrink": 0
+            },
+            "propConfig": {
+              "props.style.backgroundColor": {
+                "binding": {
+                  "config": {
+                    "path": "session.props.geolocation.enabled"
+                  },
+                  "transforms": [
+                    {
+                      "fallback": "#808080",
+                      "inputType": "scalar",
+                      "mappings": [
+                        {
+                          "input": false,
+                          "output": "#808080"
+                        },
+                        {
+                          "input": true,
+                          "output": "#00AC00"
+                        }
+                      ],
+                      "outputType": "color",
+                      "type": "map"
+                    }
+                  ],
+                  "type": "property"
+                }
+              },
+              "props.text": {
+                "binding": {
+                  "config": {
+                    "path": "session.props.geolocation.enabled"
+                  },
+                  "transforms": [
+                    {
+                      "fallback": "No",
+                      "inputType": "scalar",
+                      "mappings": [
+                        {
+                          "input": false,
+                          "output": "No"
+                        },
+                        {
+                          "input": true,
+                          "output": "Yes"
+                        }
+                      ],
+                      "outputType": "scalar",
+                      "type": "map"
+                    }
+                  ],
+                  "type": "property"
+                }
+              }
+            },
+            "props": {
+              "style": {
+                "borderRadius": "4px",
+                "classes": "cfm-diag__value",
+                "color": "#FFFFFF",
+                "textAlign": "center"
+              }
+            },
+            "type": "ia.display.label"
+          }
+        ],
+        "meta": {
+          "name": "Geolocation"
+        },
+        "position": {
+          "basis": "auto",
+          "display": true,
+          "grow": 0,
+          "shrink": 0
+        },
+        "props": {
+          "style": {
+            "classes": "cfm-diag__row"
+          },
+          "wrap": "wrap"
+        },
+        "type": "ia.container.flex"
+      },
+      {
+        "children": [
+          {
+            "meta": {
+              "name": "Label"
+            },
+            "position": {
+              "basis": "auto",
+              "display": true,
+              "grow": 1,
+              "shrink": 1
+            },
+            "props": {
+              "style": {
+                "classes": "cfm-diag__label"
+              },
+              "text": "Geolocation Granted"
+            },
+            "type": "ia.display.label"
+          },
+          {
+            "meta": {
+              "name": "Value"
+            },
+            "position": {
+              "basis": "30px",
+              "display": true,
+              "grow": 0,
+              "shrink": 0
+            },
+            "propConfig": {
+              "props.style.backgroundColor": {
+                "binding": {
+                  "config": {
+                    "path": "session.props.geolocation.permissionGranted"
+                  },
+                  "transforms": [
+                    {
+                      "fallback": "#808080",
+                      "inputType": "scalar",
+                      "mappings": [
+                        {
+                          "input": false,
+                          "output": "#D90000"
+                        },
+                        {
+                          "input": true,
+                          "output": "#00AC00"
+                        }
+                      ],
+                      "outputType": "color",
+                      "type": "map"
+                    }
+                  ],
+                  "type": "property"
+                }
+              },
+              "props.text": {
+                "binding": {
+                  "config": {
+                    "path": "session.props.geolocation.permissionGranted"
+                  },
+                  "transforms": [
+                    {
+                      "fallback": "No",
+                      "inputType": "scalar",
+                      "mappings": [
+                        {
+                          "input": false,
+                          "output": "No"
+                        },
+                        {
+                          "input": true,
+                          "output": "Yes"
+                        }
+                      ],
+                      "outputType": "scalar",
+                      "type": "map"
+                    }
+                  ],
+                  "type": "property"
+                }
+              }
+            },
+            "props": {
+              "style": {
+                "borderRadius": "4px",
+                "classes": "cfm-diag__value",
+                "color": "#FFFFFF",
+                "textAlign": "center"
+              }
+            },
+            "type": "ia.display.label"
+          }
+        ],
+        "meta": {
+          "name": "Geolocation Granted"
+        },
+        "position": {
+          "basis": "auto",
+          "display": true,
+          "grow": 0,
+          "shrink": 0
+        },
+        "props": {
+          "style": {
+            "classes": "cfm-diag__row"
+          },
+          "wrap": "wrap"
+        },
+        "type": "ia.container.flex"
+      },
+      {
+        "children": [
+          {
+            "meta": {
+              "name": "Label"
+            },
+            "position": {
+              "basis": "auto",
+              "display": true,
+              "grow": 1,
+              "shrink": 1
+            },
+            "props": {
+              "style": {
+                "classes": "cfm-diag__label"
+              },
+              "text": "Geolocation Accuracy"
+            },
+            "type": "ia.display.label"
+          },
+          {
+            "meta": {
+              "name": "Value"
+            },
+            "position": {
+              "basis": "auto",
+              "display": true,
+              "grow": 0,
+              "shrink": 0
+            },
+            "propConfig": {
+              "props.text": {
+                "binding": {
+                  "config": {
+                    "path": "session.props.geolocation.options.accuracy"
+                  },
+                  "type": "property"
+                }
+              }
+            },
+            "props": {
+              "style": {
+                "classes": "cfm-diag__value"
+              }
+            },
+            "type": "ia.display.label"
+          }
+        ],
+        "meta": {
+          "name": "Geolocation Accuracy"
+        },
+        "position": {
+          "basis": "auto",
+          "display": true,
+          "grow": 0,
+          "shrink": 0
+        },
+        "props": {
+          "style": {
+            "classes": "cfm-diag__row"
+          },
+          "wrap": "wrap"
+        },
+        "type": "ia.container.flex"
+      },
+      {
+        "children": [
+          {
+            "meta": {
+              "name": "Label"
+            },
+            "position": {
+              "basis": "auto",
+              "display": true,
+              "grow": 1,
+              "shrink": 1
+            },
+            "props": {
+              "style": {
+                "classes": "cfm-diag__label"
+              },
+              "text": "Geolocation Max Age"
+            },
+            "type": "ia.display.label"
+          },
+          {
+            "meta": {
+              "name": "Value"
+            },
+            "position": {
+              "basis": "auto",
+              "display": true,
+              "grow": 0,
+              "shrink": 0
+            },
+            "propConfig": {
+              "props.text": {
+                "binding": {
+                  "config": {
+                    "path": "session.props.geolocation.options.maximumAge"
+                  },
+                  "transforms": [
+                    {
+                      "expression": "numberFormat({value}, \"#,##0.##\")",
+                      "type": "expression"
+                    }
+                  ],
+                  "type": "property"
+                }
+              }
+            },
+            "props": {
+              "style": {
+                "classes": "cfm-diag__value"
+              }
+            },
+            "type": "ia.display.label"
+          }
+        ],
+        "meta": {
+          "name": "Geolocation Max Age"
+        },
+        "position": {
+          "basis": "auto",
+          "display": true,
+          "grow": 0,
+          "shrink": 0
+        },
+        "props": {
+          "style": {
+            "classes": "cfm-diag__row"
+          },
+          "wrap": "wrap"
+        },
+        "type": "ia.container.flex"
+      },
+      {
+        "children": [
+          {
+            "meta": {
+              "name": "Label"
+            },
+            "position": {
+              "basis": "auto",
+              "display": true,
+              "grow": 1,
+              "shrink": 1
+            },
+            "props": {
+              "style": {
+                "classes": "cfm-diag__label"
+              },
+              "text": "Geolocation Update"
+            },
+            "type": "ia.display.label"
+          },
+          {
+            "meta": {
+              "name": "Value"
+            },
+            "position": {
+              "basis": "auto",
+              "display": true,
+              "grow": 0,
+              "shrink": 0
+            },
+            "propConfig": {
+              "props.text": {
+                "binding": {
+                  "config": {
+                    "path": "session.props.geolocation.data.timestamp"
+                  },
+                  "transforms": [
+                    {
+                      "expression": "if({value} = null, \"--\", dateFormat({value}, \"yyyy-MM-dd hh:mm:ss a\"))",
+                      "type": "expression"
+                    }
+                  ],
+                  "type": "property"
+                }
+              }
+            },
+            "props": {
+              "style": {
+                "classes": "cfm-diag__value"
+              }
+            },
+            "type": "ia.display.label"
+          }
+        ],
+        "meta": {
+          "name": "Geolocation Update"
+        },
+        "position": {
+          "basis": "auto",
+          "display": true,
+          "grow": 0,
+          "shrink": 0
+        },
+        "props": {
+          "style": {
+            "classes": "cfm-diag__row"
+          },
+          "wrap": "wrap"
+        },
+        "type": "ia.container.flex"
+      },
+      {
+        "children": [
+          {
+            "meta": {
+              "name": "Label"
+            },
+            "position": {
+              "basis": "auto",
+              "display": true,
+              "grow": 1,
+              "shrink": 1
+            },
+            "props": {
+              "style": {
+                "classes": "cfm-diag__label"
+              },
+              "text": "Geolocation Latitude"
+            },
+            "type": "ia.display.label"
+          },
+          {
+            "meta": {
+              "name": "Value"
+            },
+            "position": {
+              "basis": "auto",
+              "display": true,
+              "grow": 0,
+              "shrink": 0
+            },
+            "propConfig": {
+              "props.text": {
+                "binding": {
+                  "config": {
+                    "path": "session.props.geolocation.data.latitude"
+                  },
+                  "transforms": [
+                    {
+                      "expression": "if({value} = null, \"--\", numberFormat({value}, \"#,##0.####\"))",
+                      "type": "expression"
+                    }
+                  ],
+                  "type": "property"
+                }
+              }
+            },
+            "props": {
+              "style": {
+                "classes": "cfm-diag__value"
+              }
+            },
+            "type": "ia.display.label"
+          }
+        ],
+        "meta": {
+          "name": "Geolocation Latitude"
+        },
+        "position": {
+          "basis": "auto",
+          "display": true,
+          "grow": 0,
+          "shrink": 0
+        },
+        "props": {
+          "style": {
+            "classes": "cfm-diag__row"
+          },
+          "wrap": "wrap"
+        },
+        "type": "ia.container.flex"
+      },
+      {
+        "children": [
+          {
+            "meta": {
+              "name": "Label"
+            },
+            "position": {
+              "basis": "auto",
+              "display": true,
+              "grow": 1,
+              "shrink": 1
+            },
+            "props": {
+              "style": {
+                "classes": "cfm-diag__label"
+              },
+              "text": "Geolocation Longitude"
+            },
+            "type": "ia.display.label"
+          },
+          {
+            "meta": {
+              "name": "Value"
+            },
+            "position": {
+              "basis": "auto",
+              "display": true,
+              "grow": 0,
+              "shrink": 0
+            },
+            "propConfig": {
+              "props.text": {
+                "binding": {
+                  "config": {
+                    "path": "session.props.geolocation.data.longitude"
+                  },
+                  "transforms": [
+                    {
+                      "expression": "if({value} = null, \"--\", numberFormat({value}, \"#,##0.####\"))",
+                      "type": "expression"
+                    }
+                  ],
+                  "type": "property"
+                }
+              }
+            },
+            "props": {
+              "style": {
+                "classes": "cfm-diag__value"
+              }
+            },
+            "type": "ia.display.label"
+          }
+        ],
+        "meta": {
+          "name": "Geolocation Longitude"
+        },
+        "position": {
+          "basis": "auto",
+          "display": true,
+          "grow": 0,
+          "shrink": 0
+        },
+        "props": {
+          "style": {
+            "classes": "cfm-diag__row"
+          },
+          "wrap": "wrap"
+        },
+        "type": "ia.container.flex"
+      },
+      {
+        "children": [
+          {
+            "meta": {
+              "name": "Label"
+            },
+            "position": {
+              "basis": "auto",
+              "display": true,
+              "grow": 1,
+              "shrink": 1
+            },
+            "props": {
+              "style": {
+                "classes": "cfm-diag__label"
+              },
+              "text": "Geolocation Altitude"
+            },
+            "type": "ia.display.label"
+          },
+          {
+            "meta": {
+              "name": "Value"
+            },
+            "position": {
+              "basis": "auto",
+              "display": true,
+              "grow": 0,
+              "shrink": 0
+            },
+            "propConfig": {
+              "props.text": {
+                "binding": {
+                  "config": {
+                    "path": "session.props.geolocation.data.altitude"
+                  },
+                  "transforms": [
+                    {
+                      "expression": "if({value} = null, \"--\", numberFormat({value}, \"#,##0.##\"))",
+                      "type": "expression"
+                    }
+                  ],
+                  "type": "property"
+                }
+              }
+            },
+            "props": {
+              "style": {
+                "classes": "cfm-diag__value"
+              }
+            },
+            "type": "ia.display.label"
+          }
+        ],
+        "meta": {
+          "name": "Geolocation Altitude"
+        },
+        "position": {
+          "basis": "auto",
+          "display": true,
+          "grow": 0,
+          "shrink": 0
+        },
+        "props": {
+          "style": {
+            "classes": "cfm-diag__row"
+          },
+          "wrap": "wrap"
+        },
+        "type": "ia.container.flex"
+      },
+      {
+        "children": [
+          {
+            "meta": {
+              "name": "Label"
+            },
+            "position": {
+              "basis": "auto",
+              "display": true,
+              "grow": 1,
+              "shrink": 1
+            },
+            "props": {
+              "style": {
+                "classes": "cfm-diag__label"
+              },
+              "text": "Geolocation Accuracy"
+            },
+            "type": "ia.display.label"
+          },
+          {
+            "meta": {
+              "name": "Value"
+            },
+            "position": {
+              "basis": "auto",
+              "display": true,
+              "grow": 0,
+              "shrink": 0
+            },
+            "propConfig": {
+              "props.text": {
+                "binding": {
+                  "config": {
+                    "path": "session.props.geolocation.data.accuracy"
+                  },
+                  "transforms": [
+                    {
+                      "expression": "if({value} = null, \"--\", numberFormat({value}, \"#,##0.##\"))",
+                      "type": "expression"
+                    }
+                  ],
+                  "type": "property"
+                }
+              }
+            },
+            "props": {
+              "style": {
+                "classes": "cfm-diag__value"
+              }
+            },
+            "type": "ia.display.label"
+          }
+        ],
+        "meta": {
+          "name": "Geolocation Accuracy_0"
+        },
+        "position": {
+          "basis": "auto",
+          "display": true,
+          "grow": 0,
+          "shrink": 0
+        },
+        "props": {
+          "style": {
+            "classes": "cfm-diag__row"
+          },
+          "wrap": "wrap"
+        },
+        "type": "ia.container.flex"
+      },
+      {
+        "children": [
+          {
+            "meta": {
+              "name": "Label"
+            },
+            "position": {
+              "basis": "auto",
+              "display": true,
+              "grow": 1,
+              "shrink": 1
+            },
+            "props": {
+              "style": {
+                "classes": "cfm-diag__label"
+              },
+              "text": "Geolocation Altitude Accuracy"
+            },
+            "type": "ia.display.label"
+          },
+          {
+            "meta": {
+              "name": "Value"
+            },
+            "position": {
+              "basis": "auto",
+              "display": true,
+              "grow": 0,
+              "shrink": 0
+            },
+            "propConfig": {
+              "props.text": {
+                "binding": {
+                  "config": {
+                    "path": "session.props.geolocation.data.altitudeAccuracy"
+                  },
+                  "transforms": [
+                    {
+                      "expression": "if({value} = null, \"--\", numberFormat({value}, \"#,##0.##\"))",
+                      "type": "expression"
+                    }
+                  ],
+                  "type": "property"
+                }
+              }
+            },
+            "props": {
+              "style": {
+                "classes": "cfm-diag__value"
+              }
+            },
+            "type": "ia.display.label"
+          }
+        ],
+        "meta": {
+          "name": "Geolocation Altitude Accuracy"
+        },
+        "position": {
+          "basis": "auto",
+          "display": true,
+          "grow": 0,
+          "shrink": 0
+        },
+        "props": {
+          "style": {
+            "classes": "cfm-diag__row"
+          },
+          "wrap": "wrap"
+        },
+        "type": "ia.container.flex"
+      },
+      {
+        "children": [
+          {
+            "meta": {
+              "name": "Label"
+            },
+            "position": {
+              "basis": "auto",
+              "display": true,
+              "grow": 1,
+              "shrink": 1
+            },
+            "props": {
+              "style": {
+                "classes": "cfm-diag__label"
+              },
+              "text": "Geolocation Heading"
+            },
+            "type": "ia.display.label"
+          },
+          {
+            "meta": {
+              "name": "Value"
+            },
+            "position": {
+              "basis": "auto",
+              "display": true,
+              "grow": 0,
+              "shrink": 0
+            },
+            "propConfig": {
+              "props.text": {
+                "binding": {
+                  "config": {
+                    "path": "session.props.geolocation.data.heading"
+                  },
+                  "transforms": [
+                    {
+                      "expression": "if({value} = null, \"--\", numberFormat({value}, \"#,##0.##\"))",
+                      "type": "expression"
+                    }
+                  ],
+                  "type": "property"
+                }
+              }
+            },
+            "props": {
+              "style": {
+                "classes": "cfm-diag__value"
+              }
+            },
+            "type": "ia.display.label"
+          }
+        ],
+        "meta": {
+          "name": "Geolocation Heading"
+        },
+        "position": {
+          "basis": "auto",
+          "display": true,
+          "grow": 0,
+          "shrink": 0
+        },
+        "props": {
+          "style": {
+            "classes": "cfm-diag__row"
+          },
+          "wrap": "wrap"
+        },
+        "type": "ia.container.flex"
+      },
+      {
+        "children": [
+          {
+            "meta": {
+              "name": "Label"
+            },
+            "position": {
+              "basis": "auto",
+              "display": true,
+              "grow": 1,
+              "shrink": 1
+            },
+            "props": {
+              "style": {
+                "classes": "cfm-diag__label"
+              },
+              "text": "Geolocation Speed"
+            },
+            "type": "ia.display.label"
+          },
+          {
+            "meta": {
+              "name": "Value"
+            },
+            "position": {
+              "basis": "auto",
+              "display": true,
+              "grow": 0,
+              "shrink": 0
+            },
+            "propConfig": {
+              "props.text": {
+                "binding": {
+                  "config": {
+                    "path": "session.props.geolocation.data.speed"
+                  },
+                  "transforms": [
+                    {
+                      "expression": "if({value} = null, \"--\", numberFormat({value}, \"#,##0.##\"))",
+                      "type": "expression"
+                    }
+                  ],
+                  "type": "property"
+                }
+              }
+            },
+            "props": {
+              "style": {
+                "classes": "cfm-diag__value"
+              }
+            },
+            "type": "ia.display.label"
+          }
+        ],
+        "meta": {
+          "name": "Geolocation Speed"
+        },
+        "position": {
+          "basis": "auto",
+          "display": true,
+          "grow": 0,
+          "shrink": 0
+        },
+        "props": {
+          "style": {
+            "classes": "cfm-diag__row"
+          },
+          "wrap": "wrap"
+        },
+        "type": "ia.container.flex"
+      }
+    ],
+    "meta": {
+      "name": "root"
+    },
+    "props": {
+      "direction": "column",
+      "gap": 4,
+      "style": {
+        "classes": "cfm-diag__section"
+      }
+    },
+    "type": "ia.container.flex"
+  }
+}

@@ -1,0 +1,278 @@
+{
+  "custom": {},
+  "params": {
+    "menuDockId": "config-file-menu",
+    "closeMenuOnOutsideClick": true
+  },
+  "props": {
+    "defaultSize": {
+      "height": 900,
+      "width": 1280
+    }
+  },
+  "root": {
+    "children": [
+      {
+        "meta": {
+          "name": "System"
+        },
+        "position": {
+          "basis": "360px",
+          "shrink": 0,
+          "grow": 0
+        },
+        "props": {
+          "params": {
+            "path": "Config File Menu/Resources/Diagnostics/Diagnostics System",
+            "title": "System"
+          },
+          "path": "Config File Menu/Resources/Diagnostics/Diagnostics Card",
+          "style": {
+            "boxSizing": "border-box",
+            "classes": "cfm-diag__tile",
+            "margin": "0 8px 16px 0",
+            "maxWidth": "100%",
+            "width": "100%"
+          }
+        },
+        "type": "ia.display.view"
+      },
+      {
+        "meta": {
+          "name": "System Performance"
+        },
+        "position": {
+          "basis": "360px",
+          "shrink": 0,
+          "grow": 0
+        },
+        "props": {
+          "params": {
+            "path": "Config File Menu/Resources/Diagnostics/Diagnostics System Performance",
+            "title": "System Performance"
+          },
+          "path": "Config File Menu/Resources/Diagnostics/Diagnostics Card",
+          "style": {
+            "boxSizing": "border-box",
+            "classes": "cfm-diag__tile",
+            "margin": "0 8px 16px 0",
+            "maxWidth": "100%",
+            "width": "100%"
+          }
+        },
+        "type": "ia.display.view"
+      },
+      {
+        "meta": {
+          "name": "Redundancy"
+        },
+        "position": {
+          "basis": "360px",
+          "shrink": 0,
+          "grow": 0
+        },
+        "props": {
+          "params": {
+            "path": "Config File Menu/Resources/Diagnostics/Diagnostics Redundancy",
+            "title": "Redundancy"
+          },
+          "path": "Config File Menu/Resources/Diagnostics/Diagnostics Card",
+          "style": {
+            "boxSizing": "border-box",
+            "classes": "cfm-diag__tile",
+            "margin": "0 8px 16px 0",
+            "maxWidth": "100%",
+            "width": "100%"
+          }
+        },
+        "type": "ia.display.view"
+      },
+      {
+        "meta": {
+          "name": "Gateway Network"
+        },
+        "position": {
+          "basis": "360px",
+          "shrink": 0,
+          "grow": 0
+        },
+        "props": {
+          "params": {
+            "path": "Config File Menu/Resources/Diagnostics/Diagnostics Gateway Network Connections",
+            "title": "Gateway Network"
+          },
+          "path": "Config File Menu/Resources/Diagnostics/Diagnostics Card",
+          "style": {
+            "boxSizing": "border-box",
+            "classes": "cfm-diag__tile",
+            "margin": "0 8px 16px 0",
+            "maxWidth": "100%",
+            "width": "100%"
+          }
+        },
+        "type": "ia.display.view"
+      },
+      {
+        "meta": {
+          "name": "OPC Servers"
+        },
+        "position": {
+          "basis": "360px",
+          "shrink": 0,
+          "grow": 0
+        },
+        "props": {
+          "params": {
+            "path": "Config File Menu/Resources/Diagnostics/Diagnostics OPC Servers",
+            "title": "OPC Servers"
+          },
+          "path": "Config File Menu/Resources/Diagnostics/Diagnostics Card",
+          "style": {
+            "boxSizing": "border-box",
+            "classes": "cfm-diag__tile",
+            "margin": "0 8px 16px 0",
+            "maxWidth": "100%",
+            "width": "100%"
+          }
+        },
+        "type": "ia.display.view"
+      },
+      {
+        "meta": {
+          "name": "OPC Devices"
+        },
+        "position": {
+          "basis": "360px",
+          "grow": 0,
+          "shrink": 0
+        },
+        "props": {
+          "params": {
+            "path": "Config File Menu/Resources/Diagnostics/Diagnostics OPC Devices",
+            "title": "OPC Devices"
+          },
+          "path": "Config File Menu/Resources/Diagnostics/Diagnostics Card",
+          "style": {
+            "boxSizing": "border-box",
+            "classes": "cfm-diag__tile",
+            "margin": "0 8px 16px 0",
+            "maxWidth": "100%",
+            "width": "100%"
+          }
+        },
+        "type": "ia.display.view"
+      },
+      {
+        "meta": {
+          "name": "Databases"
+        },
+        "position": {
+          "basis": "360px",
+          "shrink": 0,
+          "grow": 0
+        },
+        "props": {
+          "params": {
+            "path": "Config File Menu/Resources/Diagnostics/Diagnostics Databases",
+            "title": "Databases"
+          },
+          "path": "Config File Menu/Resources/Diagnostics/Diagnostics Card",
+          "style": {
+            "boxSizing": "border-box",
+            "classes": "cfm-diag__tile",
+            "margin": "0 8px 16px 0",
+            "maxWidth": "100%",
+            "width": "100%"
+          }
+        },
+        "type": "ia.display.view"
+      },
+      {
+        "meta": {
+          "name": "Session"
+        },
+        "position": {
+          "basis": "360px",
+          "shrink": 0,
+          "grow": 0
+        },
+        "props": {
+          "params": {
+            "path": "Config File Menu/Resources/Diagnostics/Diagnostics Session",
+            "title": "Session"
+          },
+          "path": "Config File Menu/Resources/Diagnostics/Diagnostics Card",
+          "style": {
+            "boxSizing": "border-box",
+            "classes": "cfm-diag__tile",
+            "margin": "0 8px 16px 0",
+            "maxWidth": "100%",
+            "width": "100%"
+          }
+        },
+        "type": "ia.display.view"
+      },
+      {
+        "meta": {
+          "name": "Device"
+        },
+        "position": {
+          "basis": "360px",
+          "shrink": 0,
+          "grow": 0
+        },
+        "props": {
+          "params": {
+            "path": "Config File Menu/Resources/Diagnostics/Diagnostics Device",
+            "title": "Device"
+          },
+          "path": "Config File Menu/Resources/Diagnostics/Diagnostics Card",
+          "style": {
+            "boxSizing": "border-box",
+            "classes": "cfm-diag__tile",
+            "margin": "0 8px 16px 0",
+            "maxWidth": "100%",
+            "width": "100%"
+          }
+        },
+        "type": "ia.display.view"
+      }
+    ],
+    "meta": {
+      "name": "root"
+    },
+    "props": {
+      "alignContent": "flex-start",
+      "wrap": "wrap",
+      "style": {
+        "overflow": "auto",
+        "classes": "cfm-diag__page",
+        "padding": "16px"
+      },
+      "direction": "row",
+      "gap": 16
+    },
+    "type": "ia.container.flex",
+    "events": {
+      "dom": {
+        "onClick": {
+          "config": {
+            "script": "\texchange.cfm.runtime.close_on_outside_click(self)\n"
+          },
+          "scope": "G",
+          "type": "script"
+        }
+      }
+    }
+  },
+  "propConfig": {
+    "params.menuDockId": {
+      "paramDirection": "input",
+      "persistent": true
+    },
+    "params.closeMenuOnOutsideClick": {
+      "paramDirection": "input",
+      "persistent": true
+    }
+  }
+}

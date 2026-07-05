@@ -1,0 +1,42 @@
+{
+  "custom": {},
+  "params": {},
+  "props": {
+    "defaultSize": {
+      "height": 720,
+      "width": 1100
+    }
+  },
+  "root": {
+    "children": [
+      {
+        "meta": {
+          "name": "HelpMarkdown"
+        },
+        "position": {
+          "grow": 1
+        },
+        "props": {
+          "source": "# Config File Menu Help\n\nConfig File Menu turns one YAML-lite or JSON configuration into a responsive Ignition Perspective navigation system.\n\n## Import Order\n\n1. Import `config-file-menu-library.zip`.\n2. Import `config-file-menu-sample.zip` to explore a reference project, or `config-file-menu-site.zip` to start a blank site.\n3. Open `/` for the landing page, `/cfm/settings` for authoring tools, and `/cfm/diagnostics` for evaluation diagnostics.\n\n## Configure The Menu\n\n- Edit `Config File Menu/MenuContent.params.menuConfig`.\n- Set `params.menuConfigType` to `yaml` or `json`.\n- Each menu item `target` should have a matching Page Configuration route.\n- Use `expanded: true` on sections that should start open.\n- Use `roles` to hide menu items by user role; still configure page-level security separately.\n\n## Settings Page Tabs\n\n- **Settings** \u2014 pinned state, dock mode, outside-click behavior, menu width, top bar logo, and footer links for the current session.\n- **Help** \u2014 this documentation.\n- **Tag \u2192 Menu** \u2014 browse a tag path and generate a menu branch in a live session.\n- **Menu \u2192 Routes** \u2014 generate `page-config` merge JSON from menu YAML or JSON.\n- **YAML to JSON** \u2014 convert YAML-lite menu text to JSON.\n\n## Startup Defaults\n\nThe standard dock starts open, pinned, and in push mode. Project-wide startup defaults are defined in the `exchange.cfm.runtime` project library script (`ensure_dock_defaults`). The Settings tab changes current-session state only.\n\n## Routes\n\nKeep the fixed routes `/`, `/cfm/settings`, `/cfm/diagnostics`, `/cfm/target-no-route`, `/cfm/tools`, and `/cfm/tools/config-converter` when merging generated page configuration.\n",
+          "style": {
+            "classes": "cfm-menu__settings-help",
+            "padding": "24px",
+            "fontFamily": "monospace",
+            "fontSize": "14px"
+          }
+        },
+        "type": "ia.display.markdown"
+      }
+    ],
+    "meta": {
+      "name": "root"
+    },
+    "props": {
+      "style": {
+        "height": "100%",
+        "overflow": "auto"
+      }
+    },
+    "type": "ia.container.flex"
+  }
+}

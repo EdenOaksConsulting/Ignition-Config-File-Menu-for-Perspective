@@ -1,0 +1,12 @@
+/*
+  Config File Menu — host gateway theme starter (Ignition 8.3+)
+
+  Install: copy this folder to
+  %IgnitionInstall%/data/config/resources/core/com.inductiveautomation.perspective/themes/
+  Rename the folder for your site (e.g. menu-test-light). Gateway → Platform → Overview → Scan File System.
+  Designer → Session Properties → theme → select your custom theme. Publish and hard-refresh sessions.
+*/
+
+@import "../light/index.css";
+@import "./cfm-menu-theme-merge.css";
+@import "./cfm-overrides.css";

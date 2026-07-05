@@ -1,0 +1,225 @@
+{
+  "custom": {
+    "key": ""
+  },
+  "params": {
+    "icon": "material/person",
+    "isLink": true,
+    "label": "Link 1",
+    "menuDockId": "config-file-menu",
+    "showArrow": false,
+    "target": "",
+    "expanded": false,
+    "arrowSide": "right"
+  },
+  "propConfig": {
+    "custom.key": {
+      "binding": {
+        "config": {
+          "struct": {
+            "path": "{page.props.path}",
+            "requestedPath": "{view.params.requestedPath}",
+            "logicalPagePath": "{session.custom.configFileMenu.logicalPagePath}"
+          },
+          "waitOnAll": true
+        },
+        "transforms": [
+          {
+            "code": "\tpage_path = exchange.cfm.runtime.resolve_effective_page_path_from_value(value, self.page)\n\treturn exchange.cfm.runtime.menu_link_classes(page_path, self.view.params.target)\n",
+            "type": "script"
+          }
+        ],
+        "type": "expr-struct"
+      },
+      "persistent": true
+    },
+    "params.icon": {
+      "paramDirection": "input",
+      "persistent": true
+    },
+    "params.isLink": {
+      "paramDirection": "input",
+      "persistent": true
+    },
+    "params.label": {
+      "paramDirection": "input",
+      "persistent": true
+    },
+    "params.menuDockId": {
+      "paramDirection": "input",
+      "persistent": true
+    },
+    "params.showArrow": {
+      "paramDirection": "input",
+      "persistent": true
+    },
+    "params.target": {
+      "paramDirection": "input",
+      "persistent": true
+    },
+    "params.expanded": {
+      "paramDirection": "input",
+      "persistent": true
+    },
+    "params.arrowSide": {
+      "paramDirection": "input",
+      "persistent": true
+    }
+  },
+  "props": {
+    "defaultSize": {
+      "height": 40,
+      "width": 250
+    }
+  },
+  "root": {
+    "children": [
+      {
+        "meta": {
+          "name": "Arrow"
+        },
+        "position": {
+          "basis": "40px",
+          "shrink": 0
+        },
+        "propConfig": {
+          "position.display": {
+            "binding": {
+              "config": {
+                "expression": "{view.params.showArrow}"
+              },
+              "type": "expr"
+            }
+          },
+          "props.path": {
+            "binding": {
+              "config": {
+                "expression": "if({view.params.expanded}, 'material/arrow_drop_down', 'material/arrow_right')"
+              },
+              "type": "expr"
+            }
+          }
+        },
+        "props": {
+          "path": "material/arrow_right",
+          "style": {
+            "padding": "8px",
+            "cursor": "pointer",
+            "classes": "cfm-menu__link-arrow"
+          }
+        },
+        "type": "ia.display.icon",
+        "events": {
+          "dom": {
+            "onClick": {
+              "config": {
+                "script": "\texchange.cfm.runtime.on_section_arrow_click(self)\n"
+              },
+              "scope": "G",
+              "type": "script"
+            }
+          }
+        }
+      },
+      {
+        "meta": {
+          "name": "Icon"
+        },
+        "position": {
+          "basis": "40px",
+          "shrink": 0
+        },
+        "propConfig": {
+          "props.path": {
+            "binding": {
+              "config": {
+                "path": "view.params.icon"
+              },
+              "type": "property"
+            }
+          }
+        },
+        "props": {
+          "style": {
+            "padding": "8px",
+            "cursor": "pointer",
+            "classes": "cfm-menu__link-icon"
+          }
+        },
+        "type": "ia.display.icon",
+        "events": {
+          "dom": {
+            "onClick": {
+              "config": {
+                "script": "\texchange.cfm.runtime.on_menu_link_body_click(self)\n"
+              },
+              "scope": "G",
+              "type": "script"
+            }
+          }
+        }
+      },
+      {
+        "meta": {
+          "name": "Label"
+        },
+        "position": {
+          "basis": "50px",
+          "grow": 1
+        },
+        "propConfig": {
+          "props.text": {
+            "binding": {
+              "config": {
+                "expression": "{view.params.label}"
+              },
+              "type": "expr"
+            }
+          }
+        },
+        "props": {
+          "style": {
+            "overflow": "hidden",
+            "cursor": "pointer",
+            "classes": "cfm-menu__link-label"
+          },
+          "textStyle": {
+            "whiteSpace": "pre-wrap"
+          }
+        },
+        "type": "ia.display.label",
+        "events": {
+          "dom": {
+            "onClick": {
+              "config": {
+                "script": "\texchange.cfm.runtime.on_menu_link_body_click(self)\n"
+              },
+              "scope": "G",
+              "type": "script"
+            }
+          }
+        }
+      }
+    ],
+    "meta": {
+      "name": "root"
+    },
+    "propConfig": {
+      "props.style.classes": {
+        "binding": {
+          "config": {
+            "expression": "concat('cfm-menu__link cfm-menu__direct-link ',{view.custom.key},if({view.params.showArrow},' cfm-menu__link--arrow-left',''))"
+          },
+          "type": "expr"
+        }
+      }
+    },
+    "props": {
+      "direction": "row",
+      "style": {
+        "overflow": "hidden"
+      }
+    },
+    "type": "ia.container.flex"
+  }
+}

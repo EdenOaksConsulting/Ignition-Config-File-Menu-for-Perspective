@@ -1,0 +1,508 @@
+{
+  "custom": {
+    "key": "cfm-menu__section--open",
+    "page": "/",
+    "path": "",
+    "isOpen": false
+  },
+  "params": {
+    "icon": "material/face",
+    "items": [
+      {
+        "data": {
+          "target": ""
+        },
+        "expanded": false,
+        "items": [
+          {
+            "data": {
+              "target": "/menu-section-tree/folder-1/child-1"
+            },
+            "expanded": false,
+            "items": [
+              {
+                "data": {
+                  "target": "/menu-section-tree/folder-1/child-1/grandchild-1"
+                },
+                "expanded": false,
+                "items": [],
+                "label": "Grandchild 1"
+              }
+            ],
+            "label": "Child 1"
+          },
+          {
+            "data": {
+              "target": "/menu-section-tree/folder-1/child-2"
+            },
+            "expanded": false,
+            "items": [],
+            "label": "Child 2"
+          }
+        ],
+        "label": "Folder 1"
+      },
+      {
+        "data": {
+          "target": "/menu-section-tree/folder-2"
+        },
+        "expanded": false,
+        "items": [],
+        "label": "Folder 2"
+      }
+    ],
+    "label": "",
+    "target": "",
+    "expanded": false
+  },
+  "propConfig": {
+    "custom.key": {
+      "binding": {
+        "config": {
+          "expression": "{view.custom.page}"
+        },
+        "transforms": [
+          {
+            "code": "\treturn exchange.cfm.runtime.section_classes(value, self.view.params.target, self.view.params.label)",
+            "type": "script"
+          }
+        ],
+        "type": "expr"
+      },
+      "persistent": true
+    },
+    "custom.page": {
+      "binding": {
+        "config": {
+          "struct": {
+            "path": "{page.props.path}",
+            "requestedPath": "{view.params.requestedPath}",
+            "logicalPagePath": "{session.custom.configFileMenu.logicalPagePath}"
+          },
+          "waitOnAll": true
+        },
+        "transforms": [
+          {
+            "code": "\tpage_path = exchange.cfm.runtime.resolve_effective_page_path_from_value(value, self.page)\n\treturn exchange.cfm.runtime.sync_section_tree_page(self, page_path)\n",
+            "type": "script"
+          }
+        ],
+        "type": "expr-struct"
+      },
+      "persistent": true
+    },
+    "custom.path": {
+      "persistent": true
+    },
+    "params.icon": {
+      "paramDirection": "input",
+      "persistent": true
+    },
+    "params.items": {
+      "paramDirection": "inout",
+      "persistent": true
+    },
+    "params.label": {
+      "paramDirection": "input",
+      "persistent": true
+    },
+    "params.target": {
+      "paramDirection": "input",
+      "persistent": true
+    },
+    "custom.isOpen": {
+      "persistent": true
+    },
+    "params.expanded": {
+      "paramDirection": "input",
+      "persistent": true
+    }
+  },
+  "props": {
+    "defaultSize": {
+      "height": 40,
+      "width": 200
+    }
+  },
+  "root": {
+    "children": [
+      {
+        "meta": {
+          "name": "SectionHeader"
+        },
+        "position": {
+          "basis": "40px",
+          "grow": 0,
+          "shrink": 0
+        },
+        "props": {
+          "direction": "row",
+          "style": {
+            "classes": "cfm-menu__link",
+            "overflow": "hidden",
+            "width": "100%"
+          }
+        },
+        "type": "ia.container.flex",
+        "children": [
+          {
+            "meta": {
+              "name": "Arrow"
+            },
+            "position": {
+              "basis": "40px",
+              "shrink": 0
+            },
+            "propConfig": {
+              "position.display": {
+                "binding": {
+                  "config": {
+                    "expression": "len({view.params.items}) > 0"
+                  },
+                  "type": "expr"
+                }
+              },
+              "props.path": {
+                "binding": {
+                  "config": {
+                    "expression": "if({view.custom.isOpen}, 'material/arrow_drop_down', 'material/arrow_right')"
+                  },
+                  "type": "expr"
+                }
+              }
+            },
+            "props": {
+              "path": "material/arrow_right",
+              "style": {
+                "padding": "8px",
+                "cursor": "pointer",
+                "classes": "cfm-menu__link-arrow"
+              }
+            },
+            "type": "ia.display.icon",
+            "events": {
+              "dom": {
+                "onClick": {
+                  "config": {
+                    "script": "\texchange.cfm.runtime.on_section_arrow_click(self)\n"
+                  },
+                  "scope": "G",
+                  "type": "script"
+                }
+              }
+            }
+          },
+          {
+            "meta": {
+              "name": "Icon"
+            },
+            "position": {
+              "basis": "40px",
+              "shrink": 0
+            },
+            "propConfig": {
+              "props.path": {
+                "binding": {
+                  "config": {
+                    "path": "view.params.icon"
+                  },
+                  "type": "property"
+                }
+              }
+            },
+            "props": {
+              "style": {
+                "padding": "8px",
+                "cursor": "pointer",
+                "classes": "cfm-menu__link-icon"
+              }
+            },
+            "type": "ia.display.icon",
+            "events": {
+              "dom": {
+                "onClick": {
+                  "config": {
+                    "script": "\texchange.cfm.runtime.on_section_header_body_click(self)\n"
+                  },
+                  "scope": "G",
+                  "type": "script"
+                }
+              }
+            }
+          },
+          {
+            "meta": {
+              "name": "Label"
+            },
+            "position": {
+              "basis": "50px",
+              "grow": 1
+            },
+            "propConfig": {
+              "props.text": {
+                "binding": {
+                  "config": {
+                    "path": "view.params.label"
+                  },
+                  "type": "property"
+                }
+              }
+            },
+            "props": {
+              "style": {
+                "overflow": "hidden",
+                "cursor": "pointer",
+                "classes": "cfm-menu__link-label"
+              },
+              "textStyle": {
+                "whiteSpace": "pre-wrap"
+              }
+            },
+            "type": "ia.display.label",
+            "events": {
+              "dom": {
+                "onClick": {
+                  "config": {
+                    "script": "\texchange.cfm.runtime.on_section_header_body_click(self)\n"
+                  },
+                  "scope": "G",
+                  "type": "script"
+                }
+              }
+            }
+          }
+        ],
+        "propConfig": {
+          "props.style.classes": {
+            "binding": {
+              "config": {
+                "struct": {
+                  "pagePath": "{view.custom.page}",
+                  "target": "{view.params.target}",
+                  "hasChildren": "len({view.params.items}) > 0"
+                },
+                "waitOnAll": true
+              },
+              "transforms": [
+                {
+                  "code": "\treturn exchange.cfm.runtime.section_header_classes(value.get('pagePath'), value.get('target'), value.get('hasChildren'))\n",
+                  "type": "script"
+                }
+              ],
+              "type": "expr-struct"
+            }
+          }
+        }
+      },
+      {
+        "custom": {
+          "empty": [],
+          "lastSelection": []
+        },
+        "events": {
+          "component": {
+            "onItemClicked": {
+              "config": {
+                "script": "\texchange.cfm.runtime.on_tree_item_clicked(self, event)\n"
+              },
+              "scope": "G",
+              "type": "script"
+            }
+          }
+        },
+        "meta": {
+          "name": "Tree"
+        },
+        "position": {
+          "shrink": 0
+        },
+        "propConfig": {
+          "props.items": {
+            "binding": {
+              "config": {
+                "path": "view.params.items"
+              },
+              "transforms": [
+                {
+                  "code": "\titems, selection, selectionData = self.updateTreeSelection(value, self.view.custom.page)\n\tself.props.selection = selection\n\tself.props.selectionData = selectionData\n\treturn items",
+                  "type": "script"
+                }
+              ],
+              "type": "property"
+            }
+          },
+          "position.display": {
+            "binding": {
+              "config": {
+                "expression": "len({view.params.items}) > 0 && {view.custom.isOpen}"
+              },
+              "type": "expr"
+            }
+          },
+          "props.style.classes": {
+            "binding": {
+              "config": {
+                "expression": "concat('cfm-menu__section-tree-items cfm-menu__arrow-left')"
+              },
+              "type": "expr"
+            }
+          },
+          "props.appearance.expandIcons.collapsed.style.marginLeft": {
+            "binding": {
+              "config": {
+                "expression": "'0px'"
+              },
+              "type": "expr"
+            }
+          },
+          "props.appearance.expandIcons.expanded.style.marginLeft": {
+            "binding": {
+              "config": {
+                "expression": "'0px'"
+              },
+              "type": "expr"
+            }
+          },
+          "props.appearance.expandIcons.empty.style.marginLeft": {
+            "binding": {
+              "config": {
+                "expression": "'0px'"
+              },
+              "type": "expr"
+            }
+          }
+        },
+        "props": {
+          "appearance": {
+            "defaultNodeIcons": {
+              "collapsed": {
+                "path": "material/folder"
+              },
+              "empty": {
+                "path": "material/stop"
+              },
+              "expanded": {
+                "path": "material/folder_open"
+              }
+            },
+            "expandIcons": {
+              "collapsed": {
+                "path": "material/arrow_right",
+                "style": {
+                  "overflow": "hidden"
+                }
+              },
+              "empty": {
+                "style": {
+                  "opacity": 0,
+                  "overflow": "hidden"
+                },
+                "path": "material/arrow_right"
+              },
+              "expanded": {
+                "path": "material/arrow_drop_down",
+                "style": {
+                  "overflow": "hidden"
+                }
+              }
+            },
+            "rowHeight": 40,
+            "selectedStyle": {
+              "overflow": "hidden",
+              "backgroundColor": "var(--cfm-menu-selected-bg)",
+              "color": "var(--cfm-menu-selected-color)",
+              "fontWeight": "var(--cfm-menu-selected-weight)"
+            },
+            "textOverflow": "truncate",
+            "unselectedStyle": {
+              "overflow": "hidden"
+            }
+          },
+          "selection": [
+            ""
+          ],
+          "selectionData": [
+            {
+              "itemPath": "",
+              "value": {
+                "target": ""
+              }
+            }
+          ],
+          "style": {
+            "overflow": "hidden",
+            "classes": "cfm-menu__section-tree-items"
+          }
+        },
+        "scripts": {
+          "customMethods": [
+            {
+              "name": "updateTreeSelection",
+              "params": [
+                "items",
+                "current_page_path"
+              ],
+              "script": "\tdef findAndExpandItem(items, targetPath, path=[]):\n\t    \"\"\"\n\t    Recursively search for the item with the given targetPath, expanding parents as needed.\n\t    \n\t    :param items: The current level of items in the tree.\n\t    :param targetPath: The target path to find in the tree.\n\t    :param path: The current path to the item (used internally for recursion).\n\t    :return: A tuple (found, path) where 'found' is a boolean indicating if the target was found, and 'path' is the path to the target item.\n\t    \"\"\"\n\t    for i, item in enumerate(items):\n\t        # Check if this item is the target\n\t        if item.get('data', {}).get('target', '') == targetPath:\n\t\t\t\titem['expanded'] = True\n\t\t\t\treturn True, path + [i]\n\t        # Otherwise, recurse into children if they exist\n\t        if 'items' in item and item['items']:\n\t            found, childPath = findAndExpandItem(item['items'], targetPath, path + [i])\n\t            if found:\n\t                # Mark this item as expanded since it's a parent of the target\n\t                item['expanded'] = True\n\t                return True, childPath\n\t    return False, []\n\t\n\titemsCopy = system.util.jsonDecode(system.util.jsonEncode(items))\n\t\n\t# Find the item and expand its parents\n\tfound, itemPath = findAndExpandItem(itemsCopy, current_page_path)\n\t\n\tif found:\n\t\tsystem.perspective.print(repr(['itemPath', itemPath]))\n\t\tnewSelection = [\"/\".join(map(str, itemPath))]\n\t\tnewSelectionData = [{\"itemPath\":\"/\".join(map(str, itemPath)), \"value\":{\"target\":current_page_path}}]\n\t\treturn itemsCopy, newSelection, newSelectionData\n\telse:\n\t\treturn items, [\"\"], [{\"itemPath\":\"\", \"value\":{\"target\":\"\"}}]"
+            }
+          ],
+          "extensionFunctions": null,
+          "messageHandlers": []
+        },
+        "type": "ia.display.tree"
+      }
+    ],
+    "meta": {
+      "name": "root"
+    },
+    "propConfig": {
+      "props.style.classes": {
+        "binding": {
+          "config": {
+            "expression": "concat('cfm-menu__section cfm-menu__section-tree ',{view.custom.key},' cfm-menu__arrow-left')"
+          },
+          "type": "expr"
+        }
+      }
+    },
+    "props": {
+      "direction": "column",
+      "style": {
+        "overflow": "hidden"
+      }
+    },
+    "type": "ia.container.flex",
+    "events": {
+      "component": {
+        "onStartup": {
+          "config": {
+            "script": "\texchange.cfm.runtime.init_section_tree_state(self)\n"
+          },
+          "scope": "G",
+          "type": "script"
+        }
+      }
+    },
+    "scripts": {
+      "messageHandlers": [
+        {
+          "messageType": "cfm-menu-toggle-section",
+          "pageScope": true,
+          "sessionScope": true,
+          "viewScope": true,
+          "script": "\texchange.cfm.runtime.on_section_toggle_message(self, payload)\n"
+        }
+      ]
+    }
+  },
+  "scripts": {
+    "messageHandlers": [
+      {
+        "messageType": "cfm-menu-toggle-section",
+        "pageScope": true,
+        "sessionScope": true,
+        "viewScope": true,
+        "script": "\texchange.cfm.runtime.on_section_toggle_message(self, payload)\n"
+      }
+    ]
+  }
+}

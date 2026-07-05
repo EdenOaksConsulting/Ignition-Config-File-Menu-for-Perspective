@@ -1,0 +1,313 @@
+{
+  "custom": {
+    "key": "",
+    "uppercase": [
+      "hvac",
+      "crac",
+      "io"
+    ]
+  },
+  "params": {
+    "icon": "material/person",
+    "index": 0,
+    "isLink": true,
+    "label": "Link 1",
+    "menuDockId": "config-file-menu",
+    "parentIndex": 0,
+    "showArrow": false,
+    "target": "",
+    "isHome": false,
+    "preserveLabelCase": false
+  },
+  "propConfig": {
+    "custom.key": {
+      "binding": {
+        "config": {
+          "struct": {
+            "path": "{page.props.path}",
+            "requestedPath": "{view.params.requestedPath}",
+            "logicalPagePath": "{session.custom.configFileMenu.logicalPagePath}"
+          },
+          "waitOnAll": true
+        },
+        "transforms": [
+          {
+            "code": "\treturn exchange.cfm.runtime.resolve_effective_page_path_from_value(value, self.page)\n",
+            "type": "script"
+          }
+        ],
+        "type": "expr-struct"
+      },
+      "persistent": true
+    },
+    "custom.uppercase": {
+      "persistent": true
+    },
+    "params.icon": {
+      "paramDirection": "input",
+      "persistent": true
+    },
+    "params.index": {
+      "paramDirection": "input",
+      "persistent": true
+    },
+    "params.isLink": {
+      "paramDirection": "input",
+      "persistent": true
+    },
+    "params.label": {
+      "paramDirection": "input",
+      "persistent": true
+    },
+    "params.menuDockId": {
+      "paramDirection": "input",
+      "persistent": true
+    },
+    "params.parentIndex": {
+      "paramDirection": "input",
+      "persistent": true
+    },
+    "params.showArrow": {
+      "paramDirection": "input",
+      "persistent": true
+    },
+    "params.target": {
+      "paramDirection": "input",
+      "persistent": true
+    },
+    "params.isHome": {
+      "paramDirection": "input",
+      "persistent": true
+    },
+    "params.preserveLabelCase": {
+      "paramDirection": "input",
+      "persistent": true
+    }
+  },
+  "props": {
+    "defaultSize": {
+      "height": 40,
+      "width": 250
+    }
+  },
+  "root": {
+    "children": [
+      {
+        "children": [
+          {
+            "meta": {
+              "name": "Icon"
+            },
+            "position": {
+              "basis": "20px",
+              "shrink": 0
+            },
+            "propConfig": {
+              "position.basis": {
+                "binding": {
+                  "config": {
+                    "expression": "if({view.params.isHome}, '40px', '20px')"
+                  },
+                  "type": "expr"
+                }
+              },
+              "props.path": {
+                "binding": {
+                  "config": {
+                    "path": "view.params.icon"
+                  },
+                  "type": "property"
+                }
+              },
+              "props.style.height": {
+                "binding": {
+                  "config": {
+                    "expression": "if({view.params.isHome}, '40px', '20px')"
+                  },
+                  "type": "expr"
+                }
+              },
+              "props.style.width": {
+                "binding": {
+                  "config": {
+                    "expression": "if({view.params.isHome}, '40px', '20px')"
+                  },
+                  "type": "expr"
+                }
+              },
+              "position.display": {
+                "binding": {
+                  "config": {
+                    "expression": "{view.params.icon} != ''"
+                  },
+                  "type": "expr"
+                }
+              }
+            },
+            "props": {
+              "style": {
+                "alignSelf": "center",
+                "flexShrink": "0",
+                "height": "20px",
+                "width": "20px"
+              }
+            },
+            "type": "ia.display.icon"
+          },
+          {
+            "meta": {
+              "name": "Label"
+            },
+            "position": {
+              "grow": 1,
+              "shrink": 0
+            },
+            "propConfig": {
+              "position.display": {
+                "binding": {
+                  "config": {
+                    "expression": "{view.params.label} != ''"
+                  },
+                  "type": "expr"
+                }
+              },
+              "props.text": {
+                "binding": {
+                  "config": {
+                    "expression": "replace({view.params.label}, \"crac\", \"CRAC\")"
+                  },
+                  "type": "expr"
+                }
+              },
+              "props.textStyle.textTransform": {
+                "binding": {
+                  "config": {
+                    "struct": {
+                      "label": "{view.params.label}",
+                      "preserve": "{view.params.preserveLabelCase}"
+                    },
+                    "waitOnAll": true
+                  },
+                  "transforms": [
+                    {
+                      "code": "\ttry:\n\t\tpreserve = value.get('preserve')\n\texcept:\n\t\tpreserve = False\n\tif preserve in (True, 'true', 'True', 1, '1'):\n\t\treturn 'none'\n\ttry:\n\t\tlabel = value.get('label')\n\texcept:\n\t\tlabel = ''\n\tkey = str(label or '').strip().lower()\n\tif key in self.view.custom.uppercase:\n\t\treturn 'uppercase'\n\treturn 'capitalize'",
+                      "type": "script"
+                    }
+                  ],
+                  "type": "expr-struct"
+                }
+              }
+            },
+            "props": {
+              "style": {
+                "alignItems": "center",
+                "display": "flex",
+                "height": "40px",
+                "overflow": "hidden",
+                "width": "auto"
+              },
+              "textStyle": {
+                "lineHeight": "40px",
+                "whiteSpace": "pre-wrap"
+              }
+            },
+            "type": "ia.display.label"
+          },
+          {
+            "meta": {
+              "name": "Arrow"
+            },
+            "position": {
+              "basis": "20px",
+              "shrink": 0
+            },
+            "propConfig": {
+              "position.display": {
+                "binding": {
+                  "config": {
+                    "expression": "{view.params.showArrow}"
+                  },
+                  "type": "expr"
+                }
+              }
+            },
+            "props": {
+              "path": "material/arrow_right",
+              "style": {
+                "alignSelf": "center",
+                "height": "20px",
+                "width": "20px"
+              }
+            },
+            "type": "ia.display.icon"
+          }
+        ],
+        "events": {
+          "dom": {
+            "onClick": {
+              "config": {
+                "script": "\texchange.cfm.runtime.on_menu_link_click(self)\n"
+              },
+              "scope": "G",
+              "type": "script"
+            }
+          }
+        },
+        "meta": {
+          "name": "FlexContainer"
+        },
+        "position": {
+          "grow": 1
+        },
+        "propConfig": {
+          "props.style.cursor": {
+            "binding": {
+              "config": {
+                "expression": "if({view.params.isLink} && {view.params.target} != '', 'pointer', 'default')"
+              },
+              "type": "expr"
+            }
+          }
+        },
+        "props": {
+          "alignItems": "center",
+          "style": {
+            "height": "40px",
+            "maxHeight": "40px",
+            "minHeight": "40px",
+            "overflow": "hidden",
+            "textOverflow": "ellipsis",
+            "whiteSpace": "nowrap",
+            "width": "100%",
+            "wordWrap": "break-word"
+          }
+        },
+        "type": "ia.container.flex"
+      }
+    ],
+    "meta": {
+      "name": "root"
+    },
+    "propConfig": {
+      "props.style.classes": {
+        "binding": {
+          "config": {
+            "expression": "concat(\"cfm-menu__breadcrumb-link \", if({view.params.isHome}, 'cfm-menu__breadcrumb-link--home ', ''), if({view.params.isLink} && {view.params.target} != '', 'cfm-menu__breadcrumb-link--link ', 'cfm-menu__breadcrumb-link--not-link '), {view.custom.key})"
+          },
+          "enabled": true,
+          "type": "expr"
+        }
+      }
+    },
+    "props": {
+      "alignItems": "center",
+      "style": {
+        "height": "40px",
+        "maxHeight": "40px",
+        "minHeight": "40px",
+        "overflow": "hidden"
+      }
+    },
+    "type": "ia.container.flex"
+  }
+}

@@ -1,0 +1,66 @@
+{
+  "pages": {
+    "/": {
+      "title": "Config File Menu",
+      "viewPath": "Config File Menu/Resources/View Landing"
+    },
+    "/cfm/diagnostics": {
+      "title": "Diagnostics",
+      "viewPath": "Config File Menu/Resources/Diagnostics/Diagnostics Dashboard"
+    },
+    "/cfm/settings": {
+      "title": "Settings",
+      "viewPath": "Config File Menu/Resources/Menu/Menu Settings"
+    },
+    "/cfm/target-no-route": {
+      "title": "Target No Route",
+      "viewPath": "Config File Menu/Resources/View Route Fallback"
+    },
+    "/cfm/tools": {
+      "title": "Config File Menu Tools",
+      "viewPath": "Config File Menu/Resources/View Dynamic Fallback"
+    },
+    "/cfm/tools/config-converter": {
+      "title": "Menu Config Converter",
+      "viewPath": "Config File Menu/Resources/Menu/Menu Settings",
+      "viewParams": {
+        "currentTabIndex": 4
+      }
+    }
+  },
+  "sharedDocks": {
+    "cornerPriority": "top-bottom",
+    "left": [
+      {
+        "anchor": "fixed",
+        "autoBreakpoint": 768,
+        "content": "push",
+        "handle": "hide",
+        "iconUrl": "",
+        "id": "config-file-menu",
+        "modal": false,
+        "resizable": false,
+        "show": "visible",
+        "size": 220,
+        "viewParams": {},
+        "viewPath": "Config File Menu/MenuContent"
+      }
+    ],
+    "top": [
+      {
+        "anchor": "fixed",
+        "autoBreakpoint": 480,
+        "content": "push",
+        "handle": "hide",
+        "iconUrl": "",
+        "id": "config-file-menu-top-bar",
+        "modal": false,
+        "resizable": false,
+        "show": "visible",
+        "size": 58,
+        "viewParams": {},
+        "viewPath": "Config File Menu/Resources/Menu/Menu Top Bar"
+      }
+    ]
+  }
+}

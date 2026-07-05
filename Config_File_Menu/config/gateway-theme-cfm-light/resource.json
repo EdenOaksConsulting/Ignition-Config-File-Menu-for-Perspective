@@ -1,0 +1,19 @@
+{
+  "scope": "G",
+  "version": 1,
+  "restricted": false,
+  "overridable": true,
+  "files": [
+    "config.json",
+    "index.css",
+    "cfm-menu-theme-merge.css",
+    "cfm-overrides.css"
+  ],
+  "attributes": {
+    "lastModification": {
+      "actor": "content-author",
+      "timestamp": "2026-06-15T00:00:00Z"
+    },
+    "lastModificationSignature": "cfm-gateway-theme-starter-v1"
+  }
+}

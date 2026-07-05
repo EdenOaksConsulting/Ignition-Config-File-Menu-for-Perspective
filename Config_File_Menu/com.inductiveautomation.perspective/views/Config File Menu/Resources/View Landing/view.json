@@ -1,0 +1,111 @@
+{
+  "custom": {},
+  "params": {
+    "menuDockId": "config-file-menu",
+    "closeMenuOnOutsideClick": true
+  },
+  "propConfig": {
+    "params.menuDockId": {
+      "paramDirection": "input",
+      "persistent": true
+    },
+    "params.closeMenuOnOutsideClick": {
+      "paramDirection": "input",
+      "persistent": true
+    }
+  },
+  "props": {
+    "defaultSize": {
+      "height": 900,
+      "width": 1200
+    }
+  },
+  "root": {
+    "meta": {
+      "name": "root"
+    },
+    "type": "ia.container.flex",
+    "props": {
+      "style": {
+        "height": "100%",
+        "classes": "cfm-page__root"
+      }
+    },
+    "events": {
+      "component": {
+        "onStartup": {
+          "config": {
+            "script": "\texchange.cfm.runtime.sync_shell_session(self)\n"
+          },
+          "scope": "G",
+          "type": "script"
+        }
+      },
+      "dom": {
+        "onClick": {
+          "config": {
+            "script": "\texchange.cfm.runtime.close_on_outside_click(self)\n"
+          },
+          "scope": "G",
+          "type": "script"
+        }
+      }
+    },
+    "children": [
+      {
+        "meta": {
+          "name": "PageWrapper"
+        },
+        "type": "ia.container.flex",
+        "position": {
+          "grow": 1
+        },
+        "props": {
+          "direction": "column",
+          "style": {
+            "margin": "0 auto",
+            "maxWidth": "1280px",
+            "padding": "24px",
+            "width": "100%"
+          }
+        },
+        "children": [
+          {
+            "meta": {
+              "name": "LandingCard"
+            },
+            "type": "ia.container.flex",
+            "position": {
+              "grow": 1
+            },
+            "props": {
+              "direction": "column",
+              "style": {
+                "classes": "cfm-page__card"
+              }
+            },
+            "children": [
+              {
+                "meta": {
+                  "name": "LandingMarkdown"
+                },
+                "type": "ia.display.markdown",
+                "position": {
+                  "grow": 1
+                },
+                "props": {
+                  "source": "# Config File Menu for Perspective\n\nThis project turns one YAML-lite or JSON menu configuration into a responsive Ignition Perspective navigation system.\n\n## Start Here\n\n- Open `/cfm/settings` for Settings, Help, Tag to Menu, Menu to Routes, and YAML to JSON tools.\n- Edit `Config File Menu/MenuContent.params.menuConfig` to define the menu tree.\n- Add Page Configuration routes for each menu `target`.\n- Use `/cfm/diagnostics` to review the bundled diagnostics dashboard during evaluation.\n\n## Dock Defaults\n\nThe standard layout starts open, pinned, and in push mode. Project-wide startup defaults live in the `exchange.cfm.runtime` project library script (`ensure_dock_defaults`).\n\n## Next Step\n\nFor a blank production site, import `config-file-menu-library.zip` first, then `config-file-menu-site.zip`. For a reference project with sample routes, import `config-file-menu-sample.zip` after the library.\n",
+                  "style": {
+                    "padding": "24px",
+                    "fontSize": "15px",
+                    "lineHeight": "1.5"
+                  }
+                }
+              }
+            ]
+          }
+        ]
+      }
+    ]
+  }
+}

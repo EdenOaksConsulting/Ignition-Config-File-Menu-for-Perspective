@@ -1,0 +1,338 @@
+{
+  "custom": {},
+  "params": {
+    "menuDockId": "config-file-menu",
+    "closeMenuOnOutsideClick": true,
+    "requestedPath": ""
+  },
+  "propConfig": {
+    "params.menuDockId": {
+      "paramDirection": "input",
+      "persistent": true
+    },
+    "params.closeMenuOnOutsideClick": {
+      "paramDirection": "input",
+      "persistent": true
+    },
+    "params.requestedPath": {
+      "paramDirection": "input",
+      "persistent": true
+    }
+  },
+  "props": {
+    "defaultSize": {
+      "height": 900,
+      "width": 1200
+    }
+  },
+  "root": {
+    "meta": {
+      "name": "root"
+    },
+    "type": "ia.container.flex",
+    "props": {
+      "style": {
+        "height": "100%",
+        "classes": "cfm-page__root"
+      }
+    },
+    "events": {
+      "component": {
+        "onStartup": {
+          "config": {
+            "script": "\texchange.cfm.runtime.sync_shell_session(self)\n"
+          },
+          "scope": "G",
+          "type": "script"
+        }
+      },
+      "dom": {
+        "onClick": {
+          "config": {
+            "script": "\texchange.cfm.runtime.close_on_outside_click(self)\n"
+          },
+          "scope": "G",
+          "type": "script"
+        }
+      }
+    },
+    "children": [
+      {
+        "meta": {
+          "name": "PageWrapper"
+        },
+        "type": "ia.container.flex",
+        "position": {
+          "grow": 1
+        },
+        "props": {
+          "direction": "column",
+          "style": {
+            "margin": "0 auto",
+            "maxWidth": "1680px",
+            "padding": "24px",
+            "width": "100%"
+          }
+        },
+        "children": [
+          {
+            "meta": {
+              "name": "PageCard"
+            },
+            "type": "ia.container.flex",
+            "position": {
+              "grow": 1
+            },
+            "props": {
+              "direction": "column",
+              "style": {
+                "classes": "cfm-page__card"
+              }
+            },
+            "children": [
+              {
+                "meta": {
+                  "name": "TitleRow"
+                },
+                "type": "ia.container.flex",
+                "position": {
+                  "basis": "48px",
+                  "shrink": 0
+                },
+                "props": {
+                  "alignItems": "center",
+                  "direction": "row",
+                  "style": {
+                    "gap": "12px",
+                    "minHeight": "48px"
+                  }
+                },
+                "children": [
+                  {
+                    "meta": {
+                      "name": "TitleIcon"
+                    },
+                    "type": "ia.display.icon",
+                    "position": {
+                      "basis": "36px",
+                      "shrink": 0
+                    },
+                    "propConfig": {
+                      "props.path": {
+                        "binding": {
+                          "config": {
+                            "struct": {
+                              "path": "{page.props.path}",
+                              "requestedPath": "{view.params.requestedPath}",
+                              "logicalPagePath": "{session.custom.configFileMenu.logicalPagePath}",
+                              "sessionMenuConfig": "{session.custom.configFileMenu.menuConfig}",
+                              "sessionMenuConfigType": "{session.custom.configFileMenu.menuConfigType}",
+                              "paramMenuConfig": "{view.params.menuConfig}",
+                              "paramMenuConfigType": "{view.params.menuConfigType}"
+                            },
+                            "waitOnAll": false
+                          },
+                          "transforms": [
+                            {
+                              "code": "\treturn exchange.cfm.runtime.resolve_title_icon(value, self.session, self.page)\n",
+                              "type": "script"
+                            }
+                          ],
+                          "type": "expr-struct"
+                        }
+                      }
+                    },
+                    "props": {
+                      "path": "material/description",
+                      "style": {
+                        "height": "36px",
+                        "width": "36px"
+                      }
+                    }
+                  },
+                  {
+                    "meta": {
+                      "name": "TitleLabel"
+                    },
+                    "type": "ia.display.label",
+                    "position": {
+                      "grow": 1
+                    },
+                    "propConfig": {
+                      "props.text": {
+                        "binding": {
+                          "config": {
+                            "struct": {
+                              "path": "{page.props.path}",
+                              "requestedPath": "{view.params.requestedPath}",
+                              "logicalPagePath": "{session.custom.configFileMenu.logicalPagePath}",
+                              "sessionMenuConfig": "{session.custom.configFileMenu.menuConfig}",
+                              "sessionMenuConfigType": "{session.custom.configFileMenu.menuConfigType}",
+                              "paramMenuConfig": "{view.params.menuConfig}",
+                              "paramMenuConfigType": "{view.params.menuConfigType}"
+                            },
+                            "waitOnAll": false
+                          },
+                          "transforms": [
+                            {
+                              "code": "\treturn exchange.cfm.runtime.resolve_title(value, self.session, self.page)\n",
+                              "type": "script"
+                            }
+                          ],
+                          "type": "expr-struct"
+                        }
+                      }
+                    },
+                    "props": {
+                      "textStyle": {
+                        "fontSize": "1.75em",
+                        "fontWeight": "600"
+                      },
+                      "style": {
+                        "classes": "cfm-page__title"
+                      }
+                    }
+                  }
+                ]
+              },
+              {
+                "meta": {
+                  "name": "PathLabel"
+                },
+                "type": "ia.display.label",
+                "position": {
+                  "basis": "32px",
+                  "shrink": 0
+                },
+                "propConfig": {
+                  "props.text": {
+                    "binding": {
+                      "config": {
+                        "struct": {
+                          "path": "{page.props.path}",
+                          "requestedPath": "{view.params.requestedPath}",
+                          "logicalPagePath": "{session.custom.configFileMenu.logicalPagePath}",
+                          "sessionMenuConfig": "{session.custom.configFileMenu.menuConfig}",
+                          "sessionMenuConfigType": "{session.custom.configFileMenu.menuConfigType}",
+                          "paramMenuConfig": "{view.params.menuConfig}",
+                          "paramMenuConfigType": "{view.params.menuConfigType}"
+                        },
+                        "waitOnAll": true
+                      },
+                      "transforms": [
+                        {
+                          "code": "\treturn exchange.cfm.runtime.resolve_effective_page_path_from_value(value, self.page)\n",
+                          "type": "script"
+                        }
+                      ],
+                      "type": "expr-struct"
+                    }
+                  }
+                },
+                "props": {
+                  "textStyle": {
+                    "fontSize": "1em"
+                  },
+                  "style": {
+                    "classes": "cfm-page__path"
+                  }
+                }
+              },
+              {
+                "meta": {
+                  "name": "RouteNotice"
+                },
+                "type": "ia.container.flex",
+                "position": {
+                  "grow": 1
+                },
+                "props": {
+                  "direction": "column",
+                  "style": {
+                    "classes": "cfm-page__notice"
+                  }
+                },
+                "children": [
+                  {
+                    "meta": {
+                      "name": "RouteWarningRow"
+                    },
+                    "type": "ia.container.flex",
+                    "position": {
+                      "shrink": 0
+                    },
+                    "props": {
+                      "alignItems": "center",
+                      "direction": "row",
+                      "style": {
+                        "gap": "10px",
+                        "classes": "cfm-page__notice-row"
+                      }
+                    },
+                    "children": [
+                      {
+                        "meta": {
+                          "name": "RouteWarningIcon"
+                        },
+                        "type": "ia.display.icon",
+                        "position": {
+                          "basis": "28px",
+                          "shrink": 0
+                        },
+                        "props": {
+                          "path": "material/warning",
+                          "style": {
+                            "height": "28px",
+                            "width": "28px"
+                          }
+                        }
+                      },
+                      {
+                        "meta": {
+                          "name": "RouteWarningTitle"
+                        },
+                        "type": "ia.display.label",
+                        "position": {
+                          "grow": 1
+                        },
+                        "props": {
+                          "text": "Route fallback \u2014 create a Page Configuration route",
+                          "textStyle": {
+                            "fontSize": "1.15em",
+                            "fontWeight": "600"
+                          },
+                          "style": {
+                            "classes": "cfm-page__notice-title"
+                          }
+                        }
+                      }
+                    ]
+                  },
+                  {
+                    "meta": {
+                      "name": "Placeholder"
+                    },
+                    "type": "ia.display.label",
+                    "position": {
+                      "grow": 1
+                    },
+                    "props": {
+                      "alignVertical": "top",
+                      "text": "Create a Page Configuration route for the menu path shown above.\n\nIn Designer, open Page Configuration and add a pages entry for that URL (or use Settings \u2192 Menu \u2192 Routes to generate a merge snippet). Set viewPath to your HMI screen or to View Dynamic Fallback. This /cfm/target-no-route route uses View Route Fallback only.",
+                      "textStyle": {
+                        "fontSize": "1.05em"
+                      },
+                      "style": {
+                        "classes": "cfm-page__notice-body"
+                      }
+                    }
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      }
+    ]
+  }
+}

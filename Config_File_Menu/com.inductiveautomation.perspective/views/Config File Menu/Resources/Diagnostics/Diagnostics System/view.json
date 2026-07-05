@@ -1,0 +1,482 @@
+{
+  "custom": {},
+  "params": {},
+  "props": {
+    "defaultSize": {
+      "height": 200,
+      "width": 300
+    }
+  },
+  "root": {
+    "children": [
+      {
+        "children": [
+          {
+            "meta": {
+              "name": "Label"
+            },
+            "position": {
+              "basis": "auto",
+              "display": true,
+              "grow": 1,
+              "shrink": 1
+            },
+            "props": {
+              "style": {
+                "classes": "cfm-diag__label"
+              },
+              "text": "System Name"
+            },
+            "type": "ia.display.label"
+          },
+          {
+            "meta": {
+              "name": "Value"
+            },
+            "position": {
+              "basis": "auto",
+              "display": true,
+              "grow": 0,
+              "shrink": 0
+            },
+            "propConfig": {
+              "props.text": {
+                "binding": {
+                  "config": {
+                    "fallbackDelay": 2.5,
+                    "mode": "direct",
+                    "tagPath": "[System]Gateway/SystemName"
+                  },
+                  "type": "tag"
+                }
+              }
+            },
+            "props": {
+              "style": {
+                "classes": "cfm-diag__value"
+              }
+            },
+            "type": "ia.display.label"
+          }
+        ],
+        "meta": {
+          "name": "System Name"
+        },
+        "position": {
+          "basis": "auto",
+          "display": true,
+          "grow": 0,
+          "shrink": 0
+        },
+        "props": {
+          "style": {
+            "classes": "cfm-diag__row"
+          },
+          "wrap": "wrap"
+        },
+        "type": "ia.container.flex"
+      },
+      {
+        "children": [
+          {
+            "meta": {
+              "name": "Label"
+            },
+            "position": {
+              "basis": "auto",
+              "display": true,
+              "grow": 1,
+              "shrink": 1
+            },
+            "props": {
+              "style": {
+                "classes": "cfm-diag__label"
+              },
+              "text": "Uptime"
+            },
+            "type": "ia.display.label"
+          },
+          {
+            "meta": {
+              "name": "Value"
+            },
+            "position": {
+              "basis": "auto",
+              "display": true,
+              "grow": 0,
+              "shrink": 0
+            },
+            "propConfig": {
+              "props.text": {
+                "binding": {
+                  "config": {
+                    "fallbackDelay": 2.5,
+                    "mode": "direct",
+                    "tagPath": "[System]Gateway/UptimeSeconds"
+                  },
+                  "transforms": [
+                    {
+                      "expression": "numberFormat(floor({value} / 3600), \"00\") + \":\" +\r\nnumberFormat(floor(({value} % 3600) / 60), \"00\") + \":\" + \r\nnumberFormat(floor((({value} % 3600) % 60)), \"00\")",
+                      "type": "expression"
+                    }
+                  ],
+                  "type": "tag"
+                }
+              }
+            },
+            "props": {
+              "style": {
+                "classes": "cfm-diag__value"
+              }
+            },
+            "type": "ia.display.label"
+          }
+        ],
+        "meta": {
+          "name": "Uptime Seconds"
+        },
+        "position": {
+          "basis": "auto",
+          "display": true,
+          "grow": 0,
+          "shrink": 0
+        },
+        "props": {
+          "style": {
+            "classes": "cfm-diag__row"
+          },
+          "wrap": "wrap"
+        },
+        "type": "ia.container.flex"
+      },
+      {
+        "children": [
+          {
+            "meta": {
+              "name": "Label"
+            },
+            "position": {
+              "basis": "auto",
+              "display": true,
+              "grow": 1,
+              "shrink": 1
+            },
+            "props": {
+              "style": {
+                "classes": "cfm-diag__label"
+              },
+              "text": "Timezone"
+            },
+            "type": "ia.display.label"
+          },
+          {
+            "meta": {
+              "name": "Value"
+            },
+            "position": {
+              "basis": "auto",
+              "display": true,
+              "grow": 0,
+              "shrink": 0
+            },
+            "propConfig": {
+              "props.text": {
+                "binding": {
+                  "config": {
+                    "fallbackDelay": 2.5,
+                    "mode": "direct",
+                    "tagPath": "[System]Gateway/Timezone"
+                  },
+                  "type": "tag"
+                }
+              }
+            },
+            "props": {
+              "style": {
+                "classes": "cfm-diag__value"
+              }
+            },
+            "type": "ia.display.label"
+          }
+        ],
+        "meta": {
+          "name": "Timezone"
+        },
+        "position": {
+          "basis": "auto",
+          "display": true,
+          "grow": 0,
+          "shrink": 0
+        },
+        "props": {
+          "style": {
+            "classes": "cfm-diag__row"
+          },
+          "wrap": "wrap"
+        },
+        "type": "ia.container.flex"
+      },
+      {
+        "children": [
+          {
+            "meta": {
+              "name": "Label"
+            },
+            "position": {
+              "basis": "auto",
+              "display": true,
+              "grow": 1,
+              "shrink": 1
+            },
+            "props": {
+              "style": {
+                "classes": "cfm-diag__label"
+              },
+              "text": "Current Date/Time"
+            },
+            "type": "ia.display.label"
+          },
+          {
+            "meta": {
+              "name": "Value"
+            },
+            "position": {
+              "basis": "auto",
+              "display": true,
+              "grow": 0,
+              "shrink": 0
+            },
+            "propConfig": {
+              "props.text": {
+                "binding": {
+                  "config": {
+                    "fallbackDelay": 2.5,
+                    "mode": "direct",
+                    "tagPath": "[System]Gateway/CurrentDateTime"
+                  },
+                  "transforms": [
+                    {
+                      "expression": "dateFormat({value}, \"yyyy-MM-dd hh:mm:ss a\")",
+                      "type": "expression"
+                    }
+                  ],
+                  "type": "tag"
+                }
+              }
+            },
+            "props": {
+              "style": {
+                "classes": "cfm-diag__value"
+              }
+            },
+            "type": "ia.display.label"
+          }
+        ],
+        "meta": {
+          "name": "Current Date Time"
+        },
+        "position": {
+          "basis": "auto",
+          "display": true,
+          "grow": 0,
+          "shrink": 0
+        },
+        "props": {
+          "style": {
+            "classes": "cfm-diag__row"
+          },
+          "wrap": "wrap"
+        },
+        "type": "ia.container.flex"
+      },
+      {
+        "children": [
+          {
+            "meta": {
+              "name": "Label"
+            },
+            "position": {
+              "basis": "auto",
+              "display": true,
+              "grow": 1,
+              "shrink": 1
+            },
+            "props": {
+              "style": {
+                "classes": "cfm-diag__label"
+              },
+              "text": "Gateway Address"
+            },
+            "type": "ia.display.label"
+          },
+          {
+            "meta": {
+              "name": "Value"
+            },
+            "position": {
+              "basis": "auto",
+              "display": true,
+              "grow": 0,
+              "shrink": 0
+            },
+            "propConfig": {
+              "props.text": {
+                "binding": {
+                  "config": {
+                    "path": "session.props.gateway.address"
+                  },
+                  "type": "property"
+                }
+              }
+            },
+            "props": {
+              "style": {
+                "classes": "cfm-diag__value"
+              }
+            },
+            "type": "ia.display.label"
+          }
+        ],
+        "meta": {
+          "name": "Gateway Address"
+        },
+        "position": {
+          "basis": "auto",
+          "display": true,
+          "grow": 0,
+          "shrink": 0
+        },
+        "props": {
+          "style": {
+            "classes": "cfm-diag__row"
+          },
+          "wrap": "wrap"
+        },
+        "type": "ia.container.flex"
+      },
+      {
+        "children": [
+          {
+            "meta": {
+              "name": "Label"
+            },
+            "position": {
+              "basis": "auto",
+              "display": true,
+              "grow": 1,
+              "shrink": 1
+            },
+            "props": {
+              "style": {
+                "classes": "cfm-diag__label"
+              },
+              "text": "Gateway Connected"
+            },
+            "type": "ia.display.label"
+          },
+          {
+            "meta": {
+              "name": "Value"
+            },
+            "position": {
+              "basis": "30px",
+              "display": true,
+              "grow": 0,
+              "shrink": 0
+            },
+            "propConfig": {
+              "props.style.backgroundColor": {
+                "binding": {
+                  "config": {
+                    "path": "session.props.gateway.connected"
+                  },
+                  "transforms": [
+                    {
+                      "fallback": "#808080",
+                      "inputType": "scalar",
+                      "mappings": [
+                        {
+                          "input": false,
+                          "output": "#D90000"
+                        },
+                        {
+                          "input": true,
+                          "output": "#00AC00"
+                        }
+                      ],
+                      "outputType": "color",
+                      "type": "map"
+                    }
+                  ],
+                  "type": "property"
+                }
+              },
+              "props.text": {
+                "binding": {
+                  "config": {
+                    "path": "session.props.gateway.connected"
+                  },
+                  "transforms": [
+                    {
+                      "fallback": "No",
+                      "inputType": "scalar",
+                      "mappings": [
+                        {
+                          "input": false,
+                          "output": "No"
+                        },
+                        {
+                          "input": true,
+                          "output": "Yes"
+                        }
+                      ],
+                      "outputType": "scalar",
+                      "type": "map"
+                    }
+                  ],
+                  "type": "property"
+                }
+              }
+            },
+            "props": {
+              "style": {
+                "borderRadius": "4px",
+                "classes": "cfm-diag__value",
+                "color": "#FFFFFF",
+                "textAlign": "center"
+              }
+            },
+            "type": "ia.display.label"
+          }
+        ],
+        "meta": {
+          "name": "Gateway Connected"
+        },
+        "position": {
+          "basis": "auto",
+          "display": true,
+          "grow": 0,
+          "shrink": 0
+        },
+        "props": {
+          "style": {
+            "classes": "cfm-diag__row"
+          },
+          "wrap": "wrap"
+        },
+        "type": "ia.container.flex"
+      }
+    ],
+    "meta": {
+      "name": "root"
+    },
+    "props": {
+      "direction": "column",
+      "gap": 4,
+      "style": {
+        "classes": "cfm-diag__section"
+      }
+    },
+    "type": "ia.container.flex"
+  }
+}

@@ -1,0 +1,119 @@
+{
+  "custom": {},
+  "params": {},
+  "props": {
+    "defaultSize": {
+      "height": 600,
+      "width": 1100
+    }
+  },
+  "root": {
+    "children": [
+      {
+        "meta": {
+          "name": "Instructions"
+        },
+        "position": {
+          "basis": "100px",
+          "shrink": 0
+        },
+        "props": {
+          "source": "Paste YAML-lite on the left, click **Convert to JSON**, then copy the output into `MenuContent.params.menuConfig` and set `params.menuConfigType` to `json`.",
+          "style": {
+            "padding": "8px 16px"
+          }
+        },
+        "type": "ia.display.markdown"
+      },
+      {
+        "children": [
+          {
+            "meta": {
+              "name": "YamlInput"
+            },
+            "position": {
+              "basis": "calc(50% - 55px)",
+              "grow": 1
+            },
+            "props": {
+              "text": "# SAMPLE ONLY - Copy/paste into Config File Menu/MenuContent.params.menuConfig.\n# Every target needs a matching route in page-config/config.json.\n# expanded: true|false on a top-level section (or nested tree item) controls whether\n# that branch starts open. Sections still auto-open when the current page is under them.\nmenu:\n  items:\n    - label: Dashboard\n      icon: material/home\n      target: /cfm/dashboard\n",
+              "style": {
+                "fontFamily": "monospace",
+                "fontSize": "14px"
+              }
+            },
+            "type": "ia.input.text-area"
+          },
+          {
+            "events": {
+              "component": {
+                "onActionPerformed": {
+                  "config": {
+                    "script": "\texchange.cfm.runtime.convert_yaml_to_json(self)\n"
+                  },
+                  "scope": "G",
+                  "type": "script"
+                }
+              }
+            },
+            "meta": {
+              "name": "ConvertButton"
+            },
+            "position": {
+              "basis": "110px",
+              "shrink": 0
+            },
+            "props": {
+              "text": "Convert to JSON",
+              "style": {
+                "alignSelf": "flex-start"
+              }
+            },
+            "type": "ia.input.button"
+          },
+          {
+            "meta": {
+              "name": "JsonOutput"
+            },
+            "position": {
+              "basis": "calc(50% - 55px)",
+              "grow": 1
+            },
+            "props": {
+              "text": "{\n  \"items\": []\n}",
+              "style": {
+                "fontFamily": "monospace",
+                "fontSize": "14px"
+              }
+            },
+            "type": "ia.input.text-area"
+          }
+        ],
+        "meta": {
+          "name": "Converter"
+        },
+        "position": {
+          "grow": 1
+        },
+        "props": {
+          "style": {
+            "gap": "12px",
+            "padding": "16px"
+          }
+        },
+        "type": "ia.container.flex"
+      }
+    ],
+    "meta": {
+      "name": "root"
+    },
+    "props": {
+      "direction": "column",
+      "style": {
+        "height": "100%",
+        "overflow": "hidden"
+      }
+    },
+    "type": "ia.container.flex"
+  }
+}

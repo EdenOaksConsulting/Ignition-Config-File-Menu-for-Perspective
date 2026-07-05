@@ -1,0 +1,169 @@
+{
+  "custom": {},
+  "params": {
+    "params": {},
+    "path": "",
+    "title": "Card Title",
+    "useDefaultHeight": false,
+    "useDefaultWidth": false
+  },
+  "propConfig": {
+    "params.params": {
+      "paramDirection": "input",
+      "persistent": true
+    },
+    "params.path": {
+      "paramDirection": "input",
+      "persistent": true
+    },
+    "params.title": {
+      "paramDirection": "input",
+      "persistent": true
+    },
+    "params.useDefaultHeight": {
+      "paramDirection": "input",
+      "persistent": true
+    },
+    "params.useDefaultWidth": {
+      "paramDirection": "input",
+      "persistent": true
+    }
+  },
+  "props": {
+    "defaultSize": {
+      "height": 339,
+      "width": 369
+    }
+  },
+  "root": {
+    "children": [
+      {
+        "children": [
+          {
+            "meta": {
+              "name": "TitleLabel"
+            },
+            "position": {
+              "grow": 1
+            },
+            "propConfig": {
+              "props.text": {
+                "binding": {
+                  "config": {
+                    "path": "view.params.title"
+                  },
+                  "type": "property"
+                }
+              }
+            },
+            "props": {
+              "textStyle": {
+                "color": "#005eb8",
+                "fontSize": "14px",
+                "fontWeight": "600",
+                "textTransform": "uppercase",
+                "whiteSpace": "nowrap"
+              }
+            },
+            "type": "ia.display.label"
+          }
+        ],
+        "meta": {
+          "name": "TitleBar"
+        },
+        "position": {
+          "shrink": 0
+        },
+        "props": {
+          "alignItems": "center",
+          "direction": "row",
+          "style": {
+            "backgroundColor": "rgba(0, 94, 184, 0.12)",
+            "borderBottom": "3px solid #005eb8",
+            "borderLeft": "1px solid #d6dce3",
+            "borderRadius": "6px 6px 0 0",
+            "borderRight": "1px solid #d6dce3",
+            "borderTop": "1px solid #d6dce3",
+            "boxSizing": "border-box",
+            "classes": "cfm-diag__title cfm-menu__settings-tab cfm-menu__settings-tab--active",
+            "minHeight": "46px",
+            "padding": "0 16px",
+            "width": "100%"
+          }
+        },
+        "type": "ia.container.flex"
+      },
+      {
+        "meta": {
+          "name": "EmbeddedView"
+        },
+        "position": {
+          "grow": 1,
+          "shrink": 1
+        },
+        "propConfig": {
+          "props.params": {
+            "binding": {
+              "config": {
+                "path": "view.params.params"
+              },
+              "type": "property"
+            }
+          },
+          "props.path": {
+            "binding": {
+              "config": {
+                "path": "view.params.path"
+              },
+              "type": "property"
+            }
+          },
+          "props.useDefaultViewHeight": {
+            "binding": {
+              "config": {
+                "path": "view.params.useDefaultHeight"
+              },
+              "type": "property"
+            }
+          },
+          "props.useDefaultViewWidth": {
+            "binding": {
+              "config": {
+                "path": "view.params.useDefaultWidth"
+              },
+              "type": "property"
+            }
+          }
+        },
+        "props": {
+          "style": {
+            "borderBottom": "1px solid #d6dce3",
+            "borderLeft": "1px solid #d6dce3",
+            "borderRadius": "0 0 6px 6px",
+            "borderRight": "1px solid #d6dce3",
+            "boxSizing": "border-box",
+            "classes": "cfm-diag__embedded cfm-menu__settings-content",
+            "padding": "12px 16px 16px",
+            "width": "100%"
+          }
+        },
+        "type": "ia.display.view"
+      }
+    ],
+    "meta": {
+      "name": "root"
+    },
+    "props": {
+      "direction": "column",
+      "style": {
+        "boxSizing": "border-box",
+        "classes": "cfm-diag__card",
+        "margin": "0 0 12px 0",
+        "maxWidth": "100%",
+        "overflow": "hidden",
+        "width": "100%"
+      }
+    },
+    "type": "ia.container.flex"
+  }
+}

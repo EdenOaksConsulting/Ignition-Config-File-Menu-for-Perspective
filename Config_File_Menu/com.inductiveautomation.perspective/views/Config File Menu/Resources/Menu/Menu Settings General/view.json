@@ -1,0 +1,953 @@
+{
+  "custom": {},
+  "params": {},
+  "props": {
+    "defaultSize": {
+      "height": 720,
+      "width": 1100
+    }
+  },
+  "root": {
+    "children": [
+      {
+        "children": [
+          {
+            "meta": {
+              "name": "PinnedLabel"
+            },
+            "position": {
+              "basis": "240px",
+              "shrink": 0
+            },
+            "props": {
+              "text": "Pinned"
+            },
+            "type": "ia.display.label"
+          },
+          {
+            "meta": {
+              "name": "PinnedInput"
+            },
+            "position": {
+              "basis": "220px",
+              "shrink": 0
+            },
+            "propConfig": {
+              "props.value": {
+                "binding": {
+                  "config": {
+                    "path": "session.custom.configFileMenu.isPinned"
+                  },
+                  "transforms": [
+                    {
+                      "code": "\tif value is None:\n\t\treturn 'true'\n\tif value is True or str(value).lower() in ('true', '1', 'yes', 'on'):\n\t\treturn 'true'\n\treturn 'false'",
+                      "type": "script"
+                    }
+                  ],
+                  "type": "property"
+                }
+              }
+            },
+            "props": {
+              "options": [
+                {
+                  "label": "True",
+                  "value": "true"
+                },
+                {
+                  "label": "False",
+                  "value": "false"
+                }
+              ],
+              "value": "true"
+            },
+            "events": {
+              "component": {
+                "onActionPerformed": {
+                  "config": {
+                    "script": "\texchange.cfm.runtime.on_settings_pinned_change(self)\n"
+                  },
+                  "scope": "G",
+                  "type": "script"
+                }
+              }
+            },
+            "type": "ia.input.dropdown"
+          }
+        ],
+        "meta": {
+          "name": "PinnedRow"
+        },
+        "position": {
+          "shrink": 0
+        },
+        "props": {
+          "alignItems": "center",
+          "style": {
+            "gap": "12px",
+            "padding": "8px 16px"
+          },
+          "wrap": "nowrap"
+        },
+        "type": "ia.container.flex"
+      },
+      {
+        "children": [
+          {
+            "meta": {
+              "name": "DockModeLabel"
+            },
+            "position": {
+              "basis": "240px",
+              "shrink": 0
+            },
+            "props": {
+              "text": "Dock mode"
+            },
+            "type": "ia.display.label"
+          },
+          {
+            "meta": {
+              "name": "DockModeInput"
+            },
+            "position": {
+              "basis": "220px",
+              "shrink": 0
+            },
+            "propConfig": {
+              "props.value": {
+                "binding": {
+                  "config": {
+                    "path": "session.custom.configFileMenu.dockContent"
+                  },
+                  "transforms": [
+                    {
+                      "code": "\treturn str(value or 'push')",
+                      "type": "script"
+                    }
+                  ],
+                  "type": "property"
+                }
+              }
+            },
+            "props": {
+              "options": [
+                {
+                  "label": "Push",
+                  "value": "push"
+                },
+                {
+                  "label": "Cover",
+                  "value": "cover"
+                }
+              ],
+              "value": "push"
+            },
+            "events": {
+              "component": {
+                "onActionPerformed": {
+                  "config": {
+                    "script": "\texchange.cfm.runtime.on_settings_dock_content_change(self)\n"
+                  },
+                  "scope": "G",
+                  "type": "script"
+                }
+              }
+            },
+            "type": "ia.input.dropdown"
+          }
+        ],
+        "meta": {
+          "name": "DockModeRow"
+        },
+        "position": {
+          "shrink": 0
+        },
+        "props": {
+          "alignItems": "center",
+          "style": {
+            "gap": "12px",
+            "padding": "8px 16px"
+          },
+          "wrap": "nowrap"
+        },
+        "type": "ia.container.flex"
+      },
+      {
+        "children": [
+          {
+            "meta": {
+              "name": "CloseOutsideLabel"
+            },
+            "position": {
+              "basis": "240px",
+              "shrink": 0
+            },
+            "props": {
+              "text": "Close on outside click"
+            },
+            "type": "ia.display.label"
+          },
+          {
+            "meta": {
+              "name": "CloseOutsideInput"
+            },
+            "position": {
+              "basis": "220px",
+              "shrink": 0
+            },
+            "propConfig": {
+              "props.value": {
+                "binding": {
+                  "config": {
+                    "path": "session.custom.configFileMenu.closeMenuOnOutsideClick"
+                  },
+                  "transforms": [
+                    {
+                      "code": "\tif value is None:\n\t\treturn 'false'\n\tif value is True or str(value).lower() in ('true', '1', 'yes', 'on'):\n\t\treturn 'true'\n\treturn 'false'",
+                      "type": "script"
+                    }
+                  ],
+                  "type": "property"
+                }
+              }
+            },
+            "props": {
+              "options": [
+                {
+                  "label": "True",
+                  "value": "true"
+                },
+                {
+                  "label": "False",
+                  "value": "false"
+                }
+              ],
+              "value": "false"
+            },
+            "events": {
+              "component": {
+                "onActionPerformed": {
+                  "config": {
+                    "script": "\texchange.cfm.runtime.set_state_field(self.session, 'closeMenuOnOutsideClick', exchange.cfm.runtime.is_true(self.props.value))\n"
+                  },
+                  "scope": "G",
+                  "type": "script"
+                }
+              }
+            },
+            "type": "ia.input.dropdown"
+          }
+        ],
+        "meta": {
+          "name": "CloseOutsideRow"
+        },
+        "position": {
+          "shrink": 0
+        },
+        "props": {
+          "alignItems": "center",
+          "style": {
+            "gap": "12px",
+            "padding": "8px 16px"
+          },
+          "wrap": "nowrap"
+        },
+        "type": "ia.container.flex"
+      },
+      {
+        "children": [
+          {
+            "meta": {
+              "name": "MenuWidthLabel"
+            },
+            "position": {
+              "basis": "240px",
+              "shrink": 0
+            },
+            "props": {
+              "text": "Menu width"
+            },
+            "type": "ia.display.label"
+          },
+          {
+            "meta": {
+              "name": "MenuWidthInput"
+            },
+            "position": {
+              "basis": "320px",
+              "grow": 1
+            },
+            "propConfig": {
+              "props.text": {
+                "binding": {
+                  "config": {
+                    "path": "session.custom.configFileMenu.menuWidthOpen"
+                  },
+                  "transforms": [
+                    {
+                      "code": "\treturn str(value or '220px')",
+                      "type": "script"
+                    }
+                  ],
+                  "type": "property"
+                }
+              }
+            },
+            "props": {
+              "text": "220px"
+            },
+            "events": {
+              "component": {
+                "onActionPerformed": {
+                  "config": {
+                    "script": "\texchange.cfm.runtime.on_settings_menu_width_change(self)\n"
+                  },
+                  "scope": "G",
+                  "type": "script"
+                }
+              },
+              "dom": {
+                "onBlur": {
+                  "config": {
+                    "script": "\texchange.cfm.runtime.on_settings_menu_width_change(self)\n"
+                  },
+                  "scope": "G",
+                  "type": "script"
+                }
+              }
+            },
+            "type": "ia.input.text-field"
+          }
+        ],
+        "meta": {
+          "name": "MenuWidthRow"
+        },
+        "position": {
+          "shrink": 0
+        },
+        "props": {
+          "alignItems": "center",
+          "style": {
+            "gap": "12px",
+            "padding": "8px 16px"
+          },
+          "wrap": "nowrap"
+        },
+        "type": "ia.container.flex"
+      },
+      {
+        "children": [
+          {
+            "meta": {
+              "name": "ThemeLabel"
+            },
+            "position": {
+              "basis": "240px",
+              "shrink": 0
+            },
+            "props": {
+              "text": "Session theme"
+            },
+            "type": "ia.display.label"
+          },
+          {
+            "meta": {
+              "name": "ThemeDropdown"
+            },
+            "position": {
+              "basis": "320px",
+              "grow": 1
+            },
+            "propConfig": {
+              "props.value": {
+                "binding": {
+                  "config": {
+                    "path": "session.props.theme"
+                  },
+                  "transforms": [
+                    {
+                      "code": "\treturn str(value or 'light')",
+                      "type": "script"
+                    }
+                  ],
+                  "type": "property"
+                }
+              }
+            },
+            "props": {
+              "options": [
+                {
+                  "label": "Light",
+                  "value": "light"
+                },
+                {
+                  "label": "Dark",
+                  "value": "dark"
+                },
+                {
+                  "label": "Light (Cool)",
+                  "value": "light-cool"
+                },
+                {
+                  "label": "Light (Warm)",
+                  "value": "light-warm"
+                },
+                {
+                  "label": "Dark (Cool)",
+                  "value": "dark-cool"
+                },
+                {
+                  "label": "Dark (Warm)",
+                  "value": "dark-warm"
+                }
+              ],
+              "value": "light"
+            },
+            "events": {
+              "component": {
+                "onActionPerformed": {
+                  "config": {
+                    "script": "\ttry:\n\t\tself.session.props.theme = str(self.props.value or 'light')\n\texcept:\n\t\tpass\n"
+                  },
+                  "scope": "G",
+                  "type": "script"
+                }
+              }
+            },
+            "type": "ia.input.dropdown"
+          }
+        ],
+        "meta": {
+          "name": "ThemeRow"
+        },
+        "position": {
+          "shrink": 0
+        },
+        "props": {
+          "alignItems": "center",
+          "wrap": "nowrap",
+          "style": {
+            "gap": "12px",
+            "padding": "8px 16px"
+          }
+        },
+        "type": "ia.container.flex"
+      },
+      {
+        "children": [
+          {
+            "meta": {
+              "name": "TopBarSmallLogoRowLabel"
+            },
+            "position": {
+              "basis": "240px",
+              "shrink": 0
+            },
+            "props": {
+              "text": "Top bar small logo"
+            },
+            "type": "ia.display.label"
+          },
+          {
+            "meta": {
+              "name": "TopBarSmallLogoDropdown"
+            },
+            "position": {
+              "basis": "320px",
+              "grow": 1
+            },
+            "props": {
+              "options": [
+                {
+                  "label": "Show",
+                  "value": true
+                },
+                {
+                  "label": "Hide",
+                  "value": false
+                }
+              ],
+              "value": true
+            },
+            "type": "ia.input.dropdown",
+            "propConfig": {
+              "props.value": {
+                "binding": {
+                  "config": {
+                    "path": "session.custom.configFileMenu.showTopBarSmallLogo"
+                  },
+                  "transforms": [
+                    {
+                      "code": "\tif value in (True, False):\n\t\treturn value\n\tif value in (None, ''):\n\t\treturn True\n\treturn str(value).lower() in ('true', '1', 'yes', 'on')",
+                      "type": "script"
+                    }
+                  ],
+                  "type": "property"
+                }
+              }
+            },
+            "events": {
+              "component": {
+                "onActionPerformed": {
+                  "config": {
+                    "script": "\tval = self.props.value\n\tif val in (True, False):\n\t\texchange.cfm.runtime.set_state_field(self.session, 'showTopBarSmallLogo', val)\n\telse:\n\t\texchange.cfm.runtime.set_state_field(self.session, 'showTopBarSmallLogo', exchange.cfm.runtime.is_true(val))\n"
+                  },
+                  "scope": "G",
+                  "type": "script"
+                }
+              }
+            }
+          }
+        ],
+        "meta": {
+          "name": "TopBarSmallLogoRow"
+        },
+        "position": {
+          "shrink": 0
+        },
+        "props": {
+          "alignItems": "center",
+          "wrap": "nowrap",
+          "style": {
+            "gap": "12px",
+            "padding": "8px 16px"
+          }
+        },
+        "type": "ia.container.flex"
+      },
+      {
+        "children": [
+          {
+            "meta": {
+              "name": "FooterUserRowLabel"
+            },
+            "position": {
+              "basis": "240px",
+              "shrink": 0
+            },
+            "props": {
+              "text": "Menu footer user"
+            },
+            "type": "ia.display.label"
+          },
+          {
+            "meta": {
+              "name": "FooterUserDropdown"
+            },
+            "position": {
+              "basis": "320px",
+              "grow": 1
+            },
+            "props": {
+              "options": [
+                {
+                  "label": "Show",
+                  "value": true
+                },
+                {
+                  "label": "Hide",
+                  "value": false
+                }
+              ],
+              "value": true
+            },
+            "type": "ia.input.dropdown",
+            "propConfig": {
+              "props.value": {
+                "binding": {
+                  "config": {
+                    "path": "session.custom.configFileMenu.showFooterUser"
+                  },
+                  "transforms": [
+                    {
+                      "code": "\tif value in (True, False):\n\t\treturn value\n\tif value in (None, ''):\n\t\treturn True\n\treturn str(value).lower() in ('true', '1', 'yes', 'on')",
+                      "type": "script"
+                    }
+                  ],
+                  "type": "property"
+                }
+              }
+            },
+            "events": {
+              "component": {
+                "onActionPerformed": {
+                  "config": {
+                    "script": "\tval = self.props.value\n\tif val in (True, False):\n\t\texchange.cfm.runtime.set_state_field(self.session, 'showFooterUser', val)\n\telse:\n\t\texchange.cfm.runtime.set_state_field(self.session, 'showFooterUser', exchange.cfm.runtime.is_true(val))\n"
+                  },
+                  "scope": "G",
+                  "type": "script"
+                }
+              }
+            }
+          }
+        ],
+        "meta": {
+          "name": "FooterUserRow"
+        },
+        "position": {
+          "shrink": 0
+        },
+        "props": {
+          "alignItems": "center",
+          "wrap": "nowrap",
+          "style": {
+            "gap": "12px",
+            "padding": "8px 16px"
+          }
+        },
+        "type": "ia.container.flex"
+      },
+      {
+        "children": [
+          {
+            "meta": {
+              "name": "FooterSettingsRowLabel"
+            },
+            "position": {
+              "basis": "240px",
+              "shrink": 0
+            },
+            "props": {
+              "text": "Menu footer settings"
+            },
+            "type": "ia.display.label"
+          },
+          {
+            "meta": {
+              "name": "FooterSettingsDropdown"
+            },
+            "position": {
+              "basis": "320px",
+              "grow": 1
+            },
+            "props": {
+              "options": [
+                {
+                  "label": "Show",
+                  "value": true
+                },
+                {
+                  "label": "Hide",
+                  "value": false
+                }
+              ],
+              "value": true
+            },
+            "type": "ia.input.dropdown",
+            "propConfig": {
+              "props.value": {
+                "binding": {
+                  "config": {
+                    "path": "session.custom.configFileMenu.showFooterSettings"
+                  },
+                  "transforms": [
+                    {
+                      "code": "\tif value in (True, False):\n\t\treturn value\n\tif value in (None, ''):\n\t\treturn True\n\treturn str(value).lower() in ('true', '1', 'yes', 'on')",
+                      "type": "script"
+                    }
+                  ],
+                  "type": "property"
+                }
+              }
+            },
+            "events": {
+              "component": {
+                "onActionPerformed": {
+                  "config": {
+                    "script": "\tval = self.props.value\n\tif val in (True, False):\n\t\texchange.cfm.runtime.set_state_field(self.session, 'showFooterSettings', val)\n\telse:\n\t\texchange.cfm.runtime.set_state_field(self.session, 'showFooterSettings', exchange.cfm.runtime.is_true(val))\n"
+                  },
+                  "scope": "G",
+                  "type": "script"
+                }
+              }
+            }
+          }
+        ],
+        "meta": {
+          "name": "FooterSettingsRow"
+        },
+        "position": {
+          "shrink": 0
+        },
+        "props": {
+          "alignItems": "center",
+          "wrap": "nowrap",
+          "style": {
+            "gap": "12px",
+            "padding": "8px 16px"
+          }
+        },
+        "type": "ia.container.flex"
+      },
+      {
+        "children": [
+          {
+            "meta": {
+              "name": "FooterDiagnosticsRowLabel"
+            },
+            "position": {
+              "basis": "240px",
+              "shrink": 0
+            },
+            "props": {
+              "text": "Menu footer diagnostics"
+            },
+            "type": "ia.display.label"
+          },
+          {
+            "meta": {
+              "name": "FooterDiagnosticsDropdown"
+            },
+            "position": {
+              "basis": "320px",
+              "grow": 1
+            },
+            "props": {
+              "options": [
+                {
+                  "label": "Show",
+                  "value": true
+                },
+                {
+                  "label": "Hide",
+                  "value": false
+                }
+              ],
+              "value": true
+            },
+            "type": "ia.input.dropdown",
+            "propConfig": {
+              "props.value": {
+                "binding": {
+                  "config": {
+                    "path": "session.custom.configFileMenu.showFooterDiagnostics"
+                  },
+                  "transforms": [
+                    {
+                      "code": "\tif value in (True, False):\n\t\treturn value\n\tif value in (None, ''):\n\t\treturn True\n\treturn str(value).lower() in ('true', '1', 'yes', 'on')",
+                      "type": "script"
+                    }
+                  ],
+                  "type": "property"
+                }
+              }
+            },
+            "events": {
+              "component": {
+                "onActionPerformed": {
+                  "config": {
+                    "script": "\tval = self.props.value\n\tif val in (True, False):\n\t\texchange.cfm.runtime.set_state_field(self.session, 'showFooterDiagnostics', val)\n\telse:\n\t\texchange.cfm.runtime.set_state_field(self.session, 'showFooterDiagnostics', exchange.cfm.runtime.is_true(val))\n"
+                  },
+                  "scope": "G",
+                  "type": "script"
+                }
+              }
+            }
+          }
+        ],
+        "meta": {
+          "name": "FooterDiagnosticsRow"
+        },
+        "position": {
+          "shrink": 0
+        },
+        "props": {
+          "alignItems": "center",
+          "wrap": "nowrap",
+          "style": {
+            "gap": "12px",
+            "padding": "8px 16px"
+          }
+        },
+        "type": "ia.container.flex"
+      },
+      {
+        "children": [
+          {
+            "meta": {
+              "name": "ShellFallbackEnabledRowLabel"
+            },
+            "position": {
+              "basis": "240px",
+              "shrink": 0
+            },
+            "props": {
+              "text": "Shell fallback navigation"
+            },
+            "type": "ia.display.label"
+          },
+          {
+            "meta": {
+              "name": "ShellFallbackEnabledDropdown"
+            },
+            "position": {
+              "basis": "320px",
+              "grow": 1
+            },
+            "props": {
+              "options": [
+                {
+                  "label": "Enabled",
+                  "value": true
+                },
+                {
+                  "label": "Disabled",
+                  "value": false
+                }
+              ],
+              "value": true
+            },
+            "type": "ia.input.dropdown",
+            "propConfig": {
+              "props.value": {
+                "binding": {
+                  "config": {
+                    "path": "session.custom.configFileMenu.shellFallbackEnabled"
+                  },
+                  "transforms": [
+                    {
+                      "code": "\tif value in (True, False):\n\t\treturn value\n\tif value in (None, ''):\n\t\treturn True\n\treturn str(value).lower() in ('true', '1', 'yes', 'on')",
+                      "type": "script"
+                    }
+                  ],
+                  "type": "property"
+                }
+              }
+            },
+            "events": {
+              "component": {
+                "onActionPerformed": {
+                  "config": {
+                    "script": "\tval = self.props.value\n\tif val in (True, False):\n\t\texchange.cfm.runtime.set_state_field(self.session, 'shellFallbackEnabled', val)\n\telse:\n\t\texchange.cfm.runtime.set_state_field(self.session, 'shellFallbackEnabled', exchange.cfm.runtime.is_true(val))\n"
+                  },
+                  "scope": "G",
+                  "type": "script"
+                }
+              }
+            }
+          }
+        ],
+        "meta": {
+          "name": "ShellFallbackEnabledRow"
+        },
+        "position": {
+          "shrink": 0
+        },
+        "props": {
+          "alignItems": "center",
+          "style": {
+            "gap": "12px",
+            "padding": "8px 16px"
+          },
+          "wrap": "nowrap"
+        },
+        "type": "ia.container.flex"
+      },
+      {
+        "children": [
+          {
+            "meta": {
+              "name": "ShellFallbackRouteRowLabel"
+            },
+            "position": {
+              "basis": "240px",
+              "shrink": 0
+            },
+            "props": {
+              "text": "Shell fallback route"
+            },
+            "type": "ia.display.label"
+          },
+          {
+            "meta": {
+              "name": "ShellFallbackRouteInput"
+            },
+            "position": {
+              "basis": "320px",
+              "grow": 1
+            },
+            "props": {
+              "text": "/cfm/target-no-route"
+            },
+            "type": "ia.input.text-field",
+            "propConfig": {
+              "props.text": {
+                "binding": {
+                  "config": {
+                    "path": "session.custom.configFileMenu.shellFallbackRoute"
+                  },
+                  "transforms": [
+                    {
+                      "code": "\treturn str(value or '/cfm/target-no-route')",
+                      "type": "script"
+                    }
+                  ],
+                  "type": "property"
+                }
+              }
+            },
+            "events": {
+              "component": {
+                "onActionPerformed": {
+                  "config": {
+                    "script": "\troute = str(self.props.text or '/cfm/target-no-route').strip()\n\tif not route.startswith('/'):\n\t\troute = '/' + route\n\texchange.cfm.runtime.set_state_field(self.session, 'shellFallbackRoute', route)\n"
+                  },
+                  "scope": "G",
+                  "type": "script"
+                }
+              },
+              "dom": {
+                "onBlur": {
+                  "config": {
+                    "script": "\troute = str(self.props.text or '/cfm/target-no-route').strip()\n\tif not route.startswith('/'):\n\t\troute = '/' + route\n\texchange.cfm.runtime.set_state_field(self.session, 'shellFallbackRoute', route)\n"
+                  },
+                  "scope": "G",
+                  "type": "script"
+                }
+              }
+            }
+          }
+        ],
+        "meta": {
+          "name": "ShellFallbackRouteRow"
+        },
+        "position": {
+          "shrink": 0
+        },
+        "props": {
+          "alignItems": "center",
+          "style": {
+            "gap": "12px",
+            "padding": "8px 16px"
+          },
+          "wrap": "nowrap"
+        },
+        "type": "ia.container.flex"
+      }
+    ],
+    "events": {
+      "component": {
+        "onStartup": {
+          "config": {
+            "script": "\texchange.cfm.runtime.init_settings_general_state(self)\n"
+          },
+          "scope": "G",
+          "type": "script"
+        }
+      }
+    },
+    "meta": {
+      "name": "root"
+    },
+    "props": {
+      "direction": "column",
+      "style": {
+        "height": "100%",
+        "overflow": "auto",
+        "padding": "8px 0"
+      }
+    },
+    "type": "ia.container.flex"
+  }
+}

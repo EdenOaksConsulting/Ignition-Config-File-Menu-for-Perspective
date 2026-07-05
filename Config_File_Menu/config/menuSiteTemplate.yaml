@@ -1,0 +1,4 @@
+# SITE TEMPLATE - Copy/paste into MenuContent.params.menuConfig in the site import zip.
+# Replace items: [] with your menu tree. Every target needs a matching route in page-config/config.json.
+menu:
+  items: []

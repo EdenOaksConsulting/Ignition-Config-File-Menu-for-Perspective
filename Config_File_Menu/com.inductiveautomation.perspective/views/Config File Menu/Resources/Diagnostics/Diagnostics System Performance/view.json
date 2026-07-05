@@ -1,0 +1,607 @@
+{
+  "custom": {},
+  "params": {},
+  "props": {
+    "defaultSize": {
+      "height": 200,
+      "width": 300
+    }
+  },
+  "root": {
+    "children": [
+      {
+        "children": [
+          {
+            "meta": {
+              "name": "Label"
+            },
+            "position": {
+              "basis": "auto",
+              "display": true,
+              "grow": 1,
+              "shrink": 1
+            },
+            "props": {
+              "style": {
+                "classes": "cfm-diag__label"
+              },
+              "text": "CPU Usage"
+            },
+            "type": "ia.display.label"
+          },
+          {
+            "meta": {
+              "name": "Value"
+            },
+            "position": {
+              "basis": "55px",
+              "display": true,
+              "grow": 0,
+              "shrink": 0
+            },
+            "propConfig": {
+              "props.style.backgroundColor": {
+                "binding": {
+                  "config": {
+                    "fallbackDelay": 2.5,
+                    "mode": "direct",
+                    "tagPath": "[System]Gateway/Performance/CPU Usage"
+                  },
+                  "transforms": [
+                    {
+                      "expression": "{value} * 100.0",
+                      "type": "expression"
+                    },
+                    {
+                      "fallback": "#808080",
+                      "inputType": "range",
+                      "mappings": [
+                        {
+                          "input": {
+                            "max": 70,
+                            "min": 0
+                          },
+                          "output": "#00AC00"
+                        },
+                        {
+                          "input": {
+                            "max": 80,
+                            "min": 70
+                          },
+                          "output": "#D9D900"
+                        },
+                        {
+                          "input": {
+                            "max": 100,
+                            "min": 90
+                          },
+                          "output": "#D90000"
+                        }
+                      ],
+                      "outputType": "color",
+                      "type": "map"
+                    }
+                  ],
+                  "type": "tag"
+                }
+              },
+              "props.text": {
+                "binding": {
+                  "config": {
+                    "fallbackDelay": 2.5,
+                    "mode": "direct",
+                    "tagPath": "[System]Gateway/Performance/CPU Usage"
+                  },
+                  "transforms": [
+                    {
+                      "expression": "numberFormat({value}, \"##0.##%\")",
+                      "type": "expression"
+                    }
+                  ],
+                  "type": "tag"
+                }
+              }
+            },
+            "props": {
+              "style": {
+                "borderRadius": "4px",
+                "classes": "cfm-diag__value",
+                "color": "#FFFFFF",
+                "textAlign": "center"
+              }
+            },
+            "type": "ia.display.label"
+          }
+        ],
+        "meta": {
+          "name": "CPU Usage"
+        },
+        "position": {
+          "basis": "auto",
+          "display": true,
+          "grow": 0,
+          "shrink": 0
+        },
+        "props": {
+          "style": {
+            "classes": "cfm-diag__row"
+          },
+          "wrap": "wrap"
+        },
+        "type": "ia.container.flex"
+      },
+      {
+        "children": [
+          {
+            "meta": {
+              "name": "Label"
+            },
+            "position": {
+              "basis": "auto",
+              "display": true,
+              "grow": 1,
+              "shrink": 1
+            },
+            "props": {
+              "style": {
+                "classes": "cfm-diag__label"
+              },
+              "text": "Available Disk Space"
+            },
+            "type": "ia.display.label"
+          },
+          {
+            "meta": {
+              "name": "Value"
+            },
+            "position": {
+              "basis": "auto",
+              "display": true,
+              "grow": 0,
+              "shrink": 0
+            },
+            "propConfig": {
+              "props.text": {
+                "binding": {
+                  "config": {
+                    "fallbackDelay": 2.5,
+                    "mode": "direct",
+                    "tagPath": "[System]Gateway/Performance/Available Disk Space (MB)"
+                  },
+                  "transforms": [
+                    {
+                      "expression": "numberFormat(\r\n\tif({value} >= 1024*1024, {value} / (1024*1024),\r\n\tif({value} >= 1024, {value} / 1024,\r\n\t{value})),\r\n\"#,##0.##\")  + \r\n\r\nif({value} >= 1024*1024, \"TB\",\r\nif({value} >= 1024, \"GB\",\r\n\"MB\")) ",
+                      "type": "expression"
+                    }
+                  ],
+                  "type": "tag"
+                }
+              }
+            },
+            "props": {
+              "style": {
+                "classes": "cfm-diag__value"
+              }
+            },
+            "type": "ia.display.label"
+          }
+        ],
+        "meta": {
+          "name": "Disk Space"
+        },
+        "position": {
+          "basis": "auto",
+          "display": true,
+          "grow": 0,
+          "shrink": 0
+        },
+        "props": {
+          "style": {
+            "classes": "cfm-diag__row"
+          },
+          "wrap": "wrap"
+        },
+        "type": "ia.container.flex"
+      },
+      {
+        "children": [
+          {
+            "meta": {
+              "name": "Label"
+            },
+            "position": {
+              "basis": "auto",
+              "display": true,
+              "grow": 1,
+              "shrink": 1
+            },
+            "props": {
+              "style": {
+                "classes": "cfm-diag__label"
+              },
+              "text": "Disk Utilization"
+            },
+            "type": "ia.display.label"
+          },
+          {
+            "meta": {
+              "name": "Value"
+            },
+            "position": {
+              "basis": "55px",
+              "display": true,
+              "grow": 0,
+              "shrink": 0
+            },
+            "propConfig": {
+              "props.style.backgroundColor": {
+                "binding": {
+                  "config": {
+                    "fallbackDelay": 2.5,
+                    "mode": "direct",
+                    "tagPath": "[System]Gateway/Performance/CPU Usage"
+                  },
+                  "transforms": [
+                    {
+                      "expression": "{value} * 100.0",
+                      "type": "expression"
+                    },
+                    {
+                      "fallback": "#808080",
+                      "inputType": "range",
+                      "mappings": [
+                        {
+                          "input": {
+                            "max": 70,
+                            "min": 0
+                          },
+                          "output": "#00AC00"
+                        },
+                        {
+                          "input": {
+                            "max": 80,
+                            "min": 70
+                          },
+                          "output": "#D9D900"
+                        },
+                        {
+                          "input": {
+                            "max": 100,
+                            "min": 90
+                          },
+                          "output": "#D90000"
+                        }
+                      ],
+                      "outputType": "color",
+                      "type": "map"
+                    }
+                  ],
+                  "type": "tag"
+                }
+              },
+              "props.text": {
+                "binding": {
+                  "config": {
+                    "fallbackDelay": 2.5,
+                    "mode": "direct",
+                    "tagPath": "[System]Gateway/Performance/Disk Utilization"
+                  },
+                  "transforms": [
+                    {
+                      "expression": "numberFormat({value}, \"##0.##%\")",
+                      "type": "expression"
+                    }
+                  ],
+                  "type": "tag"
+                }
+              }
+            },
+            "props": {
+              "style": {
+                "borderRadius": "4px",
+                "classes": "cfm-diag__value",
+                "color": "#FFFFFF",
+                "textAlign": "center"
+              }
+            },
+            "type": "ia.display.label"
+          }
+        ],
+        "meta": {
+          "name": "Disk Utilization"
+        },
+        "position": {
+          "basis": "auto",
+          "display": true,
+          "grow": 0,
+          "shrink": 0
+        },
+        "props": {
+          "style": {
+            "classes": "cfm-diag__row"
+          },
+          "wrap": "wrap"
+        },
+        "type": "ia.container.flex"
+      },
+      {
+        "children": [
+          {
+            "meta": {
+              "name": "Label"
+            },
+            "position": {
+              "basis": "auto",
+              "display": true,
+              "grow": 1,
+              "shrink": 1
+            },
+            "props": {
+              "style": {
+                "classes": "cfm-diag__label"
+              },
+              "text": "Max Memory"
+            },
+            "type": "ia.display.label"
+          },
+          {
+            "meta": {
+              "name": "Value"
+            },
+            "position": {
+              "basis": "auto",
+              "display": true,
+              "grow": 0,
+              "shrink": 0
+            },
+            "propConfig": {
+              "props.text": {
+                "binding": {
+                  "config": {
+                    "fallbackDelay": 2.5,
+                    "mode": "direct",
+                    "tagPath": "[System]Gateway/Performance/Max Memory"
+                  },
+                  "transforms": [
+                    {
+                      "expression": "numberFormat(\r\n\tif({value} >= 1024*1024*1024*1024, {value} / (1024*1024*1024*1024),\r\n\tif({value} >= 1024*1024*1024, {value} / (1024*1024*1024),\r\n\tif({value} >= 1024*1024, {value} / (1024*1024),\r\n\tif({value} >= 1024, {value} / 1024,\r\n\t{value})))),\r\n\"#,##0.##\")  + \r\n\r\nif({value} >= 1024*1024*1024*1024, \"TB\",\r\nif({value} >= 1024*1024*1024, \"GB\",\r\nif({value} >= 1024*1024, \"MB\",\r\nif({value} >= 1024, \"KB\",\r\n\"B\"))))",
+                      "type": "expression"
+                    }
+                  ],
+                  "type": "tag"
+                }
+              }
+            },
+            "props": {
+              "style": {
+                "classes": "cfm-diag__value"
+              }
+            },
+            "type": "ia.display.label"
+          }
+        ],
+        "meta": {
+          "name": "Max Memory"
+        },
+        "position": {
+          "basis": "auto",
+          "display": true,
+          "grow": 0,
+          "shrink": 0
+        },
+        "props": {
+          "style": {
+            "classes": "cfm-diag__row"
+          },
+          "wrap": "wrap"
+        },
+        "type": "ia.container.flex"
+      },
+      {
+        "children": [
+          {
+            "meta": {
+              "name": "Label"
+            },
+            "position": {
+              "basis": "auto",
+              "display": true,
+              "grow": 1,
+              "shrink": 1
+            },
+            "props": {
+              "style": {
+                "classes": "cfm-diag__label"
+              },
+              "text": "Memory Usage"
+            },
+            "type": "ia.display.label"
+          },
+          {
+            "meta": {
+              "name": "Value"
+            },
+            "position": {
+              "basis": "auto",
+              "display": true,
+              "grow": 0,
+              "shrink": 0
+            },
+            "propConfig": {
+              "props.text": {
+                "binding": {
+                  "config": {
+                    "fallbackDelay": 2.5,
+                    "mode": "direct",
+                    "tagPath": "[System]Gateway/Performance/Memory Usage"
+                  },
+                  "transforms": [
+                    {
+                      "expression": "numberFormat(\r\n\tif({value} >= 1024*1024*1024*1024, {value} / (1024*1024*1024*1024),\r\n\tif({value} >= 1024*1024*1024, {value} / (1024*1024*1024),\r\n\tif({value} >= 1024*1024, {value} / (1024*1024),\r\n\tif({value} >= 1024, {value} / 1024,\r\n\t{value})))),\r\n\"#,##0.##\")  + \r\n\r\nif({value} >= 1024*1024*1024*1024, \"TB\",\r\nif({value} >= 1024*1024*1024, \"GB\",\r\nif({value} >= 1024*1024, \"MB\",\r\nif({value} >= 1024, \"KB\",\r\n\"B\"))))",
+                      "type": "expression"
+                    }
+                  ],
+                  "type": "tag"
+                }
+              }
+            },
+            "props": {
+              "style": {
+                "classes": "cfm-diag__value"
+              }
+            },
+            "type": "ia.display.label"
+          }
+        ],
+        "meta": {
+          "name": "Memory Usage"
+        },
+        "position": {
+          "basis": "auto",
+          "display": true,
+          "grow": 0,
+          "shrink": 0
+        },
+        "props": {
+          "style": {
+            "classes": "cfm-diag__row"
+          },
+          "wrap": "wrap"
+        },
+        "type": "ia.container.flex"
+      },
+      {
+        "children": [
+          {
+            "meta": {
+              "name": "Label"
+            },
+            "position": {
+              "basis": "auto",
+              "display": true,
+              "grow": 1,
+              "shrink": 1
+            },
+            "props": {
+              "style": {
+                "classes": "cfm-diag__label"
+              },
+              "text": "Memory Utilization"
+            },
+            "type": "ia.display.label"
+          },
+          {
+            "meta": {
+              "name": "Value"
+            },
+            "position": {
+              "basis": "55px",
+              "display": true,
+              "grow": 0,
+              "shrink": 0
+            },
+            "propConfig": {
+              "props.style.backgroundColor": {
+                "binding": {
+                  "config": {
+                    "fallbackDelay": 2.5,
+                    "mode": "direct",
+                    "tagPath": "[System]Gateway/Performance/CPU Usage"
+                  },
+                  "transforms": [
+                    {
+                      "expression": "{value} * 100.0",
+                      "type": "expression"
+                    },
+                    {
+                      "fallback": "#808080",
+                      "inputType": "range",
+                      "mappings": [
+                        {
+                          "input": {
+                            "max": 70,
+                            "min": 0
+                          },
+                          "output": "#00AC00"
+                        },
+                        {
+                          "input": {
+                            "max": 80,
+                            "min": 70
+                          },
+                          "output": "#D9D900"
+                        },
+                        {
+                          "input": {
+                            "max": 100,
+                            "min": 90
+                          },
+                          "output": "#D90000"
+                        }
+                      ],
+                      "outputType": "color",
+                      "type": "map"
+                    }
+                  ],
+                  "type": "tag"
+                }
+              },
+              "props.text": {
+                "binding": {
+                  "config": {
+                    "fallbackDelay": 2.5,
+                    "mode": "direct",
+                    "tagPath": "[System]Gateway/Performance/Memory Utilization"
+                  },
+                  "transforms": [
+                    {
+                      "expression": "numberFormat({value}, \"##0.##%\")",
+                      "type": "expression"
+                    }
+                  ],
+                  "type": "tag"
+                }
+              }
+            },
+            "props": {
+              "style": {
+                "borderRadius": "4px",
+                "classes": "cfm-diag__value",
+                "color": "#FFFFFF",
+                "textAlign": "center"
+              }
+            },
+            "type": "ia.display.label"
+          }
+        ],
+        "meta": {
+          "name": "Memory Utilization"
+        },
+        "position": {
+          "basis": "auto",
+          "display": true,
+          "grow": 0,
+          "shrink": 0
+        },
+        "props": {
+          "style": {
+            "classes": "cfm-diag__row"
+          },
+          "wrap": "wrap"
+        },
+        "type": "ia.container.flex"
+      }
+    ],
+    "meta": {
+      "name": "root"
+    },
+    "props": {
+      "direction": "column",
+      "gap": 4,
+      "style": {
+        "classes": "cfm-diag__section"
+      }
+    },
+    "type": "ia.container.flex"
+  }
+}

@@ -1,0 +1,261 @@
+{
+  "_comment": "SAMPLE ONLY - Copy/paste into MenuContent.params.menuConfig with menuConfigType=json.",
+  "items": [
+    {
+      "label": "Dashboard",
+      "icon": "material/home",
+      "target": "/cfm/dashboard"
+    },
+    {
+      "label": "Overview",
+      "icon": "material/map",
+      "target": "/cfm/overview"
+    },
+    {
+      "label": "Areas",
+      "icon": "material/account_tree",
+      "target": "/cfm/areas",
+      "expanded": false,
+      "children": [
+        {
+          "label": "Area 01",
+          "icon": "material/business",
+          "target": "/cfm/areas/area-01",
+          "children": [
+            {
+              "label": "Line 01",
+              "icon": "material/build",
+              "target": "/cfm/areas/area-01/line-01",
+              "children": [
+                {
+                  "label": "Overview",
+                  "icon": "material/dashboard",
+                  "target": "/cfm/areas/area-01/line-01/overview"
+                },
+                {
+                  "label": "Details",
+                  "icon": "material/info",
+                  "target": "/cfm/areas/area-01/line-01/details"
+                }
+              ]
+            },
+            {
+              "label": "Line 02",
+              "icon": "material/build",
+              "target": "/cfm/areas/area-01/line-02",
+              "children": [
+                {
+                  "label": "Overview",
+                  "icon": "material/dashboard",
+                  "target": "/cfm/areas/area-01/line-02/overview"
+                },
+                {
+                  "label": "Details",
+                  "icon": "material/info",
+                  "target": "/cfm/areas/area-01/line-02/details"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "label": "Area 02",
+          "icon": "material/business",
+          "target": "/cfm/areas/area-02",
+          "children": [
+            {
+              "label": "Line 01",
+              "icon": "material/build",
+              "target": "/cfm/areas/area-02/line-01",
+              "children": [
+                {
+                  "label": "Overview",
+                  "icon": "material/dashboard",
+                  "target": "/cfm/areas/area-02/line-01/overview"
+                },
+                {
+                  "label": "Details",
+                  "icon": "material/info",
+                  "target": "/cfm/areas/area-02/line-01/details"
+                }
+              ]
+            },
+            {
+              "label": "Line 02",
+              "icon": "material/build",
+              "target": "/cfm/areas/area-02/line-02",
+              "children": [
+                {
+                  "label": "Overview",
+                  "icon": "material/dashboard",
+                  "target": "/cfm/areas/area-02/line-02/overview"
+                },
+                {
+                  "label": "Details",
+                  "icon": "material/info",
+                  "target": "/cfm/areas/area-02/line-02/details"
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "label": "Operations",
+      "icon": "material/wb_incandescent",
+      "target": "/cfm/operations",
+      "expanded": false,
+      "children": [
+        {
+          "label": "Alarms",
+          "icon": "material/notifications_active",
+          "target": "/cfm/operations/alarms",
+          "roles": [
+            "Operator",
+            "Administrator"
+          ],
+          "children": [
+            {
+              "label": "Alarm Status",
+              "icon": "material/error_outline",
+              "target": "/cfm/operations/alarms/status"
+            },
+            {
+              "label": "Alarm Journal",
+              "icon": "material/history",
+              "target": "/cfm/operations/alarms/journal"
+            }
+          ]
+        },
+        {
+          "label": "Trends",
+          "icon": "material/show_chart",
+          "target": "/cfm/operations/trends"
+        },
+        {
+          "label": "Setpoints",
+          "icon": "material/tune",
+          "target": "/cfm/operations/setpoints",
+          "roles": [
+            "Supervisor",
+            "Administrator"
+          ]
+        }
+      ]
+    },
+    {
+      "label": "Maintenance",
+      "icon": "material/build",
+      "target": "/cfm/maintenance",
+      "expanded": false,
+      "children": [
+        {
+          "label": "Device Status",
+          "icon": "material/network_check",
+          "target": "/cfm/maintenance/device-status"
+        },
+        {
+          "label": "Devices",
+          "icon": "material/dns",
+          "target": "/cfm/maintenance/devices",
+          "children": [
+            {
+              "label": "Device 01",
+              "icon": "material/router",
+              "target": "/cfm/maintenance/devices/device-01",
+              "children": [
+                {
+                  "label": "IO",
+                  "icon": "material/input",
+                  "target": "/cfm/maintenance/devices/device-01/io",
+                  "children": [
+                    {
+                      "label": "Card 01",
+                      "icon": "material/settings_input_component",
+                      "target": "/cfm/maintenance/devices/device-01/io/card-01"
+                    },
+                    {
+                      "label": "Card 02",
+                      "icon": "material/settings_input_component",
+                      "target": "/cfm/maintenance/devices/device-01/io/card-02"
+                    },
+                    {
+                      "label": "Card 03",
+                      "icon": "material/settings_input_component",
+                      "target": "/cfm/maintenance/devices/device-01/io/card-03"
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "label": "Device 02",
+              "icon": "material/router",
+              "target": "/cfm/maintenance/devices/device-02",
+              "children": [
+                {
+                  "label": "IO",
+                  "icon": "material/input",
+                  "target": "/cfm/maintenance/devices/device-02/io",
+                  "children": [
+                    {
+                      "label": "Card 01",
+                      "icon": "material/settings_input_component",
+                      "target": "/cfm/maintenance/devices/device-02/io/card-01"
+                    },
+                    {
+                      "label": "Card 02",
+                      "icon": "material/settings_input_component",
+                      "target": "/cfm/maintenance/devices/device-02/io/card-02"
+                    },
+                    {
+                      "label": "Card 03",
+                      "icon": "material/settings_input_component",
+                      "target": "/cfm/maintenance/devices/device-02/io/card-03"
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "label": "Device 03",
+              "icon": "material/router",
+              "target": "/cfm/maintenance/devices/device-03",
+              "children": [
+                {
+                  "label": "IO",
+                  "icon": "material/input",
+                  "target": "/cfm/maintenance/devices/device-03/io",
+                  "children": [
+                    {
+                      "label": "Card 01",
+                      "icon": "material/settings_input_component",
+                      "target": "/cfm/maintenance/devices/device-03/io/card-01"
+                    },
+                    {
+                      "label": "Card 02",
+                      "icon": "material/settings_input_component",
+                      "target": "/cfm/maintenance/devices/device-03/io/card-02"
+                    },
+                    {
+                      "label": "Card 03",
+                      "icon": "material/settings_input_component",
+                      "target": "/cfm/maintenance/devices/device-03/io/card-03"
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "label": "Reports",
+      "icon": "material/assessment",
+      "target": "/cfm/reports"
+    }
+  ],
+  "expandArrowSide": "left"
+}

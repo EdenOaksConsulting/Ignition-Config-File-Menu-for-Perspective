@@ -1,0 +1,1041 @@
+{
+  "custom": {},
+  "params": {},
+  "props": {
+    "defaultSize": {
+      "height": 720,
+      "width": 1100
+    }
+  },
+  "root": {
+    "children": [
+      {
+        "meta": {
+          "name": "Instructions"
+        },
+        "position": {
+          "basis": "120px",
+          "shrink": 0
+        },
+        "props": {
+          "source": "Browse a **tag provider path** and generate a menu YAML or JSON branch for copy/paste into `MenuContent.params.menuConfig`. Run in a **live session** (not Designer preview). **Max levels** limits nesting below the browse path (1 = direct children only). Field values persist in `session.custom.configFileMenu.tagMenuGenerator` while the session is open.",
+          "style": {
+            "padding": "8px 16px"
+          }
+        },
+        "type": "ia.display.markdown"
+      },
+      {
+        "meta": {
+          "name": "TagPathRow"
+        },
+        "position": {
+          "shrink": 0
+        },
+        "props": {
+          "alignItems": "center",
+          "direction": "row",
+          "wrap": "nowrap",
+          "style": {
+            "classes": "cfm-menu__settings-form-row",
+            "boxSizing": "border-box",
+            "gap": "12px",
+            "padding": "4px 16px",
+            "width": "100%"
+          }
+        },
+        "type": "ia.container.flex",
+        "children": [
+          {
+            "meta": {
+              "name": "TagPathLabel"
+            },
+            "position": {
+              "basis": "140px",
+              "shrink": 0
+            },
+            "props": {
+              "text": "Tag path",
+              "style": {
+                "classes": "cfm-menu__settings-form-label",
+                "fontSize": "14px",
+                "textAlign": "right",
+                "whiteSpace": "nowrap"
+              }
+            },
+            "type": "ia.display.label"
+          },
+          {
+            "meta": {
+              "name": "TagPathInput"
+            },
+            "position": {
+              "shrink": 1,
+              "grow": 1
+            },
+            "propConfig": {
+              "props.text": {
+                "binding": {
+                  "config": {
+                    "path": "session.custom.configFileMenu.tagMenuGenerator.tagPath"
+                  },
+                  "transforms": [
+                    {
+                      "code": "\treturn str(value if value not in (None, '') else '[default]')",
+                      "type": "script"
+                    }
+                  ],
+                  "type": "property"
+                }
+              }
+            },
+            "props": {
+              "text": "[default]",
+              "style": {
+                "fontFamily": "monospace",
+                "fontSize": "14px",
+                "classes": "cfm-menu__settings-form-field",
+                "width": "100%",
+                "minWidth": "0",
+                "boxSizing": "border-box"
+              }
+            },
+            "events": {
+              "component": {
+                "onActionPerformed": {
+                  "config": {
+                    "script": "\texchange.cfm.runtime.set_session_block_field(self.session, 'tagMenuGenerator', 'tagPath', str(self.props.text or '').strip())\n"
+                  },
+                  "scope": "G",
+                  "type": "script"
+                }
+              },
+              "dom": {
+                "onBlur": {
+                  "config": {
+                    "script": "\texchange.cfm.runtime.set_session_block_field(self.session, 'tagMenuGenerator', 'tagPath', str(self.props.text or '').strip())\n"
+                  },
+                  "scope": "G",
+                  "type": "script"
+                },
+                "onKeyUp": {
+                  "config": {
+                    "script": "\texchange.cfm.runtime.set_session_block_field(self.session, 'tagMenuGenerator', 'tagPath', str(self.props.text or '').strip())\n"
+                  },
+                  "scope": "G",
+                  "type": "script"
+                }
+              }
+            },
+            "type": "ia.input.text-field"
+          }
+        ]
+      },
+      {
+        "meta": {
+          "name": "RoutePrefixRow"
+        },
+        "position": {
+          "shrink": 0
+        },
+        "props": {
+          "alignItems": "center",
+          "direction": "row",
+          "wrap": "nowrap",
+          "style": {
+            "classes": "cfm-menu__settings-form-row",
+            "boxSizing": "border-box",
+            "gap": "12px",
+            "padding": "4px 16px",
+            "width": "100%"
+          }
+        },
+        "type": "ia.container.flex",
+        "children": [
+          {
+            "meta": {
+              "name": "RoutePrefixLabel"
+            },
+            "position": {
+              "basis": "140px",
+              "shrink": 0
+            },
+            "props": {
+              "text": "Route prefix",
+              "style": {
+                "classes": "cfm-menu__settings-form-label",
+                "fontSize": "14px",
+                "textAlign": "right",
+                "whiteSpace": "nowrap"
+              }
+            },
+            "type": "ia.display.label"
+          },
+          {
+            "meta": {
+              "name": "RoutePrefixInput"
+            },
+            "position": {
+              "shrink": 1,
+              "grow": 1
+            },
+            "propConfig": {
+              "props.text": {
+                "binding": {
+                  "config": {
+                    "path": "session.custom.configFileMenu.tagMenuGenerator.routePrefix"
+                  },
+                  "transforms": [
+                    {
+                      "code": "\treturn str(value if value not in (None, '') else '/cfm')",
+                      "type": "script"
+                    }
+                  ],
+                  "type": "property"
+                }
+              }
+            },
+            "props": {
+              "text": "/cfm",
+              "style": {
+                "fontFamily": "monospace",
+                "fontSize": "14px",
+                "classes": "cfm-menu__settings-form-field",
+                "width": "100%",
+                "minWidth": "0",
+                "boxSizing": "border-box"
+              }
+            },
+            "events": {
+              "component": {
+                "onActionPerformed": {
+                  "config": {
+                    "script": "\texchange.cfm.runtime.set_session_block_field(self.session, 'tagMenuGenerator', 'routePrefix', str(self.props.text or '').strip())\n"
+                  },
+                  "scope": "G",
+                  "type": "script"
+                }
+              },
+              "dom": {
+                "onBlur": {
+                  "config": {
+                    "script": "\texchange.cfm.runtime.set_session_block_field(self.session, 'tagMenuGenerator', 'routePrefix', str(self.props.text or '').strip())\n"
+                  },
+                  "scope": "G",
+                  "type": "script"
+                },
+                "onKeyUp": {
+                  "config": {
+                    "script": "\texchange.cfm.runtime.set_session_block_field(self.session, 'tagMenuGenerator', 'routePrefix', str(self.props.text or '').strip())\n"
+                  },
+                  "scope": "G",
+                  "type": "script"
+                }
+              }
+            },
+            "type": "ia.input.text-field"
+          }
+        ]
+      },
+      {
+        "meta": {
+          "name": "MaxDepthRow"
+        },
+        "position": {
+          "shrink": 0
+        },
+        "props": {
+          "alignItems": "center",
+          "direction": "row",
+          "wrap": "nowrap",
+          "style": {
+            "classes": "cfm-menu__settings-form-row",
+            "boxSizing": "border-box",
+            "gap": "12px",
+            "padding": "4px 16px",
+            "width": "100%"
+          }
+        },
+        "type": "ia.container.flex",
+        "children": [
+          {
+            "meta": {
+              "name": "MaxDepthLabel"
+            },
+            "position": {
+              "basis": "140px",
+              "shrink": 0
+            },
+            "props": {
+              "text": "Max levels",
+              "style": {
+                "classes": "cfm-menu__settings-form-label",
+                "fontSize": "14px",
+                "textAlign": "right",
+                "whiteSpace": "nowrap"
+              }
+            },
+            "type": "ia.display.label"
+          },
+          {
+            "meta": {
+              "name": "MaxDepthInput"
+            },
+            "position": {
+              "shrink": 1,
+              "grow": 1
+            },
+            "propConfig": {
+              "props.text": {
+                "binding": {
+                  "config": {
+                    "path": "session.custom.configFileMenu.tagMenuGenerator.maxDepth"
+                  },
+                  "transforms": [
+                    {
+                      "code": "\treturn str(value if value not in (None, '') else '2')",
+                      "type": "script"
+                    }
+                  ],
+                  "type": "property"
+                }
+              }
+            },
+            "props": {
+              "text": "2",
+              "style": {
+                "fontFamily": "monospace",
+                "fontSize": "14px",
+                "classes": "cfm-menu__settings-form-field",
+                "width": "100%",
+                "minWidth": "0",
+                "boxSizing": "border-box"
+              }
+            },
+            "events": {
+              "component": {
+                "onActionPerformed": {
+                  "config": {
+                    "script": "\texchange.cfm.runtime.set_session_block_field(self.session, 'tagMenuGenerator', 'maxDepth', str(self.props.text or '').strip())\n"
+                  },
+                  "scope": "G",
+                  "type": "script"
+                }
+              },
+              "dom": {
+                "onBlur": {
+                  "config": {
+                    "script": "\texchange.cfm.runtime.set_session_block_field(self.session, 'tagMenuGenerator', 'maxDepth', str(self.props.text or '').strip())\n"
+                  },
+                  "scope": "G",
+                  "type": "script"
+                },
+                "onKeyUp": {
+                  "config": {
+                    "script": "\texchange.cfm.runtime.set_session_block_field(self.session, 'tagMenuGenerator', 'maxDepth', str(self.props.text or '').strip())\n"
+                  },
+                  "scope": "G",
+                  "type": "script"
+                }
+              }
+            },
+            "type": "ia.input.text-field"
+          }
+        ]
+      },
+      {
+        "meta": {
+          "name": "IncludeRow"
+        },
+        "position": {
+          "shrink": 0
+        },
+        "props": {
+          "alignItems": "center",
+          "direction": "row",
+          "wrap": "nowrap",
+          "style": {
+            "classes": "cfm-menu__settings-form-row",
+            "boxSizing": "border-box",
+            "gap": "12px",
+            "padding": "4px 16px",
+            "width": "100%"
+          }
+        },
+        "type": "ia.container.flex",
+        "children": [
+          {
+            "meta": {
+              "name": "IncludeLabel"
+            },
+            "position": {
+              "basis": "140px",
+              "shrink": 0
+            },
+            "props": {
+              "text": "Include",
+              "style": {
+                "classes": "cfm-menu__settings-form-label",
+                "fontSize": "14px",
+                "textAlign": "right",
+                "whiteSpace": "nowrap"
+              }
+            },
+            "type": "ia.display.label"
+          },
+          {
+            "meta": {
+              "name": "IncludeDropdown"
+            },
+            "position": {
+              "shrink": 1,
+              "grow": 1
+            },
+            "propConfig": {
+              "props.value": {
+                "binding": {
+                  "config": {
+                    "path": "session.custom.configFileMenu.tagMenuGenerator.includeMode"
+                  },
+                  "transforms": [
+                    {
+                      "code": "\treturn str(value if value not in (None, '') else 'all')",
+                      "type": "script"
+                    }
+                  ],
+                  "type": "property"
+                }
+              }
+            },
+            "props": {
+              "options": [
+                {
+                  "label": "Folders and UDTs",
+                  "value": "all"
+                },
+                {
+                  "label": "UDT instances only",
+                  "value": "udt"
+                },
+                {
+                  "label": "Folders only",
+                  "value": "folder"
+                }
+              ],
+              "value": "all",
+              "style": {
+                "classes": "cfm-menu__settings-form-field",
+                "width": "100%",
+                "minWidth": "0",
+                "boxSizing": "border-box"
+              }
+            },
+            "events": {
+              "component": {
+                "onActionPerformed": {
+                  "config": {
+                    "script": "\texchange.cfm.runtime.set_session_block_field(self.session, 'tagMenuGenerator', 'includeMode', str(self.props.value or ''))\n"
+                  },
+                  "scope": "G",
+                  "type": "script"
+                }
+              }
+            },
+            "type": "ia.input.dropdown"
+          }
+        ]
+      },
+      {
+        "meta": {
+          "name": "FormatRow"
+        },
+        "position": {
+          "shrink": 0
+        },
+        "props": {
+          "alignItems": "center",
+          "direction": "row",
+          "wrap": "nowrap",
+          "style": {
+            "classes": "cfm-menu__settings-form-row",
+            "boxSizing": "border-box",
+            "gap": "12px",
+            "padding": "4px 16px",
+            "width": "100%"
+          }
+        },
+        "type": "ia.container.flex",
+        "children": [
+          {
+            "meta": {
+              "name": "FormatLabel"
+            },
+            "position": {
+              "basis": "140px",
+              "shrink": 0
+            },
+            "props": {
+              "text": "Output",
+              "style": {
+                "classes": "cfm-menu__settings-form-label",
+                "fontSize": "14px",
+                "textAlign": "right",
+                "whiteSpace": "nowrap"
+              }
+            },
+            "type": "ia.display.label"
+          },
+          {
+            "meta": {
+              "name": "OutputFormatDropdown"
+            },
+            "position": {
+              "shrink": 1,
+              "grow": 1
+            },
+            "propConfig": {
+              "props.value": {
+                "binding": {
+                  "config": {
+                    "path": "session.custom.configFileMenu.tagMenuGenerator.outputFormat"
+                  },
+                  "transforms": [
+                    {
+                      "code": "\treturn str(value if value not in (None, '') else 'yaml')",
+                      "type": "script"
+                    }
+                  ],
+                  "type": "property"
+                }
+              }
+            },
+            "props": {
+              "options": [
+                {
+                  "label": "YAML",
+                  "value": "yaml"
+                },
+                {
+                  "label": "JSON",
+                  "value": "json"
+                }
+              ],
+              "value": "yaml",
+              "style": {
+                "classes": "cfm-menu__settings-form-field",
+                "width": "100%",
+                "minWidth": "0",
+                "boxSizing": "border-box"
+              }
+            },
+            "events": {
+              "component": {
+                "onActionPerformed": {
+                  "config": {
+                    "script": "\texchange.cfm.runtime.set_session_block_field(self.session, 'tagMenuGenerator', 'outputFormat', str(self.props.value or ''))\n"
+                  },
+                  "scope": "G",
+                  "type": "script"
+                }
+              }
+            },
+            "type": "ia.input.dropdown"
+          }
+        ]
+      },
+      {
+        "meta": {
+          "name": "LeavesRow"
+        },
+        "position": {
+          "shrink": 0
+        },
+        "props": {
+          "alignItems": "center",
+          "direction": "row",
+          "wrap": "nowrap",
+          "style": {
+            "classes": "cfm-menu__settings-form-row",
+            "boxSizing": "border-box",
+            "gap": "12px",
+            "padding": "4px 16px",
+            "width": "100%"
+          }
+        },
+        "type": "ia.container.flex",
+        "children": [
+          {
+            "meta": {
+              "name": "LeavesLabel"
+            },
+            "position": {
+              "basis": "140px",
+              "shrink": 0
+            },
+            "props": {
+              "text": "UDT leaves",
+              "style": {
+                "classes": "cfm-menu__settings-form-label",
+                "fontSize": "14px",
+                "textAlign": "right",
+                "whiteSpace": "nowrap"
+              }
+            },
+            "type": "ia.display.label"
+          },
+          {
+            "meta": {
+              "name": "AppendLeavesDropdown"
+            },
+            "position": {
+              "shrink": 1,
+              "grow": 1
+            },
+            "propConfig": {
+              "props.value": {
+                "binding": {
+                  "config": {
+                    "path": "session.custom.configFileMenu.tagMenuGenerator.appendLeaves"
+                  },
+                  "transforms": [
+                    {
+                      "code": "\treturn str(value if value not in (None, '') else 'false')",
+                      "type": "script"
+                    }
+                  ],
+                  "type": "property"
+                }
+              }
+            },
+            "props": {
+              "options": [
+                {
+                  "label": "None",
+                  "value": "false"
+                },
+                {
+                  "label": "Overview + Details",
+                  "value": "true"
+                }
+              ],
+              "value": "false",
+              "style": {
+                "classes": "cfm-menu__settings-form-field",
+                "width": "100%",
+                "minWidth": "0",
+                "boxSizing": "border-box"
+              }
+            },
+            "events": {
+              "component": {
+                "onActionPerformed": {
+                  "config": {
+                    "script": "\texchange.cfm.runtime.set_session_block_field(self.session, 'tagMenuGenerator', 'appendLeaves', str(self.props.value or ''))\n"
+                  },
+                  "scope": "G",
+                  "type": "script"
+                }
+              }
+            },
+            "type": "ia.input.dropdown"
+          }
+        ]
+      },
+      {
+        "meta": {
+          "name": "FolderIconRow"
+        },
+        "position": {
+          "shrink": 0
+        },
+        "props": {
+          "alignItems": "center",
+          "direction": "row",
+          "wrap": "nowrap",
+          "style": {
+            "classes": "cfm-menu__settings-form-row",
+            "boxSizing": "border-box",
+            "gap": "12px",
+            "padding": "4px 16px",
+            "width": "100%"
+          }
+        },
+        "type": "ia.container.flex",
+        "children": [
+          {
+            "meta": {
+              "name": "FolderIconLabel"
+            },
+            "position": {
+              "basis": "140px",
+              "shrink": 0
+            },
+            "props": {
+              "text": "Folder icon",
+              "style": {
+                "classes": "cfm-menu__settings-form-label",
+                "fontSize": "14px",
+                "textAlign": "right",
+                "whiteSpace": "nowrap"
+              }
+            },
+            "type": "ia.display.label"
+          },
+          {
+            "meta": {
+              "name": "FolderIconInput"
+            },
+            "position": {
+              "shrink": 1,
+              "grow": 1
+            },
+            "propConfig": {
+              "props.text": {
+                "binding": {
+                  "config": {
+                    "path": "session.custom.configFileMenu.tagMenuGenerator.folderIcon"
+                  },
+                  "transforms": [
+                    {
+                      "code": "\treturn str(value if value not in (None, '') else 'material/folder')",
+                      "type": "script"
+                    }
+                  ],
+                  "type": "property"
+                }
+              }
+            },
+            "props": {
+              "text": "material/folder",
+              "style": {
+                "fontFamily": "monospace",
+                "fontSize": "14px",
+                "classes": "cfm-menu__settings-form-field",
+                "width": "100%",
+                "minWidth": "0",
+                "boxSizing": "border-box"
+              }
+            },
+            "events": {
+              "component": {
+                "onActionPerformed": {
+                  "config": {
+                    "script": "\texchange.cfm.runtime.set_session_block_field(self.session, 'tagMenuGenerator', 'folderIcon', str(self.props.text or '').strip())\n"
+                  },
+                  "scope": "G",
+                  "type": "script"
+                }
+              },
+              "dom": {
+                "onBlur": {
+                  "config": {
+                    "script": "\texchange.cfm.runtime.set_session_block_field(self.session, 'tagMenuGenerator', 'folderIcon', str(self.props.text or '').strip())\n"
+                  },
+                  "scope": "G",
+                  "type": "script"
+                },
+                "onKeyUp": {
+                  "config": {
+                    "script": "\texchange.cfm.runtime.set_session_block_field(self.session, 'tagMenuGenerator', 'folderIcon', str(self.props.text or '').strip())\n"
+                  },
+                  "scope": "G",
+                  "type": "script"
+                }
+              }
+            },
+            "type": "ia.input.text-field"
+          }
+        ]
+      },
+      {
+        "meta": {
+          "name": "UdtIconRow"
+        },
+        "position": {
+          "shrink": 0
+        },
+        "props": {
+          "alignItems": "center",
+          "direction": "row",
+          "wrap": "nowrap",
+          "style": {
+            "classes": "cfm-menu__settings-form-row",
+            "boxSizing": "border-box",
+            "gap": "12px",
+            "padding": "4px 16px",
+            "width": "100%"
+          }
+        },
+        "type": "ia.container.flex",
+        "children": [
+          {
+            "meta": {
+              "name": "UdtIconLabel"
+            },
+            "position": {
+              "basis": "140px",
+              "shrink": 0
+            },
+            "props": {
+              "text": "UDT icon",
+              "style": {
+                "classes": "cfm-menu__settings-form-label",
+                "fontSize": "14px",
+                "textAlign": "right",
+                "whiteSpace": "nowrap"
+              }
+            },
+            "type": "ia.display.label"
+          },
+          {
+            "meta": {
+              "name": "UdtIconInput"
+            },
+            "position": {
+              "shrink": 1,
+              "grow": 1
+            },
+            "propConfig": {
+              "props.text": {
+                "binding": {
+                  "config": {
+                    "path": "session.custom.configFileMenu.tagMenuGenerator.udtIcon"
+                  },
+                  "transforms": [
+                    {
+                      "code": "\treturn str(value if value not in (None, '') else 'material/settings')",
+                      "type": "script"
+                    }
+                  ],
+                  "type": "property"
+                }
+              }
+            },
+            "props": {
+              "text": "material/settings",
+              "style": {
+                "fontFamily": "monospace",
+                "fontSize": "14px",
+                "classes": "cfm-menu__settings-form-field",
+                "width": "100%",
+                "minWidth": "0",
+                "boxSizing": "border-box"
+              }
+            },
+            "events": {
+              "component": {
+                "onActionPerformed": {
+                  "config": {
+                    "script": "\texchange.cfm.runtime.set_session_block_field(self.session, 'tagMenuGenerator', 'udtIcon', str(self.props.text or '').strip())\n"
+                  },
+                  "scope": "G",
+                  "type": "script"
+                }
+              },
+              "dom": {
+                "onBlur": {
+                  "config": {
+                    "script": "\texchange.cfm.runtime.set_session_block_field(self.session, 'tagMenuGenerator', 'udtIcon', str(self.props.text or '').strip())\n"
+                  },
+                  "scope": "G",
+                  "type": "script"
+                },
+                "onKeyUp": {
+                  "config": {
+                    "script": "\texchange.cfm.runtime.set_session_block_field(self.session, 'tagMenuGenerator', 'udtIcon', str(self.props.text or '').strip())\n"
+                  },
+                  "scope": "G",
+                  "type": "script"
+                }
+              }
+            },
+            "type": "ia.input.text-field"
+          }
+        ]
+      },
+      {
+        "meta": {
+          "name": "ActionRow"
+        },
+        "position": {
+          "shrink": 0
+        },
+        "props": {
+          "alignItems": "center",
+          "direction": "row",
+          "wrap": "nowrap",
+          "style": {
+            "classes": "cfm-menu__settings-form-row",
+            "boxSizing": "border-box",
+            "gap": "12px",
+            "padding": "8px 16px 4px",
+            "width": "100%"
+          }
+        },
+        "type": "ia.container.flex",
+        "children": [
+          {
+            "meta": {
+              "name": "ActionRowSpacer"
+            },
+            "position": {
+              "basis": "140px",
+              "shrink": 0
+            },
+            "props": {
+              "text": "",
+              "style": {
+                "classes": "cfm-menu__settings-form-label"
+              }
+            },
+            "type": "ia.display.label"
+          },
+          {
+            "events": {
+              "component": {
+                "onActionPerformed": {
+                  "config": {
+                    "script": "\texchange.cfm.runtime.generate_tag_menu(self)\n"
+                  },
+                  "scope": "G",
+                  "type": "script"
+                }
+              }
+            },
+            "meta": {
+              "name": "GenerateTagMenuButton"
+            },
+            "position": {
+              "basis": "160px",
+              "shrink": 0
+            },
+            "props": {
+              "text": "Generate menu",
+              "style": {
+                "alignSelf": "flex-start",
+                "classes": "cfm-menu__settings-form-action"
+              }
+            },
+            "type": "ia.input.button"
+          }
+        ]
+      },
+      {
+        "meta": {
+          "name": "StatusLabel"
+        },
+        "position": {
+          "basis": "28px",
+          "shrink": 0
+        },
+        "props": {
+          "text": "Ready.",
+          "style": {
+            "classes": "cfm-menu__settings-status"
+          }
+        },
+        "type": "ia.display.label"
+      },
+      {
+        "children": [
+          {
+            "meta": {
+              "name": "TagMenuOutput"
+            },
+            "position": {
+              "grow": 1
+            },
+            "propConfig": {
+              "props.text": {
+                "binding": {
+                  "config": {
+                    "path": "session.custom.configFileMenu.tagMenuGenerator.output"
+                  },
+                  "transforms": [
+                    {
+                      "code": "\treturn str(value if value not in (None, '') else '')",
+                      "type": "script"
+                    }
+                  ],
+                  "type": "property"
+                }
+              }
+            },
+            "props": {
+              "text": "",
+              "style": {
+                "fontFamily": "monospace",
+                "fontSize": "14px",
+                "width": "100%",
+                "height": "400px",
+                "maxHeight": "400px",
+                "overflow": "auto",
+                "padding": "8px"
+              },
+              "wrap": "off"
+            },
+            "events": {
+              "component": {
+                "onActionPerformed": {
+                  "config": {
+                    "script": "\texchange.cfm.runtime.set_session_block_field(self.session, 'tagMenuGenerator', 'output', str(self.props.text or '').strip())\n"
+                  },
+                  "scope": "G",
+                  "type": "script"
+                }
+              },
+              "dom": {
+                "onBlur": {
+                  "config": {
+                    "script": "\texchange.cfm.runtime.set_session_block_field(self.session, 'tagMenuGenerator', 'output', str(self.props.text or '').strip())\n"
+                  },
+                  "scope": "G",
+                  "type": "script"
+                },
+                "onKeyUp": {
+                  "config": {
+                    "script": "\texchange.cfm.runtime.set_session_block_field(self.session, 'tagMenuGenerator', 'output', str(self.props.text or '').strip())\n"
+                  },
+                  "scope": "G",
+                  "type": "script"
+                }
+              }
+            },
+            "type": "ia.input.text-area"
+          }
+        ],
+        "meta": {
+          "name": "OutputPanel"
+        },
+        "position": {
+          "grow": 1,
+          "shrink": 1
+        },
+        "props": {
+          "direction": "column",
+          "style": {
+            "boxSizing": "border-box",
+            "minHeight": "0",
+            "overflow": "hidden",
+            "padding": "0 16px 16px",
+            "width": "100%"
+          }
+        },
+        "type": "ia.container.flex"
+      }
+    ],
+    "meta": {
+      "name": "root"
+    },
+    "props": {
+      "direction": "column",
+      "style": {
+        "boxSizing": "border-box",
+        "height": "100%",
+        "overflow": "hidden",
+        "width": "100%"
+      }
+    },
+    "type": "ia.container.flex"
+  }
+}
