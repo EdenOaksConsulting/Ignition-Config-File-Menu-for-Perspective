@@ -53,8 +53,15 @@ def write_view_thumbnail(path: Path, label: str, *, size: int = 200) -> None:
     img.save(path, format="PNG", optimize=True)
 
 
-def ensure_view_thumbnails(views_root: Path) -> int:
-    """Create thumbnail.png for views whose resource.json lists it."""
+def ensure_view_thumbnails(views_root: Path, *, force: bool = False) -> int:
+    """Create thumbnail.png for views whose resource.json lists it.
+
+    With force=True, existing thumbnails are overwritten with the neutral CFM
+    placeholder. This is required for public/Exchange builds: Designer captures a
+    live screenshot of the rendered view when a developer saves it, which can embed
+    that developer's gateway branding, hostnames, and menu content into the resource.
+    Regenerating placeholders on every build guarantees no captured screenshot ships.
+    """
     created = 0
     for resource_path in sorted(views_root.rglob("resource.json")):
         try:
@@ -65,7 +72,7 @@ def ensure_view_thumbnails(views_root: Path) -> int:
         if "thumbnail.png" not in files:
             continue
         thumb_path = resource_path.parent / "thumbnail.png"
-        if thumb_path.is_file():
+        if thumb_path.is_file() and not force:
             continue
         write_view_thumbnail(thumb_path, _short_label(resource_path.parent))
         created += 1

@@ -137,6 +137,34 @@ def load_config(menu_config, menu_config_type):
 	return parse_yaml_lite(menu_config)
 
 
+def get_children(item):
+	# A menu item's children, accepting either the `children:` or legacy `items:` key.
+	return get_prop(item, "children", get_prop(item, "items", []))
+
+
+def dict_block(container, key):
+	# A mutable dict copy of a nested block container[key], or {} if absent/not a mapping.
+	# Used to read-modify-write a nested session object (e.g. the Settings generator scratch).
+	blk = container.get(key)
+	if blk is None or not hasattr(blk, "get"):
+		return {}
+	return dict(blk)
+
+
+def load_menu_items(menu_config, menu_config_type):
+	# Parse a menu config and return its top-level item list, unwrapping the optional
+	# `menu:` root and tolerating a bare list. Shared by the menu render, breadcrumbs,
+	# and page-title resolvers.
+	cfg = load_config(menu_config, menu_config_type)
+	menu = get_prop(cfg, "menu", cfg)
+	return get_prop(menu, "items", menu if is_sequence(menu) else [])
+
+
+def resolve_dock_id(state):
+	# The Perspective dock id the menu operates on; falls back to the shipped default.
+	return str(state.get("contentDockId") or "config-file-menu")
+
+
 def normalize_path(path):
 	p = str(path or "").strip()
 	if p == "":
@@ -149,72 +177,18 @@ def normalize_path(path):
 
 
 def pick_menu_block(session, data):
-	try:
-		device = session.props.device.type
-	except:
-		device = ""
-	session_cfg = get_prop(data, "sessionMenuConfig", "")
-	param_cfg = get_prop(data, "paramMenuConfig", "")
-	if device == "designer":
-		cfg = param_cfg if param_cfg not in (None, "") else session_cfg
-	else:
-		cfg = session_cfg if session_cfg not in (None, "") else param_cfg
-	session_type = get_prop(data, "sessionMenuConfigType", "")
-	param_type = get_prop(data, "paramMenuConfigType", "")
-	if device == "designer":
-		cfg_type = param_type if param_type not in (None, "") else session_type
-	else:
-		cfg_type = session_type if session_type not in (None, "") else param_type
-	return cfg, str(cfg_type or "yaml")
-
-
-def read_view_param(params, name, default=""):
-	if params is None:
-		return default
-	val = get_prop(params, name, None)
-	if val not in (None, ""):
-		return str(val).strip()
-	try:
-		val = getattr(params, name, None)
-		if val not in (None, ""):
-			return str(val).strip()
-	except:
-		pass
-	return default
-
-
-def sync_site_name_from_view(session, view):
-	param_site = read_view_param(getattr(view, "params", None), "siteName", "Default Site")
-	if not param_site:
-		param_site = "Default Site"
+	# The menu source lives in the session object (contentSource / contentSourceType),
+	# shipped with the library. Read it directly so every caller (menu render, page title)
+	# resolves the same config regardless of its binding struct. `data` is unused but kept
+	# for a stable signature.
 	state = get_state(session)
-	if str(state.get("siteName") or "") != param_site:
-		state["siteName"] = param_site
-		session.custom.configFileMenu = state
-
-
-def pick_site_name(session, data, default="Default Site"):
-	try:
-		device = session.props.device.type
-	except:
-		device = ""
-	session_name = str(get_prop(data, "siteName", "") or "").strip()
-	param_name = str(get_prop(data, "paramSiteName", "") or "").strip()
-	if device == "designer":
-		if param_name:
-			return param_name
-		if session_name:
-			return session_name
-		return default or "Default Site"
-	if session_name:
-		return session_name
-	if param_name:
-		return param_name
-	return default or "Default Site"
+	return state.get("contentSource", ""), str(state.get("contentSourceType", "yaml") or "yaml")
 
 
 def resolve_site_name(value, session, default="Default Site"):
-	return pick_site_name(session, value, default)
+	# Site name lives in the session object (brandSiteName), shipped with the library.
+	name = str(get_state(session).get("brandSiteName", "") or "").strip()
+	return name if name else (default or "Default Site")
 
 
 def get_state(session):
@@ -223,15 +197,36 @@ def get_state(session):
 		if state is None:
 			return {}
 		return dict(state)
-	except:
+	except Exception as exc:
+		# DEBUG only: this can fire often (e.g. before the session object is materialized);
+		# it is a diagnostic breadcrumb, not a fault worth WARN/ERROR volume.
+		cfm.log.log_once("config", "debug", "get_state fell back to empty", exc)
 		return {}
+
+
+def set_state_fields(session, fields):
+	# Merge the given keys into session.custom.configFileMenu with a WHOLE-OBJECT
+	# read-modify-write: read the current object, overwrite just these keys, write the
+	# whole object back. This is last-writer-wins, NOT a per-key isolated write. If two
+	# handlers run concurrently (e.g. onStartup handlers racing at session load), each
+	# reads its own snapshot and rewrites the whole object, so the later write can revert
+	# sibling keys the earlier write set (its stale snapshot didn't include them). In
+	# practice handlers fire sequentially per session and each writes a distinct set of
+	# keys, so the lost-update window is small — but it is real. Returns the merged dict
+	# this writer produced (its own view; may be stale by the time callers use it).
+	state = get_state(session)
+	if fields:
+		for key in fields:
+			state[key] = fields[key]
+	session.custom.configFileMenu = state
+	return state
 
 
 def resolve_effective_page_path_from_value(value, page=None):
 	requested = str(get_prop(value, "requestedPath", "") or "").strip()
 	if requested:
 		return normalize_path(requested)
-	logical = str(get_prop(value, "logicalPagePath", "") or "").strip()
+	logical = str(get_prop(value, "routeLogicalPath", "") or "").strip()
 	if logical:
 		return normalize_path(logical)
 	path = str(get_prop(value, "path", "") or "").strip()

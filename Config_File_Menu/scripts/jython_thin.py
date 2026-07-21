@@ -136,10 +136,6 @@ def thin_menu_content_startup() -> str:
 	return jython_tab(f"{rt('init_menu_content_state')}(self)")
 
 
-def thin_menu_content_property_change() -> str:
-	return jython_tab(f"{rt('on_menu_content_property_change')}(self, event)")
-
-
 def thin_settings_general_startup() -> str:
 	return jython_tab(f"{rt('init_settings_general_state')}(self)")
 
@@ -158,14 +154,6 @@ def thin_generate_routes(shell_view_path: str = SHELL_VIEW_PATH) -> str:
 
 def thin_routes_shutdown(shell_view_path: str = SHELL_VIEW_PATH) -> str:
 	return jython_tab(f"{rt('shutdown_menu_routes_generator')}(self, '{shell_view_path}')")
-
-
-def thin_routes_load(
-	menu_input_default: str,
-	output_default: str,
-	shell_view_path: str = SHELL_VIEW_PATH,
-) -> str:
-	raise NotImplementedError("use build_routes_load_script()")
 
 
 def build_routes_load_script(

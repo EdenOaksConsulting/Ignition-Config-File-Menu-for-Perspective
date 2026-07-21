@@ -9,8 +9,7 @@
     "menuDockId": "config-file-menu",
     "showArrow": false,
     "target": "",
-    "expanded": false,
-    "arrowSide": "right"
+    "expanded": false
   },
   "propConfig": {
     "custom.key": {
@@ -19,7 +18,7 @@
           "struct": {
             "path": "{page.props.path}",
             "requestedPath": "{view.params.requestedPath}",
-            "logicalPagePath": "{session.custom.configFileMenu.logicalPagePath}"
+            "routeLogicalPath": "{session.custom.configFileMenu.routeLogicalPath}"
           },
           "waitOnAll": true
         },
@@ -58,10 +57,6 @@
       "persistent": true
     },
     "params.expanded": {
-      "paramDirection": "input",
-      "persistent": true
-    },
-    "params.arrowSide": {
       "paramDirection": "input",
       "persistent": true
     }

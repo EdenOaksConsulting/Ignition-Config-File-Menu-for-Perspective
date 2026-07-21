@@ -208,7 +208,7 @@ def section_classes(page_path, section_target, section_label):
 		classes.append("cfm-menu__section--open")
 	elif not target:
 		try:
-			section_key = str(section_label or "").strip().lower().replace(" ", "-")
+			section_key = cfm.config.slug(section_label)
 			if section_key and page.split("/")[1] == section_key:
 				classes.append("cfm-menu__section--open")
 		except:

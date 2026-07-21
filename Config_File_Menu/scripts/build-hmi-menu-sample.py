@@ -50,7 +50,6 @@ from jython_thin import (
     thin_dock_mode_toggle,
     thin_dock_pin_toggle,
     thin_menu_content_startup,
-    thin_menu_content_property_change,
     thin_menu_toggle_click,
     thin_settings_dock_content_change,
     thin_settings_general_startup,
@@ -88,22 +87,23 @@ SHELL_ROUTE_PLACEHOLDER_TEXT = (
 )
 LANDING_MARKDOWN = """# Config File Menu for Perspective
 
-This project turns one YAML-lite or JSON menu configuration into a responsive Ignition Perspective navigation system.
+Welcome! This project builds its navigation — the docked menu, breadcrumbs, and page titles — from one menu configuration written in YAML or JSON.
 
 ## Start Here
 
-- Open `/cfm/settings` for Settings, Help, Tag to Menu, Menu to Routes, and YAML to JSON tools.
-- Edit `Config File Menu/MenuContent.params.menuConfig` to define the menu tree.
-- Add Page Configuration routes for each menu `target`.
-- Use `/cfm/diagnostics` to review the bundled diagnostics dashboard during evaluation.
+1. Use the menu on the left to explore.
+2. Open `/cfm/settings` for the tools: Settings, Help, Tag → Menu, Menu → Routes, and YAML to JSON.
+3. In the Designer, edit the session custom property `configFileMenu.contentSource` (Perspective → Session Properties → custom) to change the menu.
+4. In **Page Configuration**, add a page whose URL matches each menu `target`.
+5. Open `/cfm/diagnostics` to see the bundled diagnostics dashboard.
 
-## Dock Defaults
+## Defaults
 
-The standard layout starts open, pinned, and in push mode. Project-wide startup defaults live in the `exchange.cfm.runtime` project library script (`ensure_dock_defaults`).
+The menu starts open, pinned, and in push mode. All settings live in one session object — **Perspective → Session Properties → custom → `configFileMenu`**. To change project-wide defaults, edit its boolean `dockPinned`, `dockContentPush` (`true` = push, `false` = cover), and `dockCloseOnOutsideClick` keys. The Settings tab changes the current session only.
 
-## Next Step
+## Building A Site
 
-For a blank production site, import `config-file-menu-library.zip` first, then `config-file-menu-site.zip`. For a reference project with sample routes, import `config-file-menu-sample.zip` after the library.
+Import `config-file-menu-library.zip` first, then `config-file-menu-sample.zip` (working example) or `config-file-menu-site.zip` (blank production starter).
 """
 LOGOS_DIR = PROJECT_ROOT / "config" / "cfm-logos"
 LOGO_LARGE = LOGOS_DIR / "cfm-logo-large.png"
@@ -126,11 +126,11 @@ def sample_menu_yaml() -> str:
 MENU_PAGE_STRUCT = {
     "path": "{page.props.path}",
     "requestedPath": "{view.params.requestedPath}",
-    "logicalPagePath": "{session.custom.configFileMenu.logicalPagePath}",
-    "sessionMenuConfig": "{session.custom.configFileMenu.menuConfig}",
-    "sessionMenuConfigType": "{session.custom.configFileMenu.menuConfigType}",
-    "paramMenuConfig": "{view.params.menuConfig}",
-    "paramMenuConfigType": "{view.params.menuConfigType}",
+    "routeLogicalPath": "{session.custom.configFileMenu.routeLogicalPath}",
+    "sessionMenuConfig": "{session.custom.configFileMenu.contentSource}",
+    "sessionMenuConfigType": "{session.custom.configFileMenu.contentSourceType}",
+    "paramMenuConfig": "{session.custom.configFileMenu.contentSource}",
+    "paramMenuConfigType": "{session.custom.configFileMenu.contentSourceType}",
 }
 
 TITLE_RESOLVE_SCRIPT = jython_title_resolve_script()
@@ -141,12 +141,16 @@ CLICK_OUTSIDE_SCRIPT = thin_close_outside_click()
 
 LOGO_NAV_SCRIPT = jython_navigate_menu_target(include_dock_close=False, use_logo_target=True)
 MENU_LINK_NAV_SCRIPT = jython_navigate_menu_target(include_dock_close=True, use_logo_target=False)
-LOGO_VARIANT_EXPR = (
-    "if(len(coalesce(toString({session.custom.configFileMenu.logoVariant}),''))>0,"
-    "lower({session.custom.configFileMenu.logoVariant}),"
-    "lower({view.params.logoVariant}))"
+# The clock polls a Jython script PER SESSION at clockRefreshSeconds (seconds -> ms).
+# When showTopBarClock is false the poll rate becomes 0 (Ignition runs runScript once, then
+# never again), so the recurring gateway call stops entirely — not just hidden, halted.
+# max(1, ...) clamps the interval to a 1-second floor so a 0/blank value can't freeze or
+# hammer the gateway.
+TOPBAR_CLOCK_EXPR = (
+    f'runScript("{RUNTIME_MODULE}.format_topbar_clock", '
+    f'if({{session.custom.configFileMenu.showTopBarClock}}, '
+    f'max(1, {{session.custom.configFileMenu.clockRefreshSeconds}}) * 1000, 0))'
 )
-TOPBAR_CLOCK_EXPR = f'runScript("{RUNTIME_MODULE}.format_topbar_clock", 1000)'
 
 
 def png_data_uri(path: Path) -> str:
@@ -154,30 +158,18 @@ def png_data_uri(path: Path) -> str:
     return f"data:image/png;base64,{encoded}"
 
 
-def logo_source_expr(session_key: str, param_key: str, data_uri: str) -> str:
-    escaped = data_uri.replace("\\", "\\\\").replace("'", "\\'")
-    return (
-        f"if(len(coalesce(toString({{{session_key}}}),''))>0,"
-        f"toString({{{session_key}}}),"
-        f"if(len(coalesce(toString({{view.params.{param_key}}}),''))>0,"
-        f"toString({{view.params.{param_key}}}),"
-        f"'{escaped}'))"
-    )
-
-
 def perspective_string_literal(value: str) -> str:
     return "'" + value.replace("\\", "\\\\").replace("'", "\\'") + "'"
 
 
 def logo_source_binding(variant: str, data_uri: str) -> dict:
-    key = "logoSmallPath" if variant == "small" else "logoLargePath"
+    key = "brandLogoSmall" if variant == "small" else "brandLogoLarge"
     return {
         "binding": {
             "config": {
                 "struct": {
                     "variant": perspective_string_literal(variant),
                     "sessionSource": f"{{session.custom.configFileMenu.{key}}}",
-                    "paramSource": f"{{view.params.{key}}}",
                     "defaultSource": perspective_string_literal(data_uri),
                 },
                 "waitOnAll": True,
@@ -234,6 +226,112 @@ def page_config_resource_json() -> dict:
             }
         },
     }
+
+
+# All project configuration lives in ONE session custom object,
+# session.custom.configFileMenu, shipped here so it exists on import. Keys are flat and
+# group-prefixed for easy navigation (dock* / content* / brand* / layout* / show* /
+# route*). The runtime (exchange.cfm.runtime) reads/writes this object directly.
+SESSION_PROPS_DIR = PROJECT_ROOT / "com.inductiveautomation.perspective" / "session-props"
+
+# Standard Perspective built-in session prop access config (verbatim defaults).
+SESSION_PROPS_BUILTIN = {
+    "props.auth": {"access": "PRIVATE", "persistent": False},
+    "props.device.accelerometer": {"access": "SYSTEM", "persistent": False},
+    "props.device.identifier": {"access": "SYSTEM", "persistent": False},
+    "props.device.timezone": {"access": "SYSTEM", "persistent": False},
+    "props.device.type": {"access": "SYSTEM", "persistent": False},
+    "props.device.userAgent": {"access": "SYSTEM", "persistent": False},
+    "props.gateway": {"access": "SYSTEM", "persistent": False},
+    "props.geolocation.data": {"access": "SYSTEM", "persistent": False},
+    "props.geolocation.permissionGranted": {"access": "SYSTEM", "persistent": False},
+    "props.host": {"access": "SYSTEM", "persistent": False},
+    "props.id": {"access": "SYSTEM", "persistent": False},
+    "props.lastActivity": {"access": "SYSTEM", "persistent": False},
+    "props.offline.capable": {"access": "SYSTEM", "persistent": False},
+    "props.offline.enabled": {"access": "SYSTEM", "persistent": False},
+    "props.offline.lastSynced": {"access": "SYSTEM", "persistent": False},
+}
+
+
+def build_config_file_menu_object(
+    menu_yaml: str,
+    *,
+    menu_type: str = "yaml",
+    site_name: str = "Default Site",
+) -> dict:
+    """The single configFileMenu session object, flat + group-prefixed for navigation."""
+    return {
+        # dock — live open/pin state + project startup defaults
+        "dockOpen": True,
+        "dockPinned": True,
+        "dockContentPush": True,
+        "dockCloseOnOutsideClick": True,
+        # content — the menu source that drives the whole navigation
+        "contentSource": menu_yaml,
+        "contentSourceType": menu_type,
+        "contentDockId": "config-file-menu",
+        "contentBreadcrumbPrefix": "cfm",
+        # layout — menu typography and width
+        "layoutFont": "",
+        "layoutFontSize": "14px",
+        "layoutWidthOpen": "220px",
+        # brand — site name and logos (blank logo paths use the embedded default PNGs).
+        # The large logo is dedicated to the menu header; the small logo to the top bar.
+        "brandSiteName": site_name,
+        "brandLogoLarge": "",
+        "brandLogoSmall": "",
+        "brandLogoLink": "/",
+        # show — visibility toggles
+        "showMenuLogo": True,
+        "showTopBarClock": True,
+        "clockRefreshSeconds": 5,
+        "showTopBarSmallLogo": True,
+        "showFooterUser": True,
+        "showFooterSettings": True,
+        "showFooterDiagnostics": True,
+        # route — shell/fallback navigation
+        "routeFallbackEnabled": True,
+        "routeFallbackPath": "/cfm/target-no-route",
+        "routeLogicalPath": "",
+        # settings — active Settings tab index
+        "settingsCurrentTab": 0,
+        # diagnostics — opt-in performance logging (CFM.perf); off by default, zero-overhead
+        "perfLogging": False,
+    }
+
+
+def session_props_json(config_object: dict) -> dict:
+    return {
+        "custom": {"configFileMenu": config_object},
+        "propConfig": SESSION_PROPS_BUILTIN,
+        "props": {"device": {}, "geolocation": {}, "locale": "en-US", "offline": {}},
+    }
+
+
+def session_props_resource_json() -> dict:
+    return {
+        "scope": "G",
+        "version": 1,
+        "restricted": False,
+        "overridable": True,
+        "files": ["props.json"],
+        # Fixed timestamp: the gateway regenerates modification metadata on import, and a
+        # stable value keeps rebuilds free of churn.
+        "attributes": {
+            "lastModification": {"actor": RESOURCE_ACTOR, "timestamp": "2026-07-17T00:00:00Z"}
+        },
+    }
+
+
+def write_session_props(dest_dir: Path, config_object: dict) -> None:
+    dest_dir.mkdir(parents=True, exist_ok=True)
+    (dest_dir / "props.json").write_text(
+        json.dumps(session_props_json(config_object), indent=2) + "\n", encoding="utf-8"
+    )
+    (dest_dir / "resource.json").write_text(
+        json.dumps(session_props_resource_json(), indent=2) + "\n", encoding="utf-8"
+    )
 
 
 def build_shell_title_row() -> dict:
@@ -379,21 +477,14 @@ def build_shell_placeholder_section(*, placeholder_kind: str) -> dict:
 
 
 def build_shell_view(*, include_sample_menu_config: bool = False, placeholder_kind: str = "hmi") -> dict:
+    # All menu config lives in the session object (configFileMenu.contentSource); shell
+    # views carry only the functional requestedPath param.
     params: dict = {
-        "menuDockId": "config-file-menu",
-        "closeMenuOnOutsideClick": True,
         "requestedPath": "",
     }
     prop_config: dict = {
-        "params.menuDockId": {"paramDirection": "input", "persistent": True},
-        "params.closeMenuOnOutsideClick": {"paramDirection": "input", "persistent": True},
         "params.requestedPath": {"paramDirection": "input", "persistent": True},
     }
-    if include_sample_menu_config:
-        params["menuConfig"] = sample_menu_yaml().strip() + "\n"
-        params["menuConfigType"] = "yaml"
-        prop_config["params.menuConfig"] = {"paramDirection": "input", "persistent": True}
-        prop_config["params.menuConfigType"] = {"paramDirection": "input", "persistent": True}
 
     return {
         "custom": {},
@@ -461,11 +552,9 @@ def build_landing_view() -> dict:
         "custom": {},
         "params": {
             "menuDockId": "config-file-menu",
-            "closeMenuOnOutsideClick": True,
         },
         "propConfig": {
             "params.menuDockId": {"paramDirection": "input", "persistent": True},
-            "params.closeMenuOnOutsideClick": {"paramDirection": "input", "persistent": True},
         },
         "props": {"defaultSize": {"height": 900, "width": 1200}},
         "root": {
@@ -556,6 +645,11 @@ def build_shared_docks() -> dict:
                 "resizable": False,
                 "show": "visible",
                 "size": 220,
+                # Project dock defaults live in the session custom properties
+                # (Perspective -> Session Properties -> custom: menuControlIsPinned,
+                # menuControlDockContentPush, menuControlCloseOnOutsideClick), shipped in
+                # the library session-props resource and read by cfm.dock. No dock
+                # viewParams are needed here.
                 "viewParams": {},
                 "viewPath": "Config File Menu/MenuContent",
             }
@@ -741,6 +835,33 @@ def write_image_resources(source_logo: Path) -> None:
         shutil.copy2(source_logo, PROJECT_ROOT / "config" / "cfm-logo-source.png")
 
 
+# Single source for the footer flag -> session key map. The footer position.display
+# bindings point directly at session.custom.configFileMenu.<sessionKey>, and the
+# runtime footer_visible() reads that value straight from the binding, so this map
+# lives only here (the build side that generates the binding path).
+FOOTER_SESSION_KEYS = {
+    "showUser": "showFooterUser",
+    "showSettings": "showFooterSettings",
+    "showDiagnostics": "showFooterDiagnostics",
+}
+
+
+def footer_visibility_binding(footer_key: str, *, default: bool = True) -> dict:
+    session_key = FOOTER_SESSION_KEYS[footer_key]
+    return {
+        "binding": {
+            "config": {"path": f"session.custom.configFileMenu.{session_key}"},
+            "transforms": [
+                {
+                    "code": jython_footer_visibility_script(footer_key, default=default),
+                    "type": "script",
+                }
+            ],
+            "type": "property",
+        }
+    }
+
+
 def make_footer_link(
     *,
     name: str,
@@ -754,28 +875,7 @@ def make_footer_link(
         "meta": {"name": name},
         "position": {"shrink": 0},
         "propConfig": {
-            "position.display": {
-                "binding": {
-                    "config": {
-                        "struct": {
-                            "sessionMenuConfig": "{session.custom.configFileMenu.menuConfig}",
-                            "sessionMenuConfigType": "{session.custom.configFileMenu.menuConfigType}",
-                            "paramMenuConfig": "{view.params.menuConfig}",
-                            "paramMenuConfigType": "{view.params.menuConfigType}",
-                        },
-                        "waitOnAll": True,
-                    },
-                    "transforms": [
-                        {
-                            "code": jython_footer_visibility_script(
-                                footer_key, default=default_visible
-                            ),
-                            "type": "script",
-                        }
-                    ],
-                    "type": "expr-struct",
-                }
-            }
+            "position.display": footer_visibility_binding(footer_key, default=default_visible)
         },
         "props": {
             "path": "Config File Menu/Resources/Menu/Menu Child",
@@ -812,17 +912,17 @@ def patch_menu_footer(view_path: Path) -> None:
             for child in children:
                 name = child.get("meta", {}).get("name", "")
                 if name == "MenuFooterSettings":
-                    child["propConfig"]["position.display"]["binding"]["transforms"][0][
-                        "code"
-                    ] = jython_footer_visibility_script("showSettings", default=True)
+                    child["propConfig"]["position.display"] = footer_visibility_binding(
+                        "showSettings", default=True
+                    )
                 elif name == "MenuFooterDiagnostics":
-                    child["propConfig"]["position.display"]["binding"]["transforms"][0][
-                        "code"
-                    ] = jython_footer_visibility_script("showDiagnostics", default=True)
+                    child["propConfig"]["position.display"] = footer_visibility_binding(
+                        "showDiagnostics", default=True
+                    )
                 elif name == "MenuSectionUser":
-                    child["propConfig"]["position.display"]["binding"]["transforms"][0][
-                        "code"
-                    ] = jython_footer_visibility_script("showUser", default=True)
+                    child["propConfig"]["position.display"] = footer_visibility_binding(
+                        "showUser", default=True
+                    )
                 if child.get("type") == "ia.display.view" and "Menu Child" in str(
                     child.get("props", {}).get("path", "")
                 ):
@@ -894,6 +994,37 @@ def patch_view_menu_config(view_path: Path, menu_yaml: str) -> None:
     view_path.write_text(json.dumps(data, indent=2) + "\n", encoding="utf-8")
 
 
+# The three project dock defaults now live ONLY in the session custom properties
+# (Perspective -> Session Properties -> custom: menuControlIsPinned,
+# menuControlDockContentPush, menuControlCloseOnOutsideClick), shipped in the library
+# session-props resource and read by cfm.dock.read_menu_content_dock_defaults. They are
+# scrubbed from MenuContent so an author sees them in a single place.
+# Any param name a previous build authored on MenuContent as a dock default.
+LEGACY_MENU_CONTENT_DOCK_PARAMS = (
+    "isPinned",
+    "dockContent",
+    "closeMenuOnOutsideClick",
+    "menuIsPinned",
+    "menuDockContentPush",
+    "menuCloseOnOutsideClick",
+    "menuControlIsPinned",
+    "menuControlDockContentPush",
+    "menuControlCloseOnOutsideClick",
+)
+
+
+def scrub_menu_content_dock_default_params(view_path: Path) -> None:
+    # Remove any dock-default params from MenuContent; they live only in the session custom
+    # properties now. Idempotent.
+    data = json.loads(view_path.read_text(encoding="utf-8"))
+    params = data.setdefault("params", {})
+    prop_config = data.setdefault("propConfig", {})
+    for old in LEGACY_MENU_CONTENT_DOCK_PARAMS:
+        params.pop(old, None)
+        prop_config.pop(f"params.{old}", None)
+    view_path.write_text(json.dumps(data, indent=2) + "\n", encoding="utf-8")
+
+
 def patch_logo_sources(
     view_path: Path,
     *,
@@ -926,13 +1057,6 @@ def patch_logo_sources(
             node.setdefault("propConfig", {})["props.source"] = {
                 **logo_source_binding("large", large_default)
             }
-        elif name == "MenuSmallBreakpoint":
-            props = node.setdefault("props", {})
-            props["fit"] = {"height": 40, "mode": "contain", "width": 40}
-            props.pop("source", None)
-            node.setdefault("propConfig", {})["props.source"] = {
-                **logo_source_binding("small", small_default)
-            }
         elif name == "TopLogo":
             node.setdefault("propConfig", {})["props.style.cursor"] = {
                 "binding": {
@@ -950,14 +1074,8 @@ def patch_logo_sources(
             walk(child)
 
     walk(data.get("root") or {})
-    params = data.setdefault("params", {})
-    params["logoLargePath"] = ""
-    params["logoSmallPath"] = ""
-    params["logoLinkTarget"] = "/"
-    prop_config = data.setdefault("propConfig", {})
-    prop_config["params.logoLargePath"] = {"paramDirection": "input", "persistent": True}
-    prop_config["params.logoSmallPath"] = {"paramDirection": "input", "persistent": True}
-    prop_config["params.logoLinkTarget"] = {"paramDirection": "input", "persistent": True}
+    # Logo source/link now live in the session object (brandLogoLarge / brandLogoSmall /
+    # brandLogoLink); MenuContent carries no params.
     view_path.write_text(json.dumps(data, indent=2) + "\n", encoding="utf-8")
 
 
@@ -991,10 +1109,10 @@ def patch_header_layout(view_path: Path) -> None:
         elif name == "MenuLargeBreakpoint":
             style = node.setdefault("props", {}).setdefault("style", {})
             style["alignSelf"] = "center"
-        elif name == "MenuSmallBreakpoint":
+            # The large logo is dedicated to the menu header; showMenuLogo toggles it.
             node.setdefault("propConfig", {})["position.display"] = {
                 "binding": {
-                    "config": {"expression": "false"},
+                    "config": {"expression": "{session.custom.configFileMenu.showMenuLogo}"},
                     "type": "expr",
                 }
             }
@@ -1038,11 +1156,8 @@ def build_top_bar_small_logo_node(small_default: str, small_expr: str) -> dict:
                 "binding": {
                     "config": {
                         "struct": {
-                            "sessionMenuConfig": "{session.custom.configFileMenu.menuConfig}",
-                            "sessionMenuConfigType": "{session.custom.configFileMenu.menuConfigType}",
-                            "paramMenuConfig": "{view.params.menuConfig}",
-                            "paramMenuConfigType": "{view.params.menuConfigType}",
                             "viewportWidth": "{page.props.dimensions.viewport.width}",
+                            "showTopBarSmallLogo": "{session.custom.configFileMenu.showTopBarSmallLogo}",
                         },
                         "waitOnAll": True,
                     },
@@ -1080,6 +1195,19 @@ def patch_top_bar_clock(view_path: Path) -> None:
             prop_config["props.text"] = {
                 "binding": {
                     "config": {"expression": TOPBAR_CLOCK_EXPR},
+                    "type": "expr",
+                }
+            }
+            # Hide when disabled OR on narrow screens; when disabled the poll rate above is
+            # also 0, so the label is both hidden and no longer polling.
+            prop_config["position.display"] = {
+                "binding": {
+                    "config": {
+                        "expression": (
+                            "{page.props.dimensions.viewport.width}>450 && "
+                            "{session.custom.configFileMenu.showTopBarClock}"
+                        )
+                    },
                     "type": "expr",
                 }
             }
@@ -1126,11 +1254,8 @@ def patch_top_bar_small_logo(view_path: Path) -> None:
             "binding": {
                 "config": {
                     "struct": {
-                        "sessionMenuConfig": "{session.custom.configFileMenu.menuConfig}",
-                        "sessionMenuConfigType": "{session.custom.configFileMenu.menuConfigType}",
-                        "paramMenuConfig": "{view.params.menuConfig}",
-                        "paramMenuConfigType": "{view.params.menuConfigType}",
                         "viewportWidth": "{page.props.dimensions.viewport.width}",
+                        "showTopBarSmallLogo": "{session.custom.configFileMenu.showTopBarSmallLogo}",
                     },
                     "waitOnAll": True,
                 },
@@ -1167,7 +1292,18 @@ def patch_menu_repeater_transform(view_path: Path) -> None:
         if not isinstance(node, dict):
             return
         if node.get("meta", {}).get("name") == "MenuItems":
-            node["propConfig"]["props.instances"]["binding"]["transforms"][0]["code"] = script
+            binding = node["propConfig"]["props.instances"]["binding"]
+            binding["transforms"][0]["code"] = script
+            # Bind the menu structure to the authored source only. The session mirror
+            # (session.custom.configFileMenu.contentSource) is always set equal to the
+            # param at startup and never diverges, so depending on it added no value
+            # and made this expensive binding re-fire on every navigation-time write
+            # to session.custom.configFileMenu. Param-only keeps rendering identical
+            # while decoupling it from session churn.
+            binding["config"]["struct"] = {
+                "paramMenuConfig": "{session.custom.configFileMenu.contentSource}",
+                "paramMenuConfigType": "{session.custom.configFileMenu.contentSourceType}",
+            }
             return
         for child in node.get("children") or []:
             walk(child)
@@ -1216,7 +1352,7 @@ def patch_effective_page_path_binding(view_path: Path, prop_key: str) -> None:
         "struct": {
             "path": "{page.props.path}",
             "requestedPath": "{view.params.requestedPath}",
-            "logicalPagePath": "{session.custom.configFileMenu.logicalPagePath}",
+            "routeLogicalPath": "{session.custom.configFileMenu.routeLogicalPath}",
         },
         "waitOnAll": True,
     }
@@ -1235,9 +1371,9 @@ def patch_top_bar_library_scripts(view_path: Path) -> None:
     root["events"]["component"]["onStartup"]["config"]["script"] = thin_topbar_startup()
     toggle_trigger_struct = {
         "deviceType": "{session.props.device.type}",
-        "dockContent": "{session.custom.configFileMenu.dockContent}",
-        "isPinned": "{session.custom.configFileMenu.isPinned}",
-        "isOpen": "{session.custom.configFileMenu.isOpen}",
+        "dockContent": "{session.custom.configFileMenu.dockContentPush}",
+        "isPinned": "{session.custom.configFileMenu.dockPinned}",
+        "isOpen": "{session.custom.configFileMenu.dockOpen}",
         "viewportWidth": "{page.props.dimensions.viewport.width}",
         "primaryViewWidth": "{page.props.dimensions.primaryView.width}",
     }
@@ -1267,37 +1403,13 @@ def patch_top_bar_library_scripts(view_path: Path) -> None:
             struct = binding["config"]["struct"]
             struct["path"] = "{page.props.path}"
             struct["requestedPath"] = "{view.params.requestedPath}"
-            struct["logicalPagePath"] = "{session.custom.configFileMenu.logicalPagePath}"
-            struct["shellFallbackEnabled"] = "{session.custom.configFileMenu.shellFallbackEnabled}"
+            struct["routeLogicalPath"] = "{session.custom.configFileMenu.routeLogicalPath}"
+            struct["routeFallbackEnabled"] = "{session.custom.configFileMenu.routeFallbackEnabled}"
             binding["transforms"][0]["code"] = thin_breadcrumb_instances()
         for child in node.get("children") or []:
             walk(child)
 
     walk(root)
-    view_path.write_text(json.dumps(data, indent=2) + "\n", encoding="utf-8")
-
-
-def patch_menu_content_arrow_side(view_path: Path) -> None:
-    data = json.loads(view_path.read_text(encoding="utf-8"))
-    data["root"]["propConfig"]["props.style.classes"] = {
-        "binding": {
-            "config": {
-                "struct": {
-                    "deviceType": "{session.props.device.type}",
-                    "isOpen": "{session.custom.configFileMenu.isOpen}",
-                    "menuMode": "{session.custom.configFileMenu.menuMode}",
-                },
-                "waitOnAll": True,
-            },
-            "transforms": [
-                {
-                    "code": "\treturn exchange.cfm.runtime.menu_panel_classes(self.session)\n",
-                    "type": "script",
-                }
-            ],
-            "type": "expr-struct",
-        }
-    }
     view_path.write_text(json.dumps(data, indent=2) + "\n", encoding="utf-8")
 
 
@@ -1320,8 +1432,6 @@ def patch_menu_views_lock_arrow_left() -> None:
     for child in (parent_data.get("root") or {}).get("children") or []:
         if child.get("meta", {}).get("name") == "SectionHeader":
             child.setdefault("propConfig", {})["props.style.classes"] = SECTION_HEADER_CLASSES_BINDING
-        if child.get("meta", {}).get("name") == "Tree":
-            _set_style_classes_expression(child, TREE_CLASSES_EXPR)
     menu_parent.write_text(json.dumps(parent_data, indent=2) + "\n", encoding="utf-8")
 
     child_data = json.loads(menu_child.read_text(encoding="utf-8"))
@@ -1333,10 +1443,47 @@ def patch_menu_content_startup(view_path: Path) -> None:
     data = json.loads(view_path.read_text(encoding="utf-8"))
     component = data["root"].setdefault("events", {}).setdefault("component", {})
     component["onStartup"]["config"]["script"] = thin_menu_content_startup()
-    component["onPropertyChange"] = {
-        "config": {"script": thin_menu_content_property_change()},
-        "scope": "G",
-        "type": "script",
+    # Obsolete: this handler synced siteName from MenuContent view params, which no longer
+    # exist (config lives in the session object). Scrub any copy left by an earlier build.
+    component.pop("onPropertyChange", None)
+    view_path.write_text(json.dumps(data, indent=2) + "\n", encoding="utf-8")
+
+
+def patch_menu_panel_style_binding(view_path: Path) -> None:
+    # Consolidate the root panel style bindings into a single whole-object bind.
+    # Individual props.style.--cfm-* bindings throw "Malformed path" on the gateway
+    # every evaluation (JsonPath cannot parse a "--" dot segment), which floods the
+    # log and thrashes ComponentModel across every docked session. One props.style
+    # binding returns classes plus the CSS custom properties in a single valid write.
+    data = json.loads(view_path.read_text(encoding="utf-8"))
+    prop_config = data["root"].setdefault("propConfig", {})
+    for key in (
+        "props.style.classes",
+        "props.style.--cfm-menu-font-family",
+        "props.style.--cfm-menu-font-size",
+        "props.style.--cfm-menu-width-open",
+    ):
+        prop_config.pop(key, None)
+    prop_config["props.style"] = {
+        "binding": {
+            "config": {
+                "struct": {
+                    "deviceType": "{session.props.device.type}",
+                    "isOpen": "{session.custom.configFileMenu.dockOpen}",
+                    "menuFont": "{session.custom.configFileMenu.layoutFont}",
+                    "menuFontSize": "{session.custom.configFileMenu.layoutFontSize}",
+                    "menuWidthOpen": "{session.custom.configFileMenu.layoutWidthOpen}",
+                },
+                "waitOnAll": True,
+            },
+            "transforms": [
+                {
+                    "code": "\treturn exchange.cfm.runtime.menu_panel_style(self.session)\n",
+                    "type": "script",
+                }
+            ],
+            "type": "expr-struct",
+        }
     }
     view_path.write_text(json.dumps(data, indent=2) + "\n", encoding="utf-8")
 
@@ -1352,17 +1499,17 @@ def patch_top_bar_fallback(view_path: Path) -> None:
 
 
 SHELL_FALLBACK_DEFAULTS = (
-    "\tstate.setdefault('shellFallbackEnabled', True)\n"
-    f"\tstate.setdefault('shellFallbackRoute', '{SHELL_FALLBACK_ROUTE}')\n"
-    "\tstate.setdefault('logicalPagePath', '')\n"
+    "\tstate.setdefault('routeFallbackEnabled', True)\n"
+    f"\tstate.setdefault('routeFallbackPath', '{SHELL_FALLBACK_ROUTE}')\n"
+    "\tstate.setdefault('routeLogicalPath', '')\n"
     "\tstate.setdefault('showTopBarSmallLogo', True)\n"
 )
 
 
 def patch_startup_shell_fallback_defaults(script: str) -> str:
-    script = script.replace("shellFallbackRoute', '/cfm/page'", f"shellFallbackRoute', '{SHELL_FALLBACK_ROUTE}'")
-    script = script.replace('shellFallbackRoute", "/cfm/page"', f'shellFallbackRoute", "{SHELL_FALLBACK_ROUTE}"')
-    if "shellFallbackEnabled" in script:
+    script = script.replace("routeFallbackPath', '/cfm/page'", f"routeFallbackPath', '{SHELL_FALLBACK_ROUTE}'")
+    script = script.replace('routeFallbackPath", "/cfm/page"', f'routeFallbackPath", "{SHELL_FALLBACK_ROUTE}"')
+    if "routeFallbackEnabled" in script:
         return script
     marker = "\tself.session.custom.configFileMenu = state"
     if marker in script:
@@ -1388,7 +1535,8 @@ def make_settings_row(
     }
     if input_type == "dropdown" and dropdown_options:
         if session_key in (
-            "shellFallbackEnabled",
+            "routeFallbackEnabled",
+            "showTopBarClock",
             "showTopBarSmallLogo",
             "showFooterUser",
             "showFooterSettings",
@@ -1421,11 +1569,12 @@ def make_settings_row(
             }
         }
     else:
-        text_transform = (
-            f"\treturn str(value or '{SHELL_FALLBACK_ROUTE}')"
-            if session_key == "shellFallbackRoute"
-            else "\treturn str(value if value not in (None, '') else '')"
-        )
+        if session_key == "routeFallbackPath":
+            text_transform = f"\treturn str(value or '{SHELL_FALLBACK_ROUTE}')"
+        elif session_key == "clockRefreshSeconds":
+            text_transform = "\treturn str(value if value not in (None, '') else '5')"
+        else:
+            text_transform = "\treturn str(value if value not in (None, '') else '')"
         input_node["propConfig"] = {
             "props.text": {
                 "binding": {
@@ -1435,7 +1584,7 @@ def make_settings_row(
                 }
             }
         }
-        if session_key == "shellFallbackRoute":
+        if session_key == "routeFallbackPath":
             input_node["props"]["text"] = SHELL_FALLBACK_ROUTE
     if save_script:
         input_node["events"] = {
@@ -1570,16 +1719,16 @@ def patch_menu_settings_general_row_layout(root: dict) -> None:
 FALLBACK_ENABLED_SAVE = (
     "\tval = self.props.value\n"
     "\tif val in (True, False):\n"
-    "\t\texchange.cfm.runtime.set_state_field(self.session, 'shellFallbackEnabled', val)\n"
+    "\t\texchange.cfm.runtime.set_state_field(self.session, 'routeFallbackEnabled', val)\n"
     "\telse:\n"
-    "\t\texchange.cfm.runtime.set_state_field(self.session, 'shellFallbackEnabled', exchange.cfm.runtime.is_true(val))\n"
+    "\t\texchange.cfm.runtime.set_state_field(self.session, 'routeFallbackEnabled', exchange.cfm.runtime.is_true(val))\n"
 )
 
 FALLBACK_ROUTE_SAVE = (
     f"\troute = str(self.props.text or '{SHELL_FALLBACK_ROUTE}').strip()\n"
     "\tif not route.startswith('/'):\n"
     "\t\troute = '/' + route\n"
-    "\texchange.cfm.runtime.set_state_field(self.session, 'shellFallbackRoute', route)\n"
+    "\texchange.cfm.runtime.set_state_field(self.session, 'routeFallbackPath', route)\n"
 )
 
 TOPBAR_SMALL_LOGO_SAVE = (
@@ -1588,6 +1737,26 @@ TOPBAR_SMALL_LOGO_SAVE = (
     "\t\texchange.cfm.runtime.set_state_field(self.session, 'showTopBarSmallLogo', val)\n"
     "\telse:\n"
     "\t\texchange.cfm.runtime.set_state_field(self.session, 'showTopBarSmallLogo', exchange.cfm.runtime.is_true(val))\n"
+)
+
+TOPBAR_CLOCK_SAVE = (
+    "\tval = self.props.value\n"
+    "\tif val in (True, False):\n"
+    "\t\texchange.cfm.runtime.set_state_field(self.session, 'showTopBarClock', val)\n"
+    "\telse:\n"
+    "\t\texchange.cfm.runtime.set_state_field(self.session, 'showTopBarClock', exchange.cfm.runtime.is_true(val))\n"
+)
+
+# Clock refresh interval, in seconds. Coerce to an integer >= 1 so the poll expression
+# (max(1, seconds) * 1000) always gets a sane rate.
+CLOCK_SECONDS_SAVE = (
+    "\ttry:\n"
+    "\t\tn = int(float(str(self.props.text or '').strip()))\n"
+    "\texcept:\n"
+    "\t\tn = 1\n"
+    "\tif n < 1:\n"
+    "\t\tn = 1\n"
+    "\texchange.cfm.runtime.set_state_field(self.session, 'clockRefreshSeconds', n)\n"
 )
 
 FOOTER_USER_SAVE = (
@@ -1614,28 +1783,10 @@ FOOTER_SETTINGS_SAVE = (
     "\t\texchange.cfm.runtime.set_state_field(self.session, 'showFooterSettings', exchange.cfm.runtime.is_true(val))\n"
 )
 
-MENU_CONTENT_PANEL_CLASSES_EXPR = (
-    "concat("
-    "if({session.props.device.type}='designer',"
-    "'cfm-menu cfm-menu--open cfm-menu__panel',"
-    "if(coalesce({session.custom.configFileMenu.isOpen}, false)=true || "
-    "lower(coalesce(toString({session.custom.configFileMenu.menuMode}), 'closed'))='open',"
-    "'cfm-menu cfm-menu--open cfm-menu__panel',"
-    "'cfm-menu cfm-menu--closed cfm-menu__panel')),"
-    " ' cfm-menu__arrow-left')"
-)
-
-
-def remove_expand_arrow_side_settings_row(view_path: Path) -> None:
-    data = json.loads(view_path.read_text(encoding="utf-8"))
-    root = data["root"]
-    root["children"] = [
-        child
-        for child in root.get("children") or []
-        if child.get("meta", {}).get("name") != "ExpandArrowSideRow"
-    ]
-    view_path.write_text(json.dumps(data, indent=2) + "\n", encoding="utf-8")
-
+# Opt-in performance logging toggle. Delegates to the named runtime handler, which writes
+# the perfLogging session property (coerced via is_true) so the CFM.perf timers can be
+# turned on/off from the app without gateway access.
+PERF_LOGGING_SAVE = "\texchange.cfm.runtime.on_settings_perf_logging_change(self)\n"
 
 def remove_site_name_settings_row(view_path: Path) -> None:
     data = json.loads(view_path.read_text(encoding="utf-8"))
@@ -1674,6 +1825,50 @@ def patch_menu_settings_general_topbar_logo(view_path: Path) -> None:
                     {"label": "Hide", "value": False},
                 ],
                 save_script=TOPBAR_SMALL_LOGO_SAVE,
+            ),
+        )
+    if not any(child.get("meta", {}).get("name") == "TopBarClockRow" for child in children):
+        insert_idx = next(
+            (
+                idx
+                for idx, child in enumerate(children)
+                if child.get("meta", {}).get("name") == "TopBarSmallLogoRow"
+            ),
+            len(children),
+        )
+        children.insert(
+            insert_idx + 1,
+            make_settings_row(
+                name="TopBarClockRow",
+                label_text="Top bar clock",
+                input_name="TopBarClockDropdown",
+                session_key="showTopBarClock",
+                input_type="dropdown",
+                dropdown_options=[
+                    {"label": "Show", "value": True},
+                    {"label": "Hide", "value": False},
+                ],
+                save_script=TOPBAR_CLOCK_SAVE,
+            ),
+        )
+    if not any(child.get("meta", {}).get("name") == "ClockRefreshRow" for child in children):
+        insert_idx = next(
+            (
+                idx
+                for idx, child in enumerate(children)
+                if child.get("meta", {}).get("name") == "TopBarClockRow"
+            ),
+            len(children),
+        )
+        children.insert(
+            insert_idx + 1,
+            make_settings_row(
+                name="ClockRefreshRow",
+                label_text="Clock refresh (seconds)",
+                input_name="ClockRefreshInput",
+                session_key="clockRefreshSeconds",
+                input_type="text-field",
+                save_script=CLOCK_SECONDS_SAVE,
             ),
         )
     view_path.write_text(json.dumps(data, indent=2) + "\n", encoding="utf-8")
@@ -1735,6 +1930,92 @@ def patch_menu_settings_general_footer_visibility(view_path: Path) -> None:
     view_path.write_text(json.dumps(data, indent=2) + "\n", encoding="utf-8")
 
 
+def patch_menu_settings_general_perf_logging(view_path: Path) -> None:
+    # Insert a "Performance logging" On/Off toggle bound to configFileMenu.perfLogging.
+    # Placed after the footer rows (before the health row). Idempotent.
+    data = json.loads(view_path.read_text(encoding="utf-8"))
+    children = data["root"]["children"]
+    if any(child.get("meta", {}).get("name") == "PerfLoggingRow" for child in children):
+        return
+    insert_after = next(
+        (
+            idx + 1
+            for idx, child in enumerate(children)
+            if child.get("meta", {}).get("name") == "FooterDiagnosticsRow"
+        ),
+        len(children),
+    )
+    children.insert(
+        insert_after,
+        make_settings_row(
+            name="PerfLoggingRow",
+            label_text="Performance logging",
+            input_name="PerfLoggingDropdown",
+            session_key="perfLogging",
+            input_type="dropdown",
+            dropdown_options=[
+                {"label": "Off", "value": False},
+                {"label": "On", "value": True},
+            ],
+            save_script=PERF_LOGGING_SAVE,
+        ),
+    )
+    view_path.write_text(json.dumps(data, indent=2) + "\n", encoding="utf-8")
+
+
+def make_menu_health_row() -> dict:
+    # A "Validate menu config" button + a read-only output label. The button calls the
+    # runtime validate_menu_config handler, which writes its result into MenuHealthOutput
+    # and logs one CFM.health summary line. Result goes to the component only — no session
+    # key is added.
+    return {
+        "meta": {"name": "MenuHealthRow"},
+        "position": {"shrink": 0},
+        "props": {
+            "alignItems": "center",
+            "style": {"gap": "12px", "padding": "8px 16px"},
+            "wrap": "nowrap",
+        },
+        "type": "ia.container.flex",
+        "children": [
+            {
+                "meta": {"name": "ValidateMenuButton"},
+                "position": {"basis": "200px", "shrink": 0},
+                "props": {"text": "Validate menu config"},
+                "events": {
+                    "component": {
+                        "onActionPerformed": {
+                            "config": {"script": "\texchange.cfm.runtime.validate_menu_config(self)\n"},
+                            "scope": "G",
+                            "type": "script",
+                        }
+                    }
+                },
+                "type": "ia.input.button",
+            },
+            {
+                "meta": {"name": "MenuHealthOutput"},
+                "position": {"grow": 1},
+                "props": {
+                    "text": "",
+                    "wrap": True,
+                    "style": {"fontSize": "14px", "color": "var(--neutral-70)"},
+                },
+                "type": "ia.display.label",
+            },
+        ],
+    }
+
+
+def patch_menu_settings_general_health(view_path: Path) -> None:
+    data = json.loads(view_path.read_text(encoding="utf-8"))
+    children = data["root"]["children"]
+    if any(child.get("meta", {}).get("name") == "MenuHealthRow" for child in children):
+        return
+    children.append(make_menu_health_row())
+    view_path.write_text(json.dumps(data, indent=2) + "\n", encoding="utf-8")
+
+
 def patch_existing_shell_fallback_route_row(root: dict) -> None:
     for child in root.get("children") or []:
         if child.get("meta", {}).get("name") != "ShellFallbackRouteRow":
@@ -1770,7 +2051,7 @@ def patch_menu_settings_general_fallback(view_path: Path) -> None:
     patch_settings_general_startup(view_path)
     patch_menu_settings_general_topbar_logo(view_path)
     patch_menu_settings_general_footer_visibility(view_path)
-    remove_expand_arrow_side_settings_row(view_path)
+    patch_menu_settings_general_perf_logging(view_path)
     data = json.loads(view_path.read_text(encoding="utf-8"))
     root = data["root"]
     children = root["children"]
@@ -1780,18 +2061,38 @@ def patch_menu_settings_general_fallback(view_path: Path) -> None:
         "MenuWidthInput": thin_settings_menu_width_change(),
         "CloseOutsideInput": (
             "\texchange.cfm.runtime.set_state_field(self.session, "
-            "'closeMenuOnOutsideClick', exchange.cfm.runtime.is_true(self.props.value))\n"
+            "'dockCloseOnOutsideClick', exchange.cfm.runtime.is_true(self.props.value))\n"
         ),
         "TopBarSmallLogoDropdown": TOPBAR_SMALL_LOGO_SAVE,
+        "TopBarClockDropdown": TOPBAR_CLOCK_SAVE,
+        "ClockRefreshInput": CLOCK_SECONDS_SAVE,
         "FooterUserDropdown": FOOTER_USER_SAVE,
         "FooterSettingsDropdown": FOOTER_SETTINGS_SAVE,
         "FooterDiagnosticsDropdown": FOOTER_DIAGNOSTICS_SAVE,
+        "PerfLoggingDropdown": PERF_LOGGING_SAVE,
         "ShellFallbackEnabledDropdown": FALLBACK_ENABLED_SAVE,
         "ShellFallbackRouteInput": FALLBACK_ROUTE_SAVE,
     }
 
+    # The close-outside dropdown default must match the menuControlCloseOnOutsideClick
+    # session-custom default (true) so the Settings control matches the seeded value; the row
+    # was authored defaulting to false, which disagreed with the shipped project default.
+    close_outside_default_true = (
+        "\tif value is None:\n"
+        "\t\treturn 'true'\n"
+        "\tif value is True or str(value).lower() in ('true', '1', 'yes', 'on'):\n"
+        "\t\treturn 'true'\n"
+        "\treturn 'false'\n"
+    )
+
     def set_runtime_scripts(node: dict) -> None:
         name = (node.get("meta") or {}).get("name")
+        if name == "CloseOutsideInput":
+            node.setdefault("props", {})["value"] = "true"
+            binding = (node.get("propConfig", {}).get("props.value") or {}).get("binding")
+            for transform in (binding or {}).get("transforms", []):
+                if isinstance(transform.get("code"), str):
+                    transform["code"] = close_outside_default_true
         if name in runtime_scripts:
             script = runtime_scripts[name]
             events = node.setdefault("events", {})
@@ -1819,7 +2120,7 @@ def patch_menu_settings_general_fallback(view_path: Path) -> None:
                     name="ShellFallbackEnabledRow",
                     label_text="Shell fallback navigation",
                     input_name="ShellFallbackEnabledDropdown",
-                    session_key="shellFallbackEnabled",
+                    session_key="routeFallbackEnabled",
                     input_type="dropdown",
                     dropdown_options=[
                         {"label": "Enabled", "value": True},
@@ -1831,7 +2132,7 @@ def patch_menu_settings_general_fallback(view_path: Path) -> None:
                     name="ShellFallbackRouteRow",
                     label_text="Shell fallback route",
                     input_name="ShellFallbackRouteInput",
-                    session_key="shellFallbackRoute",
+                    session_key="routeFallbackPath",
                     save_script=FALLBACK_ROUTE_SAVE,
                 ),
             ]
@@ -1847,8 +2148,6 @@ ARROW_SIDE_SESSION_LEFT_EXPR = "true"
 ARROW_MARGIN_LEFT_EXPR = "'0px'"
 
 ARROW_ORDER_EXPR = "'-1'"
-
-EXPAND_ICON_MARGIN_LEFT_EXPR = "'0px'"
 
 ARROW_DISPLAY_EXPR = "{view.params.showArrow}"
 
@@ -1907,8 +2206,6 @@ MENU_CHILD_CLASSES_EXPR = (
     "{view.custom.key},"
     "if({view.params.showArrow},' cfm-menu__link--arrow-left',''))"
 )
-
-TREE_CLASSES_EXPR = "concat('cfm-menu__section-tree-items cfm-menu__arrow-left')"
 
 MENU_CHILD_EMBED_CLASSES_EXPR = "'cfm-menu__arrow-left'"
 
@@ -2057,16 +2354,21 @@ def build_menu_child_arrow(name: str, display_expr: str, arrow_script: str) -> d
     return build_link_arrow(name, display_expr, ARROW_PATH_EXPR, arrow_script)
 
 
+def scrub_menu_child_arrow_side(view_path: Path) -> None:
+    # arrowSide is a legacy param — the expand arrow is CSS-fixed left and nothing
+    # reads it. Runs unconditionally (patch_menu_link_split_clicks is guard-skipped on
+    # already-patched views), so the param is removed whether the view is fresh or not.
+    data = json.loads(view_path.read_text(encoding="utf-8"))
+    changed = data.get("params", {}).pop("arrowSide", None) is not None
+    changed = data.get("propConfig", {}).pop("params.arrowSide", None) is not None or changed
+    if changed:
+        view_path.write_text(json.dumps(data, indent=2) + "\n", encoding="utf-8")
+
+
 def patch_menu_link_split_clicks(view_path: Path) -> None:
     data = json.loads(view_path.read_text(encoding="utf-8"))
     body_script = jython_menu_link_body_click_script()
     arrow_script = jython_section_arrow_click_script()
-    data.setdefault("params", {})["arrowSide"] = "right"
-    prop_config = data.setdefault("propConfig", {})
-    prop_config["params.arrowSide"] = {
-        "paramDirection": "input",
-        "persistent": True,
-    }
     root = data["root"]
     root.pop("events", None)
     root.setdefault("propConfig", {})
@@ -2200,20 +2502,20 @@ def patch_menu_section_tree_nav(view_path: Path) -> None:
         name = meta.get("name", "")
         if name == "Tree":
             node["events"]["component"]["onItemClicked"]["config"]["script"] = tree_script
-            node.setdefault("props", {}).setdefault("style", {})["classes"] = "cfm-menu__section-tree-items"
             appearance = node.setdefault("props", {}).setdefault("appearance", {})
             appearance["selectedStyle"] = dict(TREE_SELECTED_STYLE)
-            node.setdefault("propConfig", {})["props.style.classes"] = {
-                "binding": {"config": {"expression": TREE_CLASSES_EXPR}, "type": "expr"}
-            }
+            # Static values — the former bindings were constants (a single-arg concat of a
+            # fixed class string, and the literal '0px'), so a plain prop is equivalent.
+            node.setdefault("props", {}).setdefault("style", {})["classes"] = (
+                "cfm-menu__section-tree-items cfm-menu__arrow-left"
+            )
             prop_config = node.setdefault("propConfig", {})
+            prop_config.pop("props.style.classes", None)
             for key in ("collapsed", "expanded", "empty"):
-                prop_config[f"props.appearance.expandIcons.{key}.style.marginLeft"] = {
-                    "binding": {
-                        "config": {"expression": EXPAND_ICON_MARGIN_LEFT_EXPR},
-                        "type": "expr",
-                    }
-                }
+                appearance.setdefault("expandIcons", {}).setdefault(key, {}).setdefault(
+                    "style", {}
+                )["marginLeft"] = "0px"
+                prop_config.pop(f"props.appearance.expandIcons.{key}.style.marginLeft", None)
         for child in node.get("children") or []:
             walk(child)
 
@@ -2226,7 +2528,7 @@ def patch_menu_settings_topbar_logo_default(view_path: Path) -> None:
     script = data["root"]["events"]["component"]["onStartup"]["config"]["script"]
     changed = False
     if "showTopBarSmallLogo" not in script:
-        marker = "\tstate.setdefault('logicalPagePath', '')\n"
+        marker = "\tstate.setdefault('routeLogicalPath', '')\n"
         injection = marker + "\tstate.setdefault('showTopBarSmallLogo', True)\n"
         if marker in script:
             script = script.replace(marker, injection)
@@ -2366,6 +2668,7 @@ def patch_shell_fallback_nav() -> None:
 
     if not _menu_row_starts_with_arrow(menu_child):
         patch_menu_link_split_clicks(menu_child)
+    scrub_menu_child_arrow_side(menu_child)
     set_onclick_script(menu_breadcrumb, MENU_LINK_NAV_SCRIPT)
     patch_effective_page_path_binding(menu_child, "custom.key")
     patch_effective_page_path_binding(menu_breadcrumb, "custom.key")
@@ -2375,6 +2678,7 @@ def patch_shell_fallback_nav() -> None:
     patch_menu_section_tree_nav(menu_parent)
     patch_top_bar_fallback(menu_top_bar)
     patch_menu_settings_general_fallback(menu_settings_general)
+    patch_menu_settings_general_health(menu_settings_general)
     patch_menu_settings_topbar_logo_default(menu_settings)
 
     content = json.loads(menu_content.read_text(encoding="utf-8"))
@@ -2393,11 +2697,9 @@ def patch_shell_fallback_nav() -> None:
     walk_content(content.get("root") or {})
     component = content["root"].setdefault("events", {}).setdefault("component", {})
     component["onStartup"]["config"]["script"] = thin_menu_content_startup()
-    component["onPropertyChange"] = {
-        "config": {"script": thin_menu_content_property_change()},
-        "scope": "G",
-        "type": "script",
-    }
+    # Obsolete: this handler synced siteName from MenuContent view params, which no longer
+    # exist (config lives in the session object). Scrub any copy left by an earlier build.
+    component.pop("onPropertyChange", None)
     menu_content.write_text(json.dumps(content, indent=2) + "\n", encoding="utf-8")
 
     if menu_settings.is_file():
@@ -2493,15 +2795,21 @@ def main() -> None:
     write_project_json(library_project_json())
     write_image_resources(source_logo)
 
-    patch_view_menu_config(VIEWS / "MenuContent" / "view.json", library_menu_stub(menu_yaml))
+    # Ship the single configFileMenu session object (with the library stub menu) so it
+    # exists on import. Children override it with their own menu (build-inheritance-zips).
+    write_session_props(
+        SESSION_PROPS_DIR,
+        build_config_file_menu_object(library_menu_stub(menu_yaml)),
+    )
+    scrub_menu_content_dock_default_params(VIEWS / "MenuContent" / "view.json")
     patch_menu_footer(VIEWS / "MenuContent" / "view.json")
     patch_menu_settings_general(
         VIEWS / "Resources" / "Menu" / "Menu Settings General" / "view.json"
     )
     patch_menu_repeater_transform(VIEWS / "MenuContent" / "view.json")
-    patch_menu_content_arrow_side(VIEWS / "MenuContent" / "view.json")
     patch_menu_views_lock_arrow_left()
     patch_menu_content_startup(VIEWS / "MenuContent" / "view.json")
+    patch_menu_panel_style_binding(VIEWS / "MenuContent" / "view.json")
     patch_logo_sources(VIEWS / "MenuContent" / "view.json")
     patch_header_layout(VIEWS / "MenuContent" / "view.json")
     patch_page_config_menu_site_name(PAGE_CONFIG, VIEWS / "MenuContent" / "view.json")
@@ -2510,7 +2818,7 @@ def main() -> None:
     patch_shell_fallback_nav()
     patch_legacy_runtime_references()
 
-    thumbs = ensure_view_thumbnails(VIEWS)
+    thumbs = ensure_view_thumbnails(VIEWS, force=True)
     print(f"View thumbnails created: {thumbs}")
     print(f"Menu routes (sample): {len(routes)}")
     library_pages = len(json.loads(PAGE_CONFIG.read_text())["pages"])

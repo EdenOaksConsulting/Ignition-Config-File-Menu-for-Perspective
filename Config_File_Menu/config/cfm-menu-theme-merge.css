@@ -18,63 +18,90 @@
   Override --cfm-* variables below to tune layout and colors (host theme tokens preferred).
 */
 
-/* --- Variables --- */
+/* ============================================================================
+   TUNABLE TOKENS  —  edit values here to restyle the whole menu.
+
+   Colors prefer your gateway theme tokens (var(--neutral-*), var(--callToAction--color),
+   etc.) and fall back to a fixed default after the comma. Sizes are plain CSS lengths;
+   change one and every rule that uses it updates. Custom-property order does not matter,
+   so tokens that reference each other (e.g. diag -> page) resolve regardless of position.
+   ============================================================================ */
 :root {
-  --cfm-menu-bg: var(--neutral-10, var(--container--background, var(--page-background, #f7f8fa)));
-  --cfm-menu-color: var(--neutral-90, #1f2933);
-  --cfm-menu-border: var(--neutral-30, #d6dce3);
-  --cfm-menu-accent-rgb: 0, 99, 177;
-  --cfm-menu-hover-bg: rgba(var(--cfm-menu-accent-rgb), 0.08);
-  --cfm-menu-open-bg: rgba(var(--cfm-menu-accent-rgb), 0.06);
-  --cfm-menu-selected-bg: rgba(var(--cfm-menu-accent-rgb), 0.16);
-  --cfm-menu-selected-color: var(--callToAction--color, #005eb8);
-  --cfm-menu-selected-weight: 600;
-  --cfm-menu-width-open: 220px;
-  --cfm-menu-width-closed: 56px;
-  --cfm-menu-font-family: inherit;
-  --cfm-menu-font-size: 14px;
-  --cfm-topbar-bg: var(--topbar--bgColor, var(--container--background, var(--neutral-10, #f7f8fa)));
-  --cfm-topbar-color: var(--topbar--color, var(--neutral-90, #1f2933));
-  --cfm-radius: 6px;
-  --cfm-transition: 160ms ease-in-out;
-  --cfm-menu-tree-indent: 10px;
-  --cfm-menu-tree-indent-step: 10px;
-  --cfm-menu-tree-shift: 0px;
-  --cfm-menu-tree-expand-margin: 0px;
-  --cfm-menu-link-arrow-size: 18px;
-  --cfm-menu-link-icon-size: 20px;
-  --cfm-menu-dock-button-size: 28px;
-  --cfm-menu-dock-icon-size: 22px;
-  --cfm-settings-tabbar-bg: var(--container--background, var(--neutral-10, #f7f8fa));
-  --cfm-settings-tab-bg: var(--neutral-20, #eef1f4);
-  --cfm-settings-tab-active-bg: rgba(var(--cfm-menu-accent-rgb), 0.12);
-  --cfm-settings-tab-border: var(--neutral-30, #080e14);
-  --cfm-settings-tab-color: var(--neutral-70, #4b5563);
-  --cfm-settings-tab-active-color: var(--callToAction--color, #005eb8);
-  --cfm-diag-card-bg: var(--cfm-page-card-bg);
-  --cfm-diag-border: var(--cfm-page-border);
-  --cfm-diag-title-bg: rgba(var(--cfm-menu-accent-rgb), 0.12);
-  --cfm-diag-title-color: var(--callToAction--color, #005eb8);
-  --cfm-diag-label-color: var(--neutral-70, #4b5563);
-  --cfm-diag-value-color: var(--cfm-page-title-color);
-  --cfm-diag-page-bg: var(--cfm-page-bg);
-  --cfm-diag-page-gap: 16px;
-  --cfm-diag-page-padding: 16px;
-  --cfm-diag-tile-width: 360px;
-  --cfm-diag-card-padding: 12px;
-  --cfm-diag-row-gap: 8px;
-  --cfm-diag-row-padding-x: 16px;
-  --cfm-page-bg: var(--page-background, var(--container--background, var(--neutral-10, #f7f8fa)));
-  --cfm-page-card-bg: var(--container--background, var(--page-background, var(--neutral-10, #f7f8fa)));
-  --cfm-page-border: var(--neutral-30, #d6dce3);
-  --cfm-page-title-color: var(--neutral-90, #1f2933);
-  --cfm-page-path-color: var(--neutral-70, #52606d);
-  --cfm-page-muted-color: var(--neutral-60, #7b8794);
-  --cfm-page-notice-bg: var(--warningSecondary, var(--neutral-20, var(--container--background, var(--page-background))));
-  --cfm-page-notice-border: var(--warning, var(--warning-40, #d4a017));
-  --cfm-page-notice-title: var(--cfm-page-title-color);
-  --cfm-page-notice-body: var(--cfm-page-muted-color);
-  --cfm-page-notice-row-bg: transparent;
+  /* --- Accent  (one color drives all hover / open / selected tints) --- */
+  --cfm-menu-accent-rgb: 0, 99, 177;                                 /* accent color as R, G, B (used by the rgba() tints below) */
+  --cfm-menu-selected-color: var(--callToAction--color, #005eb8);    /* text color of the selected menu item */
+  --cfm-menu-selected-weight: 600;                                   /* font weight of the selected menu item */
+
+  /* --- Menu colors --- */
+  --cfm-menu-bg: var(--neutral-10, var(--container--background, var(--page-background, #f7f8fa)));  /* menu panel background */
+  --cfm-menu-color: var(--neutral-90, #1f2933);                      /* menu text color */
+  --cfm-menu-border: var(--neutral-30, #d6dce3);                     /* menu right-edge border */
+  --cfm-menu-hover-bg: rgba(var(--cfm-menu-accent-rgb), 0.08);       /* row background on hover */
+  --cfm-menu-open-bg: rgba(var(--cfm-menu-accent-rgb), 0.06);        /* background of an expanded section */
+  --cfm-menu-selected-bg: rgba(var(--cfm-menu-accent-rgb), 0.16);    /* background of the selected item */
+
+  /* --- Menu size & layout --- */
+  --cfm-menu-width-open: 220px;                                      /* menu width when open (also sets the dock size) */
+  --cfm-menu-width-closed: 56px;                                     /* menu width when collapsed */
+  --cfm-menu-row-height: 40px;                                       /* height of every menu / breadcrumb / top-bar row (and the toggle button) */
+  --cfm-menu-font-family: inherit;                                   /* menu font family (inherit = use the theme font) */
+  --cfm-menu-font-size: 14px;                                        /* menu font size */
+
+  /* --- Menu tree, arrows, icons, dock buttons --- */
+  --cfm-menu-tree-indent: 10px;                                      /* left indent of the first tree level */
+  --cfm-menu-tree-indent-step: 10px;                                 /* extra indent added per nested level */
+  --cfm-menu-tree-shift: 0px;                                        /* nudge the whole tree horizontally */
+  --cfm-menu-tree-expand-margin: 0px;                                /* gap before the expand chevron */
+  --cfm-menu-link-arrow-size: 18px;                                  /* size of the chevron glyph */
+  --cfm-menu-link-icon-size: 20px;                                   /* size of a menu item's icon */
+  --cfm-menu-arrow-box-size: 24px;                                   /* click box around the chevron / expand icon */
+  --cfm-menu-dock-button-size: 28px;                                 /* pin / dock-mode button size */
+  --cfm-menu-dock-icon-size: 22px;                                   /* pin / dock-mode icon size */
+
+  /* --- Shared shape & motion --- */
+  --cfm-radius: 6px;                                                 /* corner radius for buttons, tabs, and cards */
+  --cfm-accent-underline: 3px;                                       /* thickness of the active-tab / card-title underline */
+  --cfm-transition: 160ms ease-in-out;                               /* open/close + hover animation */
+
+  /* --- Top bar --- */
+  --cfm-topbar-bg: var(--topbar--bgColor, var(--container--background, var(--neutral-10, #f7f8fa)));  /* top bar background */
+  --cfm-topbar-color: var(--topbar--color, var(--neutral-90, #1f2933));                               /* top bar text color */
+
+  /* --- Settings tabs --- */
+  --cfm-settings-tabbar-bg: var(--container--background, var(--neutral-10, #f7f8fa));   /* settings tab strip background */
+  --cfm-settings-tab-bg: var(--neutral-20, #eef1f4);                 /* inactive settings tab background */
+  --cfm-settings-tab-active-bg: rgba(var(--cfm-menu-accent-rgb), 0.12); /* active settings tab background */
+  --cfm-settings-tab-border: var(--neutral-30, #d6dce3);             /* settings tab border */
+  --cfm-settings-tab-color: var(--neutral-70, #4b5563);              /* inactive settings tab text */
+  --cfm-settings-tab-active-color: var(--callToAction--color, #005eb8); /* active settings tab text + underline */
+
+  /* --- HMI page views (landing, fallbacks, notices) --- */
+  --cfm-page-bg: var(--page-background, var(--container--background, var(--neutral-10, #f7f8fa)));   /* page background */
+  --cfm-page-card-bg: var(--container--background, var(--page-background, var(--neutral-10, #f7f8fa))); /* content card background */
+  --cfm-page-border: var(--neutral-30, #d6dce3);                     /* card / divider border */
+  --cfm-page-title-color: var(--neutral-90, #1f2933);                /* page title text */
+  --cfm-page-path-color: var(--neutral-70, #52606d);                 /* breadcrumb / path text */
+  --cfm-page-muted-color: var(--neutral-60, #7b8794);                /* secondary / muted text */
+  --cfm-page-notice-bg: var(--warningSecondary, var(--neutral-20, var(--container--background, var(--page-background)))); /* warning-notice background */
+  --cfm-page-notice-border: var(--warning, var(--warning-40, #d4a017)); /* warning-notice border */
+  --cfm-page-notice-title: var(--cfm-page-title-color);              /* notice title text */
+  --cfm-page-notice-body: var(--cfm-page-muted-color);               /* notice body text */
+  --cfm-page-notice-row-bg: transparent;                             /* notice row background */
+
+  /* --- Diagnostics dashboard  (inherits the page tokens above) --- */
+  --cfm-diag-card-bg: var(--cfm-page-card-bg);                       /* diagnostic card background */
+  --cfm-diag-border: var(--cfm-page-border);                         /* diagnostic card border */
+  --cfm-diag-title-bg: rgba(var(--cfm-menu-accent-rgb), 0.12);       /* diagnostic card title background */
+  --cfm-diag-title-color: var(--callToAction--color, #005eb8);      /* diagnostic card title text + underline */
+  --cfm-diag-label-color: var(--neutral-70, #4b5563);               /* diagnostic field label */
+  --cfm-diag-value-color: var(--cfm-page-title-color);              /* diagnostic field value */
+  --cfm-diag-page-bg: var(--cfm-page-bg);                           /* diagnostics page background */
+  --cfm-diag-page-gap: 16px;                                        /* gap between diagnostic cards */
+  --cfm-diag-page-padding: 16px;                                    /* diagnostics page padding */
+  --cfm-diag-tile-width: 360px;                                     /* minimum width of a diagnostic card */
+  --cfm-diag-card-padding: 12px;                                    /* padding inside a diagnostic card */
+  --cfm-diag-row-gap: 8px;                                          /* gap between rows in a card */
+  --cfm-diag-row-padding-x: 16px;                                   /* horizontal padding of a card row */
 }
 
 /* --- Menu shell --- */
@@ -88,10 +115,7 @@
 #menu.psc-cfm-menu,
 #menu.psc-cfm-menu__panel,
 #menu .psc-cfm-menu__content,
-#menu .psc-cfm-menu__header-area {
-  background-color: var(--cfm-menu-bg) !important;
-}
-
+#menu .psc-cfm-menu__header-area,
 [data-component-path*="MenuContent"],
 [data-component-path*="MenuContent"] .psc-cfm-menu__panel,
 [data-component-path*="MenuContent"] .psc-cfm-menu__content {
@@ -194,7 +218,7 @@
   color: var(--cfm-topbar-color);
   display: flex !important;
   gap: 10px;
-  min-height: 40px;
+  min-height: var(--cfm-menu-row-height);
   overflow: visible;
   padding: 0 12px;
 }
@@ -216,9 +240,9 @@
 .psc-cfm-menu__topbar-breadcrumbs {
   align-items: center !important;
   display: flex !important;
-  height: 40px !important;
-  max-height: 40px !important;
-  min-height: 40px !important;
+  height: var(--cfm-menu-row-height) !important;
+  max-height: var(--cfm-menu-row-height) !important;
+  min-height: var(--cfm-menu-row-height) !important;
 }
 
 .psc-cfm-menu__topbar-breadcrumbs > div,
@@ -227,23 +251,25 @@
   align-items: center !important;
   align-self: center !important;
   display: flex !important;
-  height: 40px !important;
-  max-height: 40px !important;
-  min-height: 40px !important;
+  height: var(--cfm-menu-row-height) !important;
+  max-height: var(--cfm-menu-row-height) !important;
+  min-height: var(--cfm-menu-row-height) !important;
 }
 
 /* --- Buttons --- */
-.psc-cfm-menu__button--open-menu {
+.psc-cfm-menu__button--open-menu,
+.psc-cfm-menu__button--close-menu {
   align-items: center;
   box-sizing: border-box;
   display: flex;
-  height: 40px;
+  height: var(--cfm-menu-row-height);
   justify-content: center;
   padding: 0;
-  width: 40px;
+  width: var(--cfm-menu-row-height);
 }
 
-.psc-cfm-menu__button--open-menu svg {
+.psc-cfm-menu__button--open-menu svg,
+.psc-cfm-menu__button--close-menu svg {
   height: 24px;
   width: 24px;
 }
@@ -293,9 +319,9 @@
   display: flex !important;
   font-family: var(--cfm-menu-font-family, inherit);
   font-size: var(--cfm-menu-font-size, 14px);
-  height: 40px !important;
-  max-height: 40px !important;
-  min-height: 40px !important;
+  height: var(--cfm-menu-row-height) !important;
+  max-height: var(--cfm-menu-row-height) !important;
+  min-height: var(--cfm-menu-row-height) !important;
   overflow: hidden;
 }
 
@@ -316,7 +342,7 @@
 .psc-cfm-menu__breadcrumb-link--home {
   align-items: center;
   display: flex;
-  height: 40px;
+  height: var(--cfm-menu-row-height);
   padding: 0;
 }
 
@@ -328,10 +354,10 @@
   flex: 0 0 auto;
   height: var(--cfm-menu-link-arrow-size);
   justify-content: center;
-  max-width: 24px;
-  min-width: 24px;
+  max-width: var(--cfm-menu-arrow-box-size);
+  min-width: var(--cfm-menu-arrow-box-size);
   padding: 0 !important;
-  width: 24px !important;
+  width: var(--cfm-menu-arrow-box-size) !important;
 }
 
 .psc-cfm-menu__link-arrow svg,
@@ -407,16 +433,16 @@
   align-items: center;
   box-sizing: border-box;
   display: flex;
-  flex: 0 0 24px !important;
-  height: 40px;
+  flex: 0 0 var(--cfm-menu-arrow-box-size) !important;
+  height: var(--cfm-menu-row-height);
   justify-content: center;
   margin-left: var(--cfm-menu-tree-expand-margin) !important;
-  max-height: 40px;
-  max-width: 24px !important;
-  min-width: 24px !important;
+  max-height: var(--cfm-menu-row-height);
+  max-width: var(--cfm-menu-arrow-box-size) !important;
+  min-width: var(--cfm-menu-arrow-box-size) !important;
   overflow: hidden;
   pointer-events: unset;
-  width: 24px !important;
+  width: var(--cfm-menu-arrow-box-size) !important;
 }
 
 .psc-cfm-menu__section-tree-items .expand-icon svg,
@@ -473,24 +499,6 @@
   overflow: hidden !important;
 }
 
-/* Tree row hover/selected — override gateway theme (e.g. light.css .ia_treeComponent__node--selected)
-   DOM: .node-wrapper > .parent-node|.terminal-node > .tree-row.ia_treeComponent__node[--selected] > .tree-item
-   Confirmed ancestors: #menu > .psc-cfm-menu > .psc-cfm-menu__section-tree > .psc-cfm-menu__section-tree-items
-   (iaTreeComponent class is NOT on the tree root; selected class is on .tree-row) */
-#menu .psc-cfm-menu__section-tree-items div.tree-row.ia_treeComponent__node--selected.node-selected,
-#menu .psc-cfm-menu__section-tree-items div.tree-row.ia_treeComponent__node--selected,
-#menu .psc-cfm-menu__section-tree div.tree-row.ia_treeComponent__node--selected,
-#menu div.tree-row.ia_treeComponent__node--selected,
-#menu div.tree-row.ia_treeComponent__node--selected.node-selected,
-.psc-cfm-menu__section-tree-items div.tree-row.ia_treeComponent__node--selected,
-.psc-cfm-menu__section-tree-items div.tree-row.ia_treeComponent__node--selected.node-selected,
-.psc-cfm-menu__section-tree div.tree-row.ia_treeComponent__node--selected,
-.psc-cfm-menu .psc-cfm-menu__section-tree-items div.tree-row.ia_treeComponent__node--selected {
-  background-color: var(--cfm-menu-selected-bg) !important;
-  color: var(--cfm-menu-selected-color) !important;
-  font-weight: var(--cfm-menu-selected-weight) !important;
-}
-
 /* Tree child row hover — beat light.css .ia_treeComponent__node:hover:not(.ia_treeComponent__node--selected) */
 #menu .psc-cfm-menu__section-tree-items .ia_treeComponent__node:hover:not(.ia_treeComponent__node--selected),
 #menu .psc-cfm-menu__section-tree-items div.tree-row.ia_treeComponent__node:hover:not(.ia_treeComponent__node--selected),
@@ -505,6 +513,19 @@
   background-color: var(--cfm-menu-hover-bg) !important;
 }
 
+/* Tree row selected + focused — override the gateway theme (e.g. light.css
+   .ia_treeComponent__node--selected). Kept AFTER the hover rule above so a hovered focused
+   row still shows the selected background. The selected/focused class is on .tree-row (the
+   iaTreeComponent class is NOT on the tree root). */
+#menu .psc-cfm-menu__section-tree-items div.tree-row.ia_treeComponent__node--selected.node-selected,
+#menu .psc-cfm-menu__section-tree-items div.tree-row.ia_treeComponent__node--selected,
+#menu .psc-cfm-menu__section-tree div.tree-row.ia_treeComponent__node--selected,
+#menu div.tree-row.ia_treeComponent__node--selected,
+#menu div.tree-row.ia_treeComponent__node--selected.node-selected,
+.psc-cfm-menu__section-tree-items div.tree-row.ia_treeComponent__node--selected,
+.psc-cfm-menu__section-tree-items div.tree-row.ia_treeComponent__node--selected.node-selected,
+.psc-cfm-menu__section-tree div.tree-row.ia_treeComponent__node--selected,
+.psc-cfm-menu .psc-cfm-menu__section-tree-items div.tree-row.ia_treeComponent__node--selected,
 #menu .psc-cfm-menu__section-tree-items .ia_treeComponent__node--focused.tree-row,
 #menu .psc-cfm-menu__section-tree-items .tree-row.ia_treeComponent__node--focused,
 .psc-cfm-menu__section-tree-items .ia_treeComponent__node--focused.tree-row,
@@ -533,12 +554,7 @@
 
 /* :has() fallbacks — separate blocks so unsupported engines still apply rules above */
 #menu .tree-item:has(.ia_treeComponent__expandIcon--selected),
-#menu .tree-item:has(.ia_treeComponent__node__icon--selected) {
-  background-color: var(--cfm-menu-selected-bg) !important;
-  color: var(--cfm-menu-selected-color) !important;
-  font-weight: var(--cfm-menu-selected-weight) !important;
-}
-
+#menu .tree-item:has(.ia_treeComponent__node__icon--selected),
 .psc-cfm-menu__section-tree-items .tree-item:has(.ia_treeComponent__expandIcon--selected),
 .psc-cfm-menu__section-tree-items .tree-item:has(.ia_treeComponent__node__icon--selected) {
   background-color: var(--cfm-menu-selected-bg) !important;
@@ -589,11 +605,6 @@
   min-width: 0;
 }
 
-.psc-cfm-menu__link--arrow-left.psc-cfm-menu__link .psc-cfm-menu__link-arrow,
-.psc-cfm-menu__arrow-left .psc-cfm-menu__link .psc-cfm-menu__link-arrow {
-  order: -1 !important;
-}
-
 /* --- Settings --- */
 .psc-cfm-menu__settings {
   display: flex;
@@ -619,8 +630,8 @@
 .psc-cfm-menu__settings-tab {
   background-color: var(--cfm-settings-tab-bg);
   border: 1px solid var(--cfm-settings-tab-border);
-  border-bottom: 3px solid transparent;
-  border-radius: 6px 6px 0 0;
+  border-bottom: var(--cfm-accent-underline) solid transparent;
+  border-radius: var(--cfm-radius) var(--cfm-radius) 0 0;
   box-sizing: border-box;
   color: var(--cfm-settings-tab-color);
   cursor: pointer;
@@ -643,17 +654,11 @@
   filter: brightness(0.98);
 }
 
-.psc-cfm-menu__settings-tab--active,
-.psc-cfm-menu__settings-tab.psc-cfm-diag__title {
+.psc-cfm-menu__settings-tab--active {
   background-color: var(--cfm-settings-tab-active-bg);
-  border-bottom: 3px solid var(--cfm-settings-tab-active-color);
-  box-shadow: inset 0 -1px 0 rgba(0, 94, 184, 0.08);
+  border-bottom: var(--cfm-accent-underline) solid var(--cfm-settings-tab-active-color);
+  box-shadow: inset 0 -1px 0 rgba(var(--cfm-menu-accent-rgb), 0.08);
   z-index: 1;
-}
-
-.psc-cfm-menu__settings-tab.psc-cfm-diag__title {
-  background-color: var(--cfm-diag-title-bg) !important;
-  border-bottom-color: var(--cfm-diag-title-color) !important;
 }
 
 .psc-cfm-menu__settings-tab--active .ia_labelComponent {
@@ -806,12 +811,11 @@
 }
 
 .psc-cfm-diag__title,
-.psc-cfm-diag__title.ia_container--flex,
-.psc-cfm-menu__settings-tab.psc-cfm-diag__title {
+.psc-cfm-diag__title.ia_container--flex {
   background-color: var(--cfm-diag-title-bg) !important;
-  border-bottom: 3px solid var(--cfm-diag-title-color) !important;
+  border-bottom: var(--cfm-accent-underline) solid var(--cfm-diag-title-color) !important;
   border-left: 1px solid var(--cfm-diag-border) !important;
-  border-radius: 6px 6px 0 0 !important;
+  border-radius: var(--cfm-radius) var(--cfm-radius) 0 0 !important;
   border-right: 1px solid var(--cfm-diag-border) !important;
   border-top: 1px solid var(--cfm-diag-border) !important;
   box-sizing: border-box;
@@ -825,7 +829,7 @@
   background-color: var(--cfm-diag-card-bg) !important;
   border-bottom: 1px solid var(--cfm-diag-border) !important;
   border-left: 1px solid var(--cfm-diag-border) !important;
-  border-radius: 0 0 6px 6px !important;
+  border-radius: 0 0 var(--cfm-radius) var(--cfm-radius) !important;
   border-right: 1px solid var(--cfm-diag-border) !important;
   box-sizing: border-box;
   flex: 1 1 auto;
@@ -954,7 +958,7 @@
 .psc-cfm-page__notice-row.ia_container--flex,
 .psc-cfm-page__notice-row.ia_container--primary {
   background-color: var(--cfm-page-notice-row-bg) !important;
-  border-radius: 6px;
+  border-radius: var(--cfm-radius);
   padding: 8px 12px;
 }
 

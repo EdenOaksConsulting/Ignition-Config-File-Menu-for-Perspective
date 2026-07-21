@@ -1,49 +1,7 @@
 {
   "custom": {},
-  "params": {
-    "logoVariant": "large",
-    "menuConfigType": "yaml",
-    "menuConfig": "# Configure menuConfig on a child project override of MenuContent, or on an inherited child copy.\nmenu:\n  items: []\n",
-    "menuDockId": "config-file-menu",
-    "logoLargePath": "",
-    "logoSmallPath": "",
-    "logoLinkTarget": "/",
-    "siteName": "Default Site"
-  },
-  "propConfig": {
-    "params.logoVariant": {
-      "paramDirection": "input",
-      "persistent": true
-    },
-    "params.menuConfigType": {
-      "paramDirection": "input",
-      "persistent": true
-    },
-    "params.menuConfig": {
-      "paramDirection": "input",
-      "persistent": true
-    },
-    "params.menuDockId": {
-      "paramDirection": "input",
-      "persistent": true
-    },
-    "params.logoLargePath": {
-      "paramDirection": "input",
-      "persistent": true
-    },
-    "params.logoSmallPath": {
-      "paramDirection": "input",
-      "persistent": true
-    },
-    "params.logoLinkTarget": {
-      "paramDirection": "input",
-      "persistent": true
-    },
-    "params.siteName": {
-      "paramDirection": "input",
-      "persistent": true
-    }
-  },
+  "params": {},
+  "propConfig": {},
   "props": {
     "defaultSize": {
       "height": 965,
@@ -95,7 +53,7 @@
                       "position.display": {
                         "binding": {
                           "config": {
-                            "expression": "if(len(coalesce(toString({session.custom.configFileMenu.logoVariant}),''))>0, lower({session.custom.configFileMenu.logoVariant}), lower({view.params.logoVariant}))='large'"
+                            "expression": "{session.custom.configFileMenu.showMenuLogo}"
                           },
                           "type": "expr"
                         }
@@ -105,60 +63,8 @@
                           "config": {
                             "struct": {
                               "variant": "'large'",
-                              "sessionSource": "{session.custom.configFileMenu.logoLargePath}",
-                              "paramSource": "{view.params.logoLargePath}",
+                              "sessionSource": "{session.custom.configFileMenu.brandLogoLarge}",
                               "defaultSource": "'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAEgAAABICAYAAABV7bNHAAAUkElEQVR42u3cebhdZZUm8N/37X2GezNDDCQMzSCgAQWSAAJaoJYoKlXYGtSmCpQh2NhqaXc7dtUlDm11iaKtArkMVRQlDlEsWy3lwUKCIqAiIBgRlRnCnITc6Zyz9/7qj7tzuZHBBBJA2y/Pee7JyT17eL+13rXWu9YOf1p/Wn9af9RrQPz/8bbD44KxWPYoUA6RT3y2WGax7HGP8ay4kc117MWTgFiuQpr4+8m2VXgvvmzQVU9wfekPG6AB0VIVSIIgOd5WzvHQo373JLvJvUrPxQbdaIkBwUKVb2s4UOFGSaHhedZ6jy94+JkGafNZ0CFyKxTerc+wywV3qHwUswVbq0zVdKrMFB03qXxOcLygTzLTFHMMu0ewjamCIT9XOsz27rdUeqZACk/5+8fZ07l+gWSJ2YI5ku9rmaNbnyGip5KJSqVMpoGivu1x5xv/vPKwKKhcr3SEc6yWEJ4ZgPKnGH2iu73ViR6QDOEdkg+jrauURJWkkgSZUhJElZ4OiIJsYqsySeUSycWirVVmWGKdoHimXOzJA7RSsFzhRNvJHaMws7aJdwimSEJtFXnNUKUgygS5hl4NSmEULUGmB/5S5qUKpzrbLU9DMHnClT1p11qp8nbzVD4i2lYlCBpy26lqIJqintWCpqZMEnCrwnsk20ou1HWEzG5a9lAqEARNyZhFXmyh+a72IwOiOaLFgjmilc9mDkqCUwT32UnpFJk3K0RBQCWIWCm6QukXuEKwLT4p+IHkJsnPVeaJfompMl+Q20pRb1uq7XtMV7KTQaueiTQg32RABwSn4BTJfzWnpti8/jlOyUkStfT8UjRHcKrKUsGolreo0HW0aGcNgwoPKP1W4RrMVboBR+jJa1v8kRMdJdgat8rM9YDLLFduaZDCU/ruEsdL3iuzm6qONZOdd5xjujJNGXp1tGrLjLrQVH9lxPdRSf5CsJ1Sn+h9oiNUooSGoFAIcsk12vbV8QNdr/ePHpiw6y2w4iYBucRsJzqkBueVeJFg15qENwS7VCqUaCr1dCeC+rCOq2Xahr1FslbmAMlNuFZwsaYjVbIa8qDQq2Ncwr46VmGuhukSBrYcieebxDvH68h8yBJvk7xScG5tF40NdjDJNOoAMG4BDWOTNqVyt8yOkt2xfR3uZ0lKwVSd2lpyQYlWHfXG04RRwVeUxkRjWzo/CptUThzvhXI/EydymjDhTnHSEQsUrhN0a/CWST4uM01VJ4kJhTWSGRPZUF5/3qsZjVuwg+RC7K9hJ4WeloaO5SrvEz1ktaFH1XrPAEkHuWm4RWWXSZdSSG7Qcb7g56I/w2IN39VzLbaSfAu7avkfxtCtCT2aWd/Uaj0rFb6OXUSvE3xb5cuCV5jqFCNeKviaqF076+u1vEbXNy33pnqL0jOTB62onWWBbQWvEM2p+SCIksotgm9IFuBOlddpeJnSTyXDmr6vMlPhWklbMK0m5vHbCm5V+oDoOsmvMM9Uf61nB8lyXZeIXqLwcP292wVjgtmiXS0wbC/XOFJlxeYFKfzefz9E5lCVe+yId+OdWpPqqLK2w/EotU7l01ij8DU7uMM95qJfV6lhe8nn9durDvUmQKrQh1E/FNwouMIUXzamrWdP0Qt0/bOWXEefzOWadtKT5IJoF59zi8WyOvw/zWH+BPvILJb8HPPx0zrx20WO0hdV/qlmkMP1OcKIr2O26E7JufiEYFRlG8FNkuNEswSV5DbJRwQ/VJmn6Rgdq2TulrQN+tQG17PEW0UDmIukcI613m25YoLBtiBA48nXsWbqs71KsNpvLDc6Sds5X7C7ZCF1FU5DS9/EUbvukFwt+gvJvZLbJp3zWrxRMBNUVuPXgt1lZmphVE9yFk7CbwRXSmZLOoKLJG801ct0UfiZniOc6+5JNrmFAFosM1+yyumaluj6muhypa5+RxvxWdGeZvpf1tZutj6KVSpBkgS5qNSVjMjNnDhbmIhij7wPtauWE+xUyDUUbsGPtB2tqm87TmzApZLVokWSpM/ePmPt5pRHssfMd36B+81R+QfJdLk9VQ7GvyjtgSM1vNOIeyRB067KOu0PtQwSascZh6mtrGWPSqrfl3Wa8KCgv+azagLCVB8puRXzVaYqFKo6Hyp15dqSH+JNgqDnFld7yNLNlzg+dia9VGVIRi2b9hSSTO4clX8118Ja3vipQYcpXFYnDMXv2Oe4faQ6ZwripFdeAzFNqs8z/vuhfh9rCPfF9iqxzqmy+tVW2V7Lf1dZYpmPK9y3ucuO8JgJ4QleJPN1bCspJywtm0gA/w1/JligcgEO1G++3iSIUi1u/L5AMF7/34oda8WxmkgeSPL63OWk65hc0GSiyh3G7OG8Sfn6FrOgVCdw0Vp9yGudb9ywadtbywdkDpbrExwtuMaw7ytdJtQ3FmubmXxktXP5nU8zO9W3+6BG7VgNUVuGXymdhU+LqkkJxviWlSqZHbT9Q91J6dvSeVCo9eUFMq9VeZXcgSLG3IN1gl21RD3fkDnZ591dE3uwyr/hAMF5OEywg1JTVttCVRPxo7dlPAHkNrlD9Xxe0x06VplmuVE3inasgbSBZa/fkORaXCT5W3OVE92WzVxqJItlBv3MEquws2i2wnLBD7CPqKXUp/BtZ7q77nuVdX7yS9wgmSa3i0IURZX7lH6KGaIDawcMk7Ylk2wj+aJCv+B+pbfL7WDIdMH/lRxdlzbztUwxNlEPBpWefvsYcYFlCqdMbMcWqMWWqyyWCQ6VOUfHByWnyb1LMkU0ovABZ/uBE52k4VA9Qe7HSjcKVmA7PdehIfPvSq/X8mpd2zyG5Y7bT9RQ6eJ/SmaqnKnpOqVMpSM4W+67SlMU3iNzzETsTEId4xqCZGBL12IrJVe7wfMMa7lI9OeSJgqVVXLvscCOmr6jNKp0rmiWSjTomw5ylzNcYT/bS/4L3iyzu2RGLeibxFGloBKsU1mjYVB0p2UutoeHNIw5y1UOdLPKWaLd9Dyo4WClorahIOlJPupqt5sjWPnUo9kTcdCugqOU7hIdKTpMNEXhdpyLn+H9+txu2JCGhbUEcrvkAhwpN0vmcCUKD2Cr+vhh0pmSrJY7utaJfib5kNJutbxxrKYd9LxBsqeGo0QvnBB4w0RfbbzgqJyp8EE7GN4cDcfwuLrzfXZSOV3TK41ZLSglfYJ+mYBfK52O1QprNb1CcrSGGTWJjjtwd4KSHx2iWYum5EY8oO1VMoxIkhF9pkwUtCYds1Kq/BJ318fYC20NOysUeINlvrE5Ctf4mCQNZ7jZiKOVjsRbBBcIrq+jBYW7JM/V9k9aPoOllpmp54OiSqmowckex5VLlKIpmCJ3vZ5lRnxOVImmGFXUYJQTIPVUKlGws+g2fM+g+Trm63q15IJaqWTx5g/zYSKKzfQhDYNOd58lPijowxGivRSSXBTQ09HU0nMVviA4RrCgJs/xpnOaVII8VtMmoo0R70K/6GOqmrYfOU85qb4abwm00DWKd+B2yaU6MiN6m0vyeOxMeolP6/MuI36Mlqa9dQ0K/kzueQpdQXNCIg2Tmj/FRNE6XkhUrsHectmkQmS9ZT3yc7wL26zdMtUdWDp+LLlFvzcqajC7dVFMTyYXDSl8XMunfbZuam8RRXG8Y5kssFDuZfpspyeqfLa+LILnackU7lc4W7Ja5TeCneouRlD6JTKZfpm5Kj+pO/VTJZW2vBbaorK2xoZMT6XUk8sVVtZDDDcI/lZykMJFCpeKFsjrP+N1XU9lzBm+6BC52zafHrRhHjR/IroM67lJ4TsqpzvbTZOEqgONWSS40NnussSrsEiyh2iX+vvT0RTcpuezBn3SEodpusio84wZknubwr8KXqt0hdKV2t4vahp1ubaXe1C/ltw/uh8LJ13DtRoGdPwWI7WLjSBYsXkHHR67kDzJTpK7DNbjBANyl2LFRHx6RDdarnSc/6Rfn1FNQSl6ldzJKvPwLYW/d7arLXGphkU6zhO9tVYat1L5a8Hz5f5c5UJ9vuC0SeLcerYaEOuhidKApqW1VT9jbZ+BOqhOrmkGJsh2/PPJE2aT17Ha+v2l5J0yB6h8QukqDV8VZcZq+b7rTsn5uMKgbz7OtaVHVW6hBmypZEDYUkNW4XGbhGGTdJWwQXdz/S5PdsvMWZirpy1q1TFuTOVwgy7boEnwu5b6DM4vPj1DnMuVFsts5VK5F+vqamrqusRZXm5AbqW0ObsRT3dv3pMaklmutFxpiYblSj0nKPUEse6H3TEx/vssBGdLA/TIGqznyc51k9KvRXnNGJ3Nodn84QO0IbuNTnLstmf5yrc4IimFcMop4+LVqqVbY7dJvYv9waXPjqHxp42kBwZEDolLl15aEtKkaPY3Wk4zpqgnETNjTnK2QYfIHVqDdajKKROq0R8PQAM14S6dxCsXHL/zNsfueens3qrT+qz99LdEcyZGZ8Z1wB5OcqbznqCJGSZEvPnS0zlYvtkA+srixdlRy5eXsOzERfuFLLyhvxx+2elzTn7uFbP+czOu+2p/efe7CHFD1X59R7XnSsEluEF0k9JtBifG6x4/jZhfK4dfqTu6zzaABgbEU5ZKgbRsycIDshj+rgrx1bPDsO9udYTB6SdcmaXeDqm8ebvq5teM97xCPX6/XlFc3+bJUFUUicoa3InfCm6qX79Vul3uXqcbetyW+dItP7ywqVYTz37bog+H4P15lmVjnV4qQl4O7Pj31ZrGdh+URk6t4lRp7RdSenBZUqwy4WQm5JGeII1PtcYopiCm9fNDj4gk44rhA7WaeJvoRtFVRv2oLmptzhGY8OQt55B86dIVxSf+6oVztpra/Jd2M3vF0FiRqqRqKLI12azqvc89I1Sh/6Oht+YlMW8cHMssr6wLqbxd6txK555CGglSL8jLqLhHWveTpHvveJ9LSEJKtZWtf3QhTlSDcYNBiAcEX9N1qnP8ZnOBFJ58hFpRfP74fV/YamZfbeVxt5FOuX6Yc3yeIXWtmPHydPGs14YHw/Q7Oo0ZzxFiU0r3ZFW1Smxtn/pnbWP04WGy34hxlaqztbR2vzR0kbTqo5W0tnbHtGEulSZyqsl9/6zuuTys9D6DzqxBekqzi2Hj8xlh+VGL43oiHjxpwVF5zAZDMKPTK4sQwqNyqnY1aiy2rW7NtSp7jl+396iun7rv0B39z/+FavT/5eW6vIp9f0eVSe5NIV6mSjeG1rbH6Vy/Q3XzUZXqwXHJ9fffY5KUolwLY04z6D1PFaSwqRHqjJP22a0h/1Ceh2N7RVJWVRVCeMyMvKpbqnnqpTwVIUuVkWyKn8880Jefc4z7w5zTmp37fli0Z3xRVTQ1++mO3aTzwLmm7PYOQ5fMq247OokhbnSTNNUzAH1yY84w6GQDcks3SiHYtCHONN4ejv/t9JXVZ054wfZv2H/Hj2UhLms14n5j3aqqEo8HjkkzTGXIQy80dbLxymLXoZXVfmsvLa+f94qDV1fTb4/dtVfpn3WwkTUdrf5tpGzP1L3vO2HKgr317glGrwtitnH3t37MptDTdoAXmu5TvmtA/mQGPLMnspq9jlpZrVghDb5t0dvbWf6ldiM7tFtWjW5RlSGELISNs8BQgxXrhvxINiXMKNfFXddcU1w+6+UvqUL2Xb3RPYXQU/ba8tb0UKUpitFemHbA9PTwhUk5HMZzqLTx91bo6fNiLxCd5pIapOopA7TepT537H7bvv7AeV/qa2R/0ytTf6dXFoTwRFazcRVypRP7zO3eme7q3yXe3titnZXDKvHmEOIuim6SNWZL3YZs61ycxtD3grjJo9CZQqHtpfbR8SmXbaolZY8Lzgl779PXjhc3G3H/4bGiSEkIIWzWx7UzZQypdNXUg6aFLMxJ0o9DSpksf46yHNJoT1Gsq0LfgqhzbdK5deNdbbIBl0othz0ZkDYAaPHixdnS5cvLM4/bd1GrmX8vhjB3tDseoTbWnTap0g/RlHIoXT7toHanNTPPim6/EAf1TXul7vCVhCka7anKbhX6D4pp6FuUQzbR1cIGIO0r90n/bkB0qPD7gMom5zenn76yOuOkvXdqZPn3YwyzO72yjI8RvjdXhlrKTC/Xhpv6nu+efLsq65+ydeqM/iAVnXtD/1aHp9F1gyHLdtJsTFdNLUPf3jGt++aksdpNAikqFVoOtcBcn/QtK+ou8hNMgawHKLx9zuI4f/FzsmkPF99uN7M9xrplsaXAecSCglbqGIt9rp32ohCL4ZTy9gGx7L5fzBeG9tQXG1rzvzVaO2rn27B9qbVbsO6iQLmpljROf+OctL99HWCBi5xv+InIO5vMO2/eY+t3TutrnDDSKXshhMbTIzFGs8o14fJpB4eOZop53kox368aWf3O0JpymPbUww2t+UgKeQrt/Pkh2yNo7VEaviRKXZvMSUHUU2jaHa+zj584ze31f4nxKJfLEmGvlSvTsiULZwThK1WV+qpq4vnTLa61lDE3q1zt3nzbdMuUF8Ssu7ZKralzQtZcZOihD2u2d9eesiR0R7+Uit6VIfZeEKYu6AvNRdLolUmxpiZumwZSoZSZLTjGIg/7Z1daIf2uNWWHDhySn7fituqIhfPe1NfMju70yp4QAilNjCVt0VdISHN696TLph2SypiH2B0r5M1t5c2Xpt7ot6U0HJrt4zCkLL8WquGgtfO2Yerhmd6tlbHfjtdlIWz8eUM9ZzT+8N+rLbC3fVzuNGs2sKDXzNk/LF+5Mh2xcN7/mdZuPLesUtbIY8yzp+fVyEKUteK8dH9MWSP+YsZBIctkCRrNvtA/40Vh9OGtlF1h+pznhao4VFE+JA2vkU3bJsx+c9SaF/VWRh6OshBlNvaV1XPW9Hm+yskWGrKX61w3/qDEhBstO3Hh+Y087Norqqpmv6dtVfWj0kHlY9t/JN3Wem7I0phUW5egTSioelLIhdAvpSGpKsTQkG0tdX+V0r0fZOSnYSOL298lw1LUlGkpfd2IU51v5I+sD9XcPBexRGN9QzNMmg54xnsIT+0CwuZrHIVnX/vpT+sPdf0H4NCs8dqKazEAAAAASUVORK5CYII='"
-                            },
-                            "waitOnAll": true
-                          },
-                          "transforms": [
-                            {
-                              "code": "\treturn exchange.cfm.runtime.resolve_logo_source(value, self.session, self.view)\n",
-                              "type": "script"
-                            }
-                          ],
-                          "type": "expr-struct"
-                        }
-                      }
-                    }
-                  },
-                  {
-                    "meta": {
-                      "name": "MenuSmallBreakpoint"
-                    },
-                    "position": {
-                      "basis": "24px",
-                      "shrink": 0
-                    },
-                    "props": {
-                      "fit": {
-                        "height": 40,
-                        "mode": "contain",
-                        "width": 40
-                      },
-                      "style": {
-                        "classes": "cfm-menu__logo",
-                        "overflow": "hidden"
-                      }
-                    },
-                    "type": "ia.display.image",
-                    "propConfig": {
-                      "position.display": {
-                        "binding": {
-                          "config": {
-                            "expression": "false"
-                          },
-                          "type": "expr"
-                        }
-                      },
-                      "props.source": {
-                        "binding": {
-                          "config": {
-                            "struct": {
-                              "variant": "'small'",
-                              "sessionSource": "{session.custom.configFileMenu.logoSmallPath}",
-                              "paramSource": "{view.params.logoSmallPath}",
-                              "defaultSource": "'data:image/png;base64,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'"
                             },
                             "waitOnAll": true
                           },
@@ -264,11 +170,11 @@
                       "meta.tooltip.text": {
                         "binding": {
                           "config": {
-                            "path": "session.custom.configFileMenu.dockContent"
+                            "path": "session.custom.configFileMenu.dockContentPush"
                           },
                           "transforms": [
                             {
-                              "code": "\tmode = str(value or 'push').lower()\n\tif mode not in ('cover', 'push'):\n\t\tmode = 'push'\n\tif mode == 'push':\n\t\treturn 'Push mode \u2014 switch to cover'\n\treturn 'Cover mode \u2014 switch to push'",
+                              "code": "\tpush = value is None or value is True or str(value).lower() in ('true', '1', 'yes', 'on')\n\tif push:\n\t\treturn 'Push mode \u2014 switch to cover'\n\treturn 'Cover mode \u2014 switch to push'",
                               "type": "script"
                             }
                           ],
@@ -278,11 +184,11 @@
                       "props.path": {
                         "binding": {
                           "config": {
-                            "path": "session.custom.configFileMenu.dockContent"
+                            "path": "session.custom.configFileMenu.dockContentPush"
                           },
                           "transforms": [
                             {
-                              "code": "\tmode = str(value or 'push').lower()\n\tif mode not in ('cover', 'push'):\n\t\tmode = 'push'\n\treturn 'material/view_column' if mode == 'push' else 'material/layers'",
+                              "code": "\tpush = value is None or value is True or str(value).lower() in ('true', '1', 'yes', 'on')\n\treturn 'material/view_column' if push else 'material/layers'",
                               "type": "script"
                             }
                           ],
@@ -292,11 +198,11 @@
                       "props.style.classes": {
                         "binding": {
                           "config": {
-                            "path": "session.custom.configFileMenu.dockContent"
+                            "path": "session.custom.configFileMenu.dockContentPush"
                           },
                           "transforms": [
                             {
-                              "code": "\tbase = 'cfm-menu__button cfm-menu__button--dock-mode cfm-menu__button--dock-compact'\n\tmode = str(value or 'push').lower()\n\tif mode == 'cover':\n\t\treturn base + ' cfm-menu__button--active'\n\treturn base",
+                              "code": "\tbase = 'cfm-menu__button cfm-menu__button--dock-mode cfm-menu__button--dock-compact'\n\tpush = value is None or value is True or str(value).lower() in ('true', '1', 'yes', 'on')\n\tif not push:\n\t\treturn base + ' cfm-menu__button--active'\n\treturn base",
                               "type": "script"
                             }
                           ],
@@ -345,7 +251,7 @@
                       "meta.tooltip.text": {
                         "binding": {
                           "config": {
-                            "path": "session.custom.configFileMenu.isPinned"
+                            "path": "session.custom.configFileMenu.dockPinned"
                           },
                           "transforms": [
                             {
@@ -359,7 +265,7 @@
                       "props.path": {
                         "binding": {
                           "config": {
-                            "path": "session.custom.configFileMenu.isPinned"
+                            "path": "session.custom.configFileMenu.dockPinned"
                           },
                           "transforms": [
                             {
@@ -373,7 +279,7 @@
                       "props.style.classes": {
                         "binding": {
                           "config": {
-                            "path": "session.custom.configFileMenu.isPinned"
+                            "path": "session.custom.configFileMenu.dockPinned"
                           },
                           "transforms": [
                             {
@@ -417,10 +323,8 @@
                 "binding": {
                   "config": {
                     "struct": {
-                      "sessionMenuConfig": "{session.custom.configFileMenu.menuConfig}",
-                      "sessionMenuConfigType": "{session.custom.configFileMenu.menuConfigType}",
-                      "paramMenuConfig": "{view.params.menuConfig}",
-                      "paramMenuConfigType": "{view.params.menuConfigType}"
+                      "paramMenuConfig": "{session.custom.configFileMenu.contentSource}",
+                      "paramMenuConfigType": "{session.custom.configFileMenu.contentSourceType}"
                     },
                     "waitOnAll": true
                   },
@@ -481,13 +385,7 @@
                   "position.display": {
                     "binding": {
                       "config": {
-                        "struct": {
-                          "sessionMenuConfig": "{session.custom.configFileMenu.menuConfig}",
-                          "sessionMenuConfigType": "{session.custom.configFileMenu.menuConfigType}",
-                          "paramMenuConfig": "{view.params.menuConfig}",
-                          "paramMenuConfigType": "{view.params.menuConfigType}"
-                        },
-                        "waitOnAll": true
+                        "path": "session.custom.configFileMenu.showFooterDiagnostics"
                       },
                       "transforms": [
                         {
@@ -495,7 +393,7 @@
                           "type": "script"
                         }
                       ],
-                      "type": "expr-struct"
+                      "type": "property"
                     }
                   }
                 },
@@ -526,13 +424,7 @@
                   "position.display": {
                     "binding": {
                       "config": {
-                        "struct": {
-                          "sessionMenuConfig": "{session.custom.configFileMenu.menuConfig}",
-                          "sessionMenuConfigType": "{session.custom.configFileMenu.menuConfigType}",
-                          "paramMenuConfig": "{view.params.menuConfig}",
-                          "paramMenuConfigType": "{view.params.menuConfigType}"
-                        },
-                        "waitOnAll": true
+                        "path": "session.custom.configFileMenu.showFooterSettings"
                       },
                       "transforms": [
                         {
@@ -540,7 +432,7 @@
                           "type": "script"
                         }
                       ],
-                      "type": "expr-struct"
+                      "type": "property"
                     }
                   }
                 },
@@ -571,13 +463,7 @@
                   "position.display": {
                     "binding": {
                       "config": {
-                        "struct": {
-                          "sessionMenuConfig": "{session.custom.configFileMenu.menuConfig}",
-                          "sessionMenuConfigType": "{session.custom.configFileMenu.menuConfigType}",
-                          "paramMenuConfig": "{view.params.menuConfig}",
-                          "paramMenuConfigType": "{view.params.menuConfigType}"
-                        },
-                        "waitOnAll": true
+                        "path": "session.custom.configFileMenu.showFooterUser"
                       },
                       "transforms": [
                         {
@@ -585,7 +471,7 @@
                           "type": "script"
                         }
                       ],
-                      "type": "expr-struct"
+                      "type": "property"
                     }
                   }
                 },
@@ -625,65 +511,25 @@
       "name": "root"
     },
     "propConfig": {
-      "props.style.classes": {
+      "props.style": {
         "binding": {
           "config": {
             "struct": {
               "deviceType": "{session.props.device.type}",
-              "isOpen": "{session.custom.configFileMenu.isOpen}",
-              "menuMode": "{session.custom.configFileMenu.menuMode}"
+              "isOpen": "{session.custom.configFileMenu.dockOpen}",
+              "menuFont": "{session.custom.configFileMenu.layoutFont}",
+              "menuFontSize": "{session.custom.configFileMenu.layoutFontSize}",
+              "menuWidthOpen": "{session.custom.configFileMenu.layoutWidthOpen}"
             },
             "waitOnAll": true
           },
           "transforms": [
             {
-              "code": "\treturn exchange.cfm.runtime.menu_panel_classes(self.session)\n",
+              "code": "\treturn exchange.cfm.runtime.menu_panel_style(self.session)\n",
               "type": "script"
             }
           ],
           "type": "expr-struct"
-        }
-      },
-      "props.style.--cfm-menu-font-family": {
-        "binding": {
-          "config": {
-            "path": "session.custom.configFileMenu.menuFont"
-          },
-          "transforms": [
-            {
-              "code": "\tfont = str(value or '').strip()\n\treturn font if font else 'inherit'",
-              "type": "script"
-            }
-          ],
-          "type": "property"
-        }
-      },
-      "props.style.--cfm-menu-font-size": {
-        "binding": {
-          "config": {
-            "path": "session.custom.configFileMenu.menuFontSize"
-          },
-          "transforms": [
-            {
-              "code": "\treturn str(value or '14px')",
-              "type": "script"
-            }
-          ],
-          "type": "property"
-        }
-      },
-      "props.style.--cfm-menu-width-open": {
-        "binding": {
-          "config": {
-            "path": "session.custom.configFileMenu.menuWidthOpen"
-          },
-          "transforms": [
-            {
-              "code": "\treturn str(value or '220px')",
-              "type": "script"
-            }
-          ],
-          "type": "property"
         }
       }
     },
@@ -692,13 +538,6 @@
         "onStartup": {
           "config": {
             "script": "\texchange.cfm.runtime.init_menu_content_state(self)\n"
-          },
-          "scope": "G",
-          "type": "script"
-        },
-        "onPropertyChange": {
-          "config": {
-            "script": "\texchange.cfm.runtime.on_menu_content_property_change(self, event)\n"
           },
           "scope": "G",
           "type": "script"

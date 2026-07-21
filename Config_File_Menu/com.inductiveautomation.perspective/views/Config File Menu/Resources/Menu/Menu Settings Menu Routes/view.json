@@ -14,11 +14,11 @@
           "name": "Instructions"
         },
         "position": {
-          "basis": "100px",
+          "basis": "210px",
           "shrink": 0
         },
         "props": {
-          "source": "Paste **menu YAML or JSON**, then click **Generate output**.\n\n**Dynamic Default** \u2014 every route uses the **Dynamic viewPath** (default: View Dynamic Fallback). Copy the `pages` object into `page-config/config.json`.\n\n**Create Views** \u2014 each route gets a unique `viewPath` derived from its target URL, and a matching `views` manifest for copy/paste view creation. Preserve `sharedDocks` and fixed routes (`/cfm/settings`, `/cfm/diagnostics`).",
+          "source": "Every menu `target` needs a matching page in **Page Configuration** \u2014 this tool builds that page list from your menu.\n\n1. Paste your menu YAML or JSON on the left.\n2. Choose an **Output mode**:\n   - **Dynamic Default** \u2014 every page shares one view (**Dynamic viewPath**); the quickest way to start.\n   - **Create Views** \u2014 every page gets its own `viewPath`, plus a **Views manifest** listing the views to create in the Designer.\n3. Click **Generate output**.\n4. In your project import zip (site or sample), merge the output into `com.inductiveautomation.perspective/page-config/config.json` before importing \u2014 keep the existing `sharedDocks` and built-in pages such as `/cfm/settings` and `/cfm/diagnostics`.",
           "style": {
             "padding": "8px 16px"
           }
@@ -286,13 +286,6 @@
                   },
                   "scope": "G",
                   "type": "script"
-                },
-                "onKeyUp": {
-                  "config": {
-                    "script": "\texchange.cfm.runtime.set_session_block_field(self.session, 'menuRoutesGenerator', 'shellViewPath', str(self.props.text or '').strip())\n"
-                  },
-                  "scope": "G",
-                  "type": "script"
                 }
               }
             },
@@ -303,7 +296,7 @@
           "position.display": {
             "binding": {
               "config": {
-                "expression": "coalesce({session.custom.configFileMenu.menuRoutesGenerator.outputMode}, 'dynamic')='dynamic'"
+                "expression": "coalesce({session.custom.configFileMenu.settingsMenuRoutes.outputMode}, 'dynamic')='dynamic'"
               },
               "type": "expr"
             }
@@ -424,7 +417,7 @@
                   "shrink": 1
                 },
                 "props": {
-                  "text": "# SAMPLE ONLY - Copy/paste into Config File Menu/MenuContent.params.menuConfig.\n# Every target needs a matching route in page-config/config.json.\n# expanded: true|false on a top-level section (or nested tree item) controls whether\n# that branch starts open. Sections still auto-open when the current page is under them.\nmenu:\n  items:\n    - label: Dashboard\n      icon: material/home\n      target: /cfm/dashboard\n",
+                  "text": "# SAMPLE ONLY - paste into the session property configFileMenu.contentSource.\n# Every target needs a matching route in page-config/config.json.\n# expanded: true|false on a top-level section (or nested tree item) controls whether\n# that branch starts open. Sections still auto-open when the current page is under them.\nmenu:\n  items:\n    - label: Dashboard\n      icon: material/home\n      target: /cfm/dashboard\n",
                   "style": {
                     "fontFamily": "monospace",
                     "fontSize": "14px",
@@ -598,13 +591,6 @@
                           },
                           "scope": "G",
                           "type": "script"
-                        },
-                        "onKeyUp": {
-                          "config": {
-                            "script": "\texchange.cfm.runtime.set_session_block_field(self.session, 'menuRoutesGenerator', 'viewsOutput', str(self.props.text or '').strip())\n"
-                          },
-                          "scope": "G",
-                          "type": "script"
                         }
                       }
                     },
@@ -633,7 +619,7 @@
                   "position.display": {
                     "binding": {
                       "config": {
-                        "expression": "coalesce({session.custom.configFileMenu.menuRoutesGenerator.outputMode}, 'dynamic')='createViews'"
+                        "expression": "coalesce({session.custom.configFileMenu.settingsMenuRoutes.outputMode}, 'dynamic')='createViews'"
                       },
                       "type": "expr"
                     }
@@ -687,7 +673,7 @@
       "component": {
         "onStartup": {
           "config": {
-            "script": "\texchange.cfm.runtime.load_menu_routes_generator(self, \"# SAMPLE ONLY - Copy/paste into Config File Menu/MenuContent.params.menuConfig.\\n# Every target needs a matching route in page-config/config.json.\\n# expanded: true|false on a top-level section (or nested tree item) controls whether\\n# that branch starts open. Sections still auto-open when the current page is under them.\\nmenu:\\n  items:\\n    - label: Dashboard\\n      icon: material/home\\n      target: /cfm/dashboard\\n\", \"{\\n  \\\"_comment\\\": \\\"Generated routes appear here.\\\",\\n  \\\"pages\\\": {}\\n}\", 'Config File Menu/Resources/View Dynamic Fallback')\n"
+            "script": "\texchange.cfm.runtime.load_menu_routes_generator(self, \"# SAMPLE ONLY - paste into the session property configFileMenu.contentSource.\\n# Every target needs a matching route in page-config/config.json.\\n# expanded: true|false on a top-level section (or nested tree item) controls whether\\n# that branch starts open. Sections still auto-open when the current page is under them.\\nmenu:\\n  items:\\n    - label: Dashboard\\n      icon: material/home\\n      target: /cfm/dashboard\\n\", \"{\\n  \\\"_comment\\\": \\\"Generated routes appear here.\\\",\\n  \\\"pages\\\": {}\\n}\", 'Config File Menu/Resources/View Dynamic Fallback')\n"
           },
           "scope": "G",
           "type": "script"

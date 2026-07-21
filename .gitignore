@@ -10,12 +10,14 @@ __pycache__/
 .venv/
 venv/
 
-# OS / editor
+# OS / editor / tooling
 .DS_Store
 Thumbs.db
 *.swp
 .idea/
 .vscode/
+.claude/
+.pytest_cache/
 
 # Archived release notes (kept locally, not in repo)
 Config_File_Menu/docs/archive/CHANGELOG-1.0.0.md

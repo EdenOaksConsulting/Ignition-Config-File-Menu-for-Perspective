@@ -1,8 +1,7 @@
 {
   "custom": {},
   "params": {
-    "menuDockId": "config-file-menu",
-    "closeMenuOnOutsideClick": true
+    "menuDockId": "config-file-menu"
   },
   "props": {
     "defaultSize": {
@@ -267,10 +266,6 @@
   },
   "propConfig": {
     "params.menuDockId": {
-      "paramDirection": "input",
-      "persistent": true
-    },
-    "params.closeMenuOnOutsideClick": {
       "paramDirection": "input",
       "persistent": true
     }

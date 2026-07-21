@@ -1,5 +1,5 @@
 {
-  "_comment": "SAMPLE ONLY - Copy/paste into MenuContent.params.menuConfig with menuConfigType=json.",
+  "_comment": "SAMPLE ONLY - paste into configFileMenu.contentSource with contentSourceType=json.",
   "items": [
     {
       "label": "Dashboard",
@@ -256,6 +256,5 @@
       "icon": "material/assessment",
       "target": "/cfm/reports"
     }
-  ],
-  "expandArrowSide": "left"
+  ]
 }

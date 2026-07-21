@@ -1,32 +1,31 @@
-"""Dock open/close, session bootstrap, and shell page behaviors."""
+"""Dock open/close and shell page behaviors.
+
+All project configuration lives in one session custom object,
+session.custom.configFileMenu, which ships with the library (session-props resource)
+fully populated with defaults. The runtime reads/writes that object directly; there is
+no view-param seeding. Keys are flat and group-prefixed (dock* / content* / brand* /
+layout* / show* / route*). The dock open/pin/content mode are stored as:
+    dockOpen         bool   menu currently open (its shipped default is the initial state)
+    dockPinned       bool   pinned (blocks outside-click dismiss; implies push+open)
+    dockContentPush  bool   True -> push, False -> cover
+The Perspective dock API and CSS want a "push"/"cover" string, so dockContentPush is
+converted to that string only at the alterDock boundary (see _dock_content).
+"""
 
 
-DOCK_DEFAULTS_VERSION = "2026-07-04-pinned-open-push"
-
-
-def ensure_dock_defaults(state):
-	if str(state.get("dockDefaultsVersion", "")) != DOCK_DEFAULTS_VERSION:
-		state["isOpen"] = True
-		state["menuMode"] = "open"
-		state["isPinned"] = True
-		state["dockContent"] = "push"
-		state["dockDefaultsVersion"] = DOCK_DEFAULTS_VERSION
-		return
-	state.setdefault("isOpen", True)
-	state.setdefault("menuMode", "open")
-	state.setdefault("isPinned", True)
-	state.setdefault("dockContent", "push")
+def _dock_content(state):
+	# Derive the Perspective "push"/"cover" content string from the boolean dockContentPush.
+	return "push" if cfm.config.is_true(state.get("dockContentPush", True)) else "cover"
 
 
 def init_topbar_state(component):
+	# The Top Bar shares the session object; nothing to seed (it ships populated). Kept as a
+	# stable onStartup entry point that simply re-affirms the identity keys it reads.
 	state = cfm.config.get_state(component.session)
-	ensure_dock_defaults(state)
-	state.setdefault("closeMenuOnOutsideClick", True)
-	state.setdefault("logoVariant", "large")
-	state.setdefault("menuConfigType", "yaml")
-	state.setdefault("menuDockId", "config-file-menu")
-	state.setdefault("breadcrumbPathPrefix", "cfm")
-	component.session.custom.configFileMenu = state
+	cfm.config.set_state_fields(component.session, {
+		"contentDockId": state.get("contentDockId", "config-file-menu"),
+		"contentBreadcrumbPrefix": state.get("contentBreadcrumbPrefix", "cfm"),
+	})
 
 
 def format_topbar_clock():
@@ -47,21 +46,6 @@ def _layout_is_open(component):
 		return False
 
 
-def _dock_id(component, state):
-	return str(
-		state.get("menuDockId")
-		or str(getattr(component.view.params, "menuDockId", None) or "")
-		or "config-file-menu"
-	)
-
-
-def _dock_content(state):
-	dock_content = str(state.get("dockContent", "push")).lower()
-	if dock_content not in ("cover", "push"):
-		dock_content = "push"
-	return dock_content
-
-
 def _topbar_is_open(component, state):
 	try:
 		device_type = str(component.session.props.device.type or "")
@@ -70,8 +54,8 @@ def _topbar_is_open(component, state):
 	if device_type == "designer":
 		return True
 	dock_content = _dock_content(state)
-	pinned = cfm.config.is_true(state.get("isPinned", False))
-	session_open = cfm.config.is_true(state.get("isOpen", False))
+	pinned = cfm.config.is_true(state.get("dockPinned", False))
+	session_open = cfm.config.is_true(state.get("dockOpen", False))
 	if dock_content == "push" or pinned:
 		return _layout_is_open(component) or session_open
 	return session_open
@@ -84,184 +68,153 @@ def topbar_toggle_icon(component):
 
 def topbar_toggle_classes(component):
 	state = cfm.config.get_state(component.session)
-	suffix = "close-menu" if _topbar_is_open(component, state) else "open-menu"
-	return "cfm-menu__button cfm-menu__button--" + suffix
+	if _topbar_is_open(component, state):
+		return "cfm-menu__button cfm-menu__button--close-menu"
+	return "cfm-menu__button cfm-menu__button--open-menu"
 
 
 def on_menu_toggle_click(component):
 	state = cfm.config.get_state(component.session)
-	dock_id = _dock_id(component, state)
-	pinned = cfm.config.is_true(state.get("isPinned", False))
+	dock_id = cfm.config.resolve_dock_id(state)
+	pinned = cfm.config.is_true(state.get("dockPinned", False))
 	dock_content = _dock_content(state)
 	if pinned:
 		dock_content = "push"
-	session_open = cfm.config.is_true(state.get("isOpen", False))
+	session_open = cfm.config.is_true(state.get("dockOpen", False))
 	if dock_content == "push" or pinned:
 		currently_open = _layout_is_open(component) or session_open
 	else:
 		currently_open = session_open
 	if currently_open:
 		system.perspective.closeDock(dock_id)
-		state["isOpen"] = False
-		state["menuMode"] = "closed"
-		state["isPinned"] = pinned
-		state["dockContent"] = dock_content
-		component.session.custom.configFileMenu = state
+		cfm.config.set_state_fields(component.session, {
+			"dockOpen": False,
+			"dockPinned": pinned, "dockContentPush": dock_content == "push",
+		})
 	else:
 		system.perspective.alterDock(dock_id, {"content": dock_content})
 		system.perspective.openDock(dock_id)
-		state["isOpen"] = True
-		state["menuMode"] = "open"
-		state["isPinned"] = pinned
-		state["dockContent"] = dock_content
-		component.session.custom.configFileMenu = state
+		cfm.config.set_state_fields(component.session, {
+			"dockOpen": True,
+			"dockPinned": pinned, "dockContentPush": dock_content == "push",
+		})
 
 
 def on_dock_mode_toggle(component):
 	state = cfm.config.get_state(component.session)
-	dock_id = _dock_id(component, state)
+	dock_id = cfm.config.resolve_dock_id(state)
 	current = _dock_content(state)
 	new_mode = "push" if current == "cover" else "cover"
-	new_pinned = False if new_mode == "cover" else cfm.config.is_true(state.get("isPinned", False))
+	new_pinned = False if new_mode == "cover" else cfm.config.is_true(state.get("dockPinned", False))
 	system.perspective.alterDock(dock_id, {"content": new_mode})
 	system.perspective.openDock(dock_id)
-	state["isOpen"] = True
-	state["menuMode"] = "open"
-	state["isPinned"] = new_pinned
-	state["dockContent"] = new_mode
-	component.session.custom.configFileMenu = state
+	cfm.config.set_state_fields(component.session, {
+		"dockOpen": True,
+		"dockPinned": new_pinned, "dockContentPush": new_mode == "push",
+	})
 
 
 def on_dock_pin_toggle(component):
 	state = cfm.config.get_state(component.session)
-	dock_id = _dock_id(component, state)
-	pinned = cfm.config.is_true(state.get("isPinned", False))
+	dock_id = cfm.config.resolve_dock_id(state)
+	pinned = cfm.config.is_true(state.get("dockPinned", False))
 	dock_content = _dock_content(state)
 	if pinned:
 		system.perspective.alterDock(dock_id, {"content": dock_content})
-		state["isOpen"] = cfm.config.is_true(state.get("isOpen", True))
-		state["menuMode"] = "open" if state["isOpen"] else "closed"
-		state["isPinned"] = False
-		state["dockContent"] = dock_content
+		is_open = cfm.config.is_true(state.get("dockOpen", True))
+		fields = {
+			"dockOpen": is_open,
+			"dockPinned": False,
+			"dockContentPush": dock_content == "push",
+		}
 	else:
 		system.perspective.alterDock(dock_id, {"content": "push"})
 		system.perspective.openDock(dock_id)
-		state["isOpen"] = True
-		state["menuMode"] = "open"
-		state["isPinned"] = True
-		state["dockContent"] = "push"
-	component.session.custom.configFileMenu = state
+		fields = {"dockOpen": True, "dockPinned": True, "dockContentPush": True}
+	cfm.config.set_state_fields(component.session, fields)
 
 
 def on_settings_pinned_change(component):
 	state = cfm.config.get_state(component.session)
-	dock_id = _dock_id(component, state)
+	dock_id = cfm.config.resolve_dock_id(state)
 	pinned = cfm.config.is_true(component.props.value)
-	dock_content = _dock_content(state)
 	if pinned:
-		dock_content = "push"
-		system.perspective.alterDock(dock_id, {"content": dock_content})
+		system.perspective.alterDock(dock_id, {"content": "push"})
 		system.perspective.openDock(dock_id)
-		state["menuMode"] = "open"
-		state["isOpen"] = True
-		state["isPinned"] = True
-		state["dockContent"] = dock_content
+		fields = {
+			"dockOpen": True,
+			"dockPinned": True, "dockContentPush": True,
+		}
 	else:
-		state["isPinned"] = False
-	component.session.custom.configFileMenu = state
+		fields = {"dockPinned": False}
+	cfm.config.set_state_fields(component.session, fields)
 
 
 def on_settings_dock_content_change(component):
 	state = cfm.config.get_state(component.session)
-	mode = str(component.props.value or "push").lower()
-	if mode not in ("push", "cover"):
-		mode = "push"
-	dock_id = _dock_id(component, state)
+	push = cfm.config.is_true(component.props.value)
+	mode = "push" if push else "cover"
+	dock_id = cfm.config.resolve_dock_id(state)
 	system.perspective.alterDock(dock_id, {"content": mode})
-	state["dockContent"] = mode
-	if mode == "cover":
-		state["isPinned"] = False
-	component.session.custom.configFileMenu = state
+	fields = {"dockContentPush": push}
+	if not push:
+		fields["dockPinned"] = False
+	cfm.config.set_state_fields(component.session, fields)
 
 
 def on_settings_menu_width_change(component):
 	state = cfm.config.get_state(component.session)
 	width_text = str(component.props.text or "").strip()
-	state["menuWidthOpen"] = width_text
-	dock_id = _dock_id(component, state)
+	dock_id = cfm.config.resolve_dock_id(state)
 	try:
 		system.perspective.alterDock(dock_id, {"size": _parse_width(width_text)})
 	except:
 		pass
-	component.session.custom.configFileMenu = state
+	cfm.config.set_state_fields(component.session, {"layoutWidthOpen": width_text})
 
 
 def close_on_outside_click(component):
 	state = cfm.config.get_state(component.session)
-	flag = state.get("closeMenuOnOutsideClick")
-	if flag is None:
-		try:
-			flag = component.view.params.closeMenuOnOutsideClick
-		except:
-			flag = True
-	if not cfm.config.is_true(flag):
+	# The dock defaults ship in the session object, so dockCloseOnOutsideClick / dockPinned /
+	# dockOpen are always present here. A pinned dock never dismisses on an outside click.
+	if not cfm.config.is_true(state.get("dockCloseOnOutsideClick", True)):
 		return
-	dock_id = str(
-		state.get("menuDockId")
-		or str(getattr(component.view.params, "menuDockId", None) or "")
-		or "config-file-menu"
-	)
-	if cfm.config.is_true(state.get("isPinned", False)):
+	if cfm.config.is_true(state.get("dockPinned", False)):
 		return
-	if not cfm.config.is_true(state.get("isOpen", True)):
+	if not cfm.config.is_true(state.get("dockOpen", True)):
 		return
+	dock_id = cfm.config.resolve_dock_id(state)
 	system.perspective.closeDock(dock_id)
-	dock_content = str(state.get("dockContent", "push")).lower()
-	if dock_content not in ("cover", "push"):
-		dock_content = "push"
-	state["isOpen"] = False
-	state["menuMode"] = "closed"
-	state["isPinned"] = False
-	state["dockContent"] = dock_content
-	component.session.custom.configFileMenu = state
+	# Only change open/closed state. Never write dockPinned / dockContentPush here — an
+	# outside click closes the menu but must not alter the session's dock settings.
+	cfm.config.set_state_fields(component.session, {
+		"dockOpen": False,
+	})
 
 
-def _apply_menu_dock_state(component, state):
-	dock_id = str(
-		state.get("menuDockId")
-		or str(getattr(component.view.params, "menuDockId", None) or "")
-		or "config-file-menu"
-	)
-	dock_content = _dock_content(state)
-	if cfm.config.is_true(state.get("isPinned", False)):
-		dock_content = "push"
-		state["isOpen"] = True
-		state["menuMode"] = "open"
-		state["dockContent"] = "push"
-	try:
-		system.util.getLogger("exchange.cfm.Runtime").debug(
-			"Applying dock state id=%s open=%s pinned=%s content=%s"
-			% (
-				dock_id,
-				str(state.get("isOpen")),
-				str(state.get("isPinned")),
-				str(dock_content),
-			)
-		)
-	except:
-		pass
+def _apply_physical_dock(session):
+	# Push the physical Perspective dock (content mode, size, open/closed) to match the
+	# session dock state. Reads state from the session only, so it can run from either the
+	# shared dock's onStartup OR a binding transform. Idempotent: it only syncs the physical
+	# dock to the current dockOpen, so it never fights a live Settings/toggle change.
+	state = cfm.config.get_state(session)
+	dock_id = cfm.config.resolve_dock_id(state)
+	pinned = cfm.config.is_true(state.get("dockPinned", False))
+	# Invariant: a pinned dock is always push + open. Otherwise honor dockContentPush/dockOpen.
+	dock_content = "push" if pinned else _dock_content(state)
+	want_open = True if pinned else cfm.config.is_true(state.get("dockOpen", False))
 	try:
 		system.perspective.alterDock(
 			dock_id,
 			{
 				"content": dock_content,
-				"size": _parse_width(state.get("menuWidthOpen", "220px")),
+				"size": _parse_width(state.get("layoutWidthOpen", "220px")),
 			},
 		)
 	except:
 		pass
 	try:
-		if cfm.config.is_true(state.get("isOpen", False)):
+		if want_open:
 			system.perspective.openDock(dock_id)
 		else:
 			system.perspective.closeDock(dock_id)
@@ -269,26 +222,25 @@ def _apply_menu_dock_state(component, state):
 		pass
 
 
+def apply_startup_dock_state(session):
+	# Public entry point called from the MenuItems binding transform (see menu.py). A shared
+	# dock's onStartup does not reliably fire in Perspective 8.3.3, but the MenuItems binding
+	# always runs on menu render — so this is where the authored startup open/closed state
+	# (dockOpen, incl. "start closed") is reliably applied to the physical dock. Because the
+	# binding depends on contentSource (not on dock state), it runs about once per session and
+	# does not loop when the dock opens/closes.
+	_apply_physical_dock(session)
+
+
 def sync_shell_session(component):
-	state = cfm.config.get_state(component.session)
-	if not str(state.get("menuConfig") or "").strip():
-		try:
-			state["menuConfig"] = getattr(component.view.params, "menuConfig", "") or ""
-		except:
-			state["menuConfig"] = ""
-	if not str(state.get("menuConfigType") or "").strip():
-		try:
-			state["menuConfigType"] = str(getattr(component.view.params, "menuConfigType", "yaml") or "yaml")
-		except:
-			state["menuConfigType"] = "yaml"
-	state.setdefault("logicalPagePath", "")
+	# Shell/fallback pages track the requested logical path for breadcrumb/title use. The
+	# menu config now ships in the session object (contentSource), so no backfill is needed.
 	try:
 		requested = str(getattr(component.view.params, "requestedPath", "") or "").strip()
 	except:
 		requested = ""
 	if requested:
-		state["logicalPagePath"] = requested
-	component.session.custom.configFileMenu = state
+		cfm.config.set_state_fields(component.session, {"routeLogicalPath": requested})
 
 
 def _parse_width(raw, default=220):
@@ -302,85 +254,13 @@ def _parse_width(raw, default=220):
 		return default
 
 
-def sync_menu_content_site_name(component):
-	cfm.config.sync_site_name_from_view(component.session, component.view)
-
-
-def on_menu_content_property_change(component, event):
-	path = ""
-	try:
-		prop = event.property
-		path = str(getattr(prop, "path", "") or getattr(prop, "propertyPath", "") or "")
-	except:
-		pass
-	if path in ("params", "params.siteName") or path.endswith(".siteName") or path.endswith(".params"):
-		sync_menu_content_site_name(component)
-
-
 def init_menu_content_state(component):
-	state = cfm.config.get_state(component.session)
-	ensure_dock_defaults(state)
-	state.setdefault("menuFont", "")
-	state.setdefault("menuFontSize", "14px")
-	state.setdefault("menuWidthOpen", "220px")
-	state.setdefault("menuDockId", "config-file-menu")
-	dock_id = str(
-		state.get("menuDockId")
-		or str(getattr(component.view.params, "menuDockId", None) or "")
-		or "config-file-menu"
-	)
-	try:
-		system.perspective.alterDock(dock_id, {"size": _parse_width(state.get("menuWidthOpen", "220px"))})
-	except:
-		pass
-	try:
-		state["menuConfig"] = getattr(component.view.params, "menuConfig", "") or ""
-	except:
-		state["menuConfig"] = ""
-	try:
-		state["menuConfigType"] = str(getattr(component.view.params, "menuConfigType", "yaml") or "yaml")
-	except:
-		state["menuConfigType"] = "yaml"
-	state.setdefault("breadcrumbPathPrefix", "cfm")
-	try:
-		state["logoLargePath"] = str(getattr(component.view.params, "logoLargePath", "") or "")
-	except:
-		state["logoLargePath"] = ""
-	try:
-		state["logoSmallPath"] = str(getattr(component.view.params, "logoSmallPath", "") or "")
-	except:
-		state["logoSmallPath"] = ""
-	try:
-		state["logoLinkTarget"] = str(getattr(component.view.params, "logoLinkTarget", "") or "/")
-	except:
-		state["logoLinkTarget"] = "/"
-	# Breadcrumb site name comes from MenuContent.params.siteName (copied to session).
-	cfm.config.sync_site_name_from_view(component.session, component.view)
-	state = cfm.config.get_state(component.session)
-	state.setdefault("shellFallbackEnabled", True)
-	state.setdefault("shellFallbackRoute", "/cfm/target-no-route")
-	state.setdefault("logicalPagePath", "")
-	cfm.menu.ensure_show_topbar_small_logo_state(state)
-	cfm.menu.ensure_footer_visibility_state(state)
-	_apply_menu_dock_state(component, state)
-	component.session.custom.configFileMenu = state
+	# Best-effort physical dock apply on the shared dock's onStartup (unreliable in
+	# Perspective; apply_startup_dock_state from the MenuItems binding is the reliable path).
+	# All config ships in the session object, so there is nothing to seed here.
+	_apply_physical_dock(component.session)
 
 
 def init_settings_general_state(component):
-	state = cfm.config.get_state(component.session)
-	ensure_dock_defaults(state)
-	state.setdefault("closeMenuOnOutsideClick", False)
-	state.setdefault("menuWidthOpen", "220px")
-	state.setdefault("menuDockId", "config-file-menu")
-	dock_id = str(state.get("menuDockId") or "config-file-menu")
-	try:
-		system.perspective.alterDock(dock_id, {"size": _parse_width(state.get("menuWidthOpen", "220px"))})
-	except:
-		pass
-	state.setdefault("shellFallbackEnabled", True)
-	state.setdefault("shellFallbackRoute", "/cfm/target-no-route")
-	state.setdefault("logicalPagePath", "")
-	cfm.menu.ensure_show_topbar_small_logo_state(state)
-	cfm.menu.ensure_footer_visibility_state(state)
-	_apply_menu_dock_state(component, state)
-	component.session.custom.configFileMenu = state
+	# Apply the current dock size/content to the physical dock when Settings opens.
+	_apply_physical_dock(component.session)

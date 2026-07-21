@@ -18,7 +18,7 @@ For public Exchange submission, upload the project/package files from the reposi
 
 The library is **inheritable** and ships views, Runtime, Settings tools, Advanced Stylesheet, and fixed routes (`/cfm/settings`, `/cfm/diagnostics`, `/cfm/target-no-route`, etc.).
 
-Child packages (site and sample) are **thin**: they override `project.json`, `page-config`, `MenuContent.params.menuConfig`, and ship editable logo PNGs. Everything else inherits from the library parent.
+Child packages (site and sample) are **thin**: they override `project.json`, `page-config`, `configFileMenu.contentSource`, and ship editable logo PNGs. Everything else inherits from the library parent.
 
 ---
 
@@ -56,7 +56,7 @@ Only these files need changes for a typical first site:
 | Path in zip | Purpose |
 |-------------|---------|
 | `project.json` | Replace **Your Site Name** in `title`; optional `description` |
-| `com.inductiveautomation.perspective/views/Config File Menu/MenuContent/view.json` | `params.menuConfig`, `params.menuConfigType` (`yaml` or `json`) |
+| `com.inductiveautomation.perspective/session-props/props.json` | `custom.configFileMenu.contentSource`, `custom.configFileMenu.contentSourceType` (`yaml` or `json`) — the menu |
 | `com.inductiveautomation.perspective/views/Config File Menu/Resources/Menu/Menu Top Bar/view.json` | Embedded top-bar small logo, refreshed by the logo helper |
 | `com.inductiveautomation.perspective/page-config/config.json` | `pages` object — **keep** `sharedDocks` and fixed library routes |
 | `logo-upload/cfm/cfm-logo-large.png` | Dock header large logo |
@@ -66,7 +66,7 @@ Only these files need changes for a typical first site:
 
 ### Minimum Site Menu
 
-Paste this into `MenuContent.view.json` → `params.menuConfig`, then set `params.menuConfigType` to `yaml`:
+Paste this into `session-props/props.json` → `custom.configFileMenu.contentSource`, then set `contentSourceType` to `yaml`:
 
 ```yaml
 menu:
@@ -114,7 +114,7 @@ Use these tools when tag browse or route generation is easier in a live session.
 1. Enter tag path (e.g. `[default]Plant/Areas`), route prefix (e.g. `/cfm/plant`), and **Max levels**.
 2. Click **Generate menu**.
 3. Copy the YAML or JSON output.
-4. Merge the branch under `menu.items` in `MenuContent/view.json` → `params.menuConfig`.
+4. Merge the branch under `menu.items` in `session-props/props.json` → `custom.configFileMenu.contentSource`.
 
 **Note:** Optional `sourceTagPath` keys are authoring metadata; the runtime menu ignores unknown fields.
 
@@ -187,11 +187,16 @@ Then re-zip and import.
 
 - `logoVariant` — `large` | `small` | other (hide dock logos)
 - `logoLinkTarget` — URL when clicking the dock header logo (default `/`)
-- `topbar.showSmallLogo` in `menuConfig` — show small logo in top bar (default `true` in templates)
 
-The standard dock starts open, pinned, and in push mode from Python session initialization in `exchange.cfm.runtime`. To change project-wide startup behavior, edit `ensure_dock_defaults(state)` in `scripts/jython_lib/cfm/dock.py`, then rebuild the import zips. The Settings tab controls current-session dock state only.
+Project dock startup defaults are **not** MenuContent params — they are session custom properties (see below).
 
-**Optional Image Management path** (gateway-level, secondary): upload the same PNG files to folder `cfm` under **Tools → Image Management** (from `logo-upload/cfm/` in an extracted child zip, or from `config/cfm-logos/` in the repository), set `params.logoLargePath` and `params.logoSmallPath` to mounted paths (e.g. `/system/images/cfm/cfm-logo-large.png`). Empty params use embedded URIs.
+Top bar small logo visibility is a runtime session setting, not a `menuConfig` key: use **Settings → General → Top bar small logo** (session `showTopBarSmallLogo`, default on).
+
+The standard dock starts open, pinned, and in push mode. All configuration lives in one session custom object, **`configFileMenu`** (**Perspective → Session Properties → custom → `configFileMenu`**), shipped with the library so it exists on import. To change project-wide startup behavior, edit its boolean `dockPinned`, `dockContentPush` (`true` = push, `false` = cover), and `dockCloseOnOutsideClick` keys (all default `true`). Session-custom defaults apply to every new session (cover normalizes to unpinned, pinned normalizes to push + open). The Settings tab controls current-session dock state only and overrides these defaults for that session.
+
+Destination/shell page views keep their own `closeMenuOnOutsideClick` param as a per-page fallback for the click-outside handler; once MenuContent has seeded the session flag, the session value wins.
+
+**Optional Image Management path** (gateway-level, secondary): upload the same PNG files to folder `cfm` under **Tools → Image Management** (from `logo-upload/cfm/` in an extracted child zip, or from `config/cfm-logos/` in the repository), set `configFileMenu.brandLogoLarge` and `configFileMenu.brandLogoSmall` to mounted paths (e.g. `/system/images/cfm/cfm-logo-large.png`). Empty params use embedded URIs.
 
 ---
 

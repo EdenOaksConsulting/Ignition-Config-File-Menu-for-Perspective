@@ -1,19 +1,9 @@
 {
   "custom": {},
   "params": {
-    "menuDockId": "config-file-menu",
-    "closeMenuOnOutsideClick": true,
     "requestedPath": ""
   },
   "propConfig": {
-    "params.menuDockId": {
-      "paramDirection": "input",
-      "persistent": true
-    },
-    "params.closeMenuOnOutsideClick": {
-      "paramDirection": "input",
-      "persistent": true
-    },
     "params.requestedPath": {
       "paramDirection": "input",
       "persistent": true
@@ -124,11 +114,11 @@
                             "struct": {
                               "path": "{page.props.path}",
                               "requestedPath": "{view.params.requestedPath}",
-                              "logicalPagePath": "{session.custom.configFileMenu.logicalPagePath}",
-                              "sessionMenuConfig": "{session.custom.configFileMenu.menuConfig}",
-                              "sessionMenuConfigType": "{session.custom.configFileMenu.menuConfigType}",
-                              "paramMenuConfig": "{view.params.menuConfig}",
-                              "paramMenuConfigType": "{view.params.menuConfigType}"
+                              "routeLogicalPath": "{session.custom.configFileMenu.routeLogicalPath}",
+                              "sessionMenuConfig": "{session.custom.configFileMenu.contentSource}",
+                              "sessionMenuConfigType": "{session.custom.configFileMenu.contentSourceType}",
+                              "paramMenuConfig": "{session.custom.configFileMenu.contentSource}",
+                              "paramMenuConfigType": "{session.custom.configFileMenu.contentSourceType}"
                             },
                             "waitOnAll": false
                           },
@@ -165,11 +155,11 @@
                             "struct": {
                               "path": "{page.props.path}",
                               "requestedPath": "{view.params.requestedPath}",
-                              "logicalPagePath": "{session.custom.configFileMenu.logicalPagePath}",
-                              "sessionMenuConfig": "{session.custom.configFileMenu.menuConfig}",
-                              "sessionMenuConfigType": "{session.custom.configFileMenu.menuConfigType}",
-                              "paramMenuConfig": "{view.params.menuConfig}",
-                              "paramMenuConfigType": "{view.params.menuConfigType}"
+                              "routeLogicalPath": "{session.custom.configFileMenu.routeLogicalPath}",
+                              "sessionMenuConfig": "{session.custom.configFileMenu.contentSource}",
+                              "sessionMenuConfigType": "{session.custom.configFileMenu.contentSourceType}",
+                              "paramMenuConfig": "{session.custom.configFileMenu.contentSource}",
+                              "paramMenuConfigType": "{session.custom.configFileMenu.contentSourceType}"
                             },
                             "waitOnAll": false
                           },
@@ -211,11 +201,11 @@
                         "struct": {
                           "path": "{page.props.path}",
                           "requestedPath": "{view.params.requestedPath}",
-                          "logicalPagePath": "{session.custom.configFileMenu.logicalPagePath}",
-                          "sessionMenuConfig": "{session.custom.configFileMenu.menuConfig}",
-                          "sessionMenuConfigType": "{session.custom.configFileMenu.menuConfigType}",
-                          "paramMenuConfig": "{view.params.menuConfig}",
-                          "paramMenuConfigType": "{view.params.menuConfigType}"
+                          "routeLogicalPath": "{session.custom.configFileMenu.routeLogicalPath}",
+                          "sessionMenuConfig": "{session.custom.configFileMenu.contentSource}",
+                          "sessionMenuConfigType": "{session.custom.configFileMenu.contentSourceType}",
+                          "paramMenuConfig": "{session.custom.configFileMenu.contentSource}",
+                          "paramMenuConfigType": "{session.custom.configFileMenu.contentSourceType}"
                         },
                         "waitOnAll": true
                       },

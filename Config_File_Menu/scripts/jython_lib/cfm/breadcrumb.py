@@ -12,7 +12,7 @@ def _add_lookup(items, trail, lookup):
 		target = cfm.config.get_prop(item, "target", "")
 		if target:
 			lookup[tuple(current)] = target
-		children = cfm.config.get_prop(item, "children", cfm.config.get_prop(item, "items", []))
+		children = cfm.config.get_children(item)
 		_add_lookup(children, current, lookup)
 
 
@@ -33,7 +33,7 @@ def _add_label_lookup(items, trail, lookup):
 			continue
 		current = trail + [cfm.config.slug(label)]
 		lookup[tuple(current)] = str(label)
-		children = cfm.config.get_prop(item, "children", cfm.config.get_prop(item, "items", []))
+		children = cfm.config.get_children(item)
 		_add_label_lookup(children, current, lookup)
 
 
@@ -82,15 +82,21 @@ def _crumb_style():
 
 def build_instances(value, page):
 	try:
+		session = page.session
+		state = cfm.config.get_state(session)
+		# Perf gate (opt-in): resolve perfLogging from the state we already read, so nothing
+		# is timed/formatted when perf logging is off. This is the prime target — the build
+		# re-parses config and calls getProjectInfo() on every navigation.
+		perf_prop = cfm.config.is_true(state.get("perfLogging", False))
+		_perf = cfm.log.perf_enabled(perf_prop)
+		_t0 = cfm.log.now_nanos() if _perf else 0
 		path = cfm.config.resolve_effective_page_path_from_value(value, page)
 		viewport_width = cfm.config.get_prop(value, "viewportWidth", page.props.dimensions.viewport.width)
-		menu_config = cfm.config.get_prop(value, "menuConfig", "")
-		menu_config_type = str(cfm.config.get_prop(value, "menuConfigType", "yaml") or "yaml")
-		path_prefix = str(cfm.config.get_prop(value, "pathPrefix", "cfm") or "cfm").strip().lower()
+		# All menu config lives in the session object (shipped with the library).
+		menu_config, menu_config_type = cfm.config.pick_menu_block(session, value)
+		path_prefix = str(state.get("contentBreadcrumbPrefix", "cfm") or "cfm").strip().lower()
 		all_pages = [i["url"] for i in system.perspective.getProjectInfo()["pageConfigs"]]
-		cfg = cfm.config.load_config(menu_config, menu_config_type)
-		menu = cfm.config.get_prop(cfg, "menu", cfg)
-		items = cfm.config.get_prop(menu, "items", menu if cfm.config.is_sequence(menu) else [])
+		items = cfm.config.load_menu_items(menu_config, menu_config_type)
 		lookup = {}
 		_add_lookup(items, [], lookup)
 		label_lookup = {}
@@ -102,14 +108,10 @@ def build_instances(value, page):
 		else:
 			display_segments = all_segments
 			prefix_count = 0
-		dock_id = str(
-			cfm.config.get_prop(value, "prefMenuDockId", "")
-			or cfm.config.get_prop(value, "menuDockId", "config-file-menu")
-			or "config-file-menu"
-		)
-		shell_fallback = cfm.config.is_true(cfm.config.get_prop(value, "shellFallbackEnabled", True))
+		dock_id = cfm.config.resolve_dock_id(state)
+		shell_fallback = cfm.config.is_true(state.get("routeFallbackEnabled", True))
 		home_target = _home_target_for(items, path_prefix, all_pages, shell_fallback)
-		site_name = cfm.config.resolve_site_name(value, page.session)
+		site_name = cfm.config.resolve_site_name(value, session)
 		instances = [{
 			"instanceStyle": _crumb_style(),
 			"instancePosition": {},
@@ -127,7 +129,6 @@ def build_instances(value, page):
 			segment_slice = all_segments[: prefix_count + index + 1]
 			current_path = "/" + "/".join(segment_slice)
 			configured_target = _menu_target_for(segment_slice, lookup)
-			shell_fallback = cfm.config.is_true(cfm.config.get_prop(value, "shellFallbackEnabled", True))
 			if configured_target and configured_target in all_pages:
 				target = configured_target
 				is_link = True
@@ -158,8 +159,12 @@ def build_instances(value, page):
 				instances = [instances[0], crumb]
 			else:
 				instances.append(crumb)
+		if _perf:
+			cfm.log.perf("breadcrumb.build", cfm.log.now_nanos() - _t0,
+				"items=%d pages=%d" % (len(items), len(all_pages)), force=perf_prop)
 		return instances
 	except Exception as exc:
+		cfm.log.log_once("breadcrumb", "error", "Breadcrumb build failed", exc)
 		return [{
 			"instanceStyle": _crumb_style(),
 			"instancePosition": {},

@@ -25,26 +25,18 @@ from jython_thin import (
 )
 
 EFFECTIVE_PAGE_PATH_EXPR = (
-	"if(len(trim(coalesce(toString({session.custom.configFileMenu.logicalPagePath}),'')))>0,"
-	"toString({session.custom.configFileMenu.logicalPagePath}),"
+	"if(len(trim(coalesce(toString({session.custom.configFileMenu.routeLogicalPath}),'')))>0,"
+	"toString({session.custom.configFileMenu.routeLogicalPath}),"
 	"toString({page.props.path}))"
 )
 
 PATH_LABEL_EXPR = (
 	"if(len(trim(coalesce(toString({view.params.requestedPath}),'')))>0,"
 	"toString({view.params.requestedPath}),"
-	"if(len(trim(coalesce(toString({session.custom.configFileMenu.logicalPagePath}),'')))>0,"
-	"toString({session.custom.configFileMenu.logicalPagePath}),"
+	"if(len(trim(coalesce(toString({session.custom.configFileMenu.routeLogicalPath}),'')))>0,"
+	"toString({session.custom.configFileMenu.routeLogicalPath}),"
 	"toString({page.props.path})))"
 )
-
-
-def jython_get_state() -> str:
-	return jython_tab(f"state = {RUNTIME_MODULE}.get_state(self.session)")
-
-
-def jython_is_true() -> str:
-	return jython_tab(f"return {RUNTIME_MODULE}.is_true(value)")
 
 
 def jython_navigate_menu_target(*, include_dock_close: bool = True, use_logo_target: bool = False) -> str:

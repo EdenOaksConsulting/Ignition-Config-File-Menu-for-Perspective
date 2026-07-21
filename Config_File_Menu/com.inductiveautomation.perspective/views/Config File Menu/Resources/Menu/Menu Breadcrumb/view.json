@@ -2,8 +2,6 @@
   "custom": {
     "key": "",
     "uppercase": [
-      "hvac",
-      "crac",
       "io"
     ]
   },
@@ -26,7 +24,7 @@
           "struct": {
             "path": "{page.props.path}",
             "requestedPath": "{view.params.requestedPath}",
-            "logicalPagePath": "{session.custom.configFileMenu.logicalPagePath}"
+            "routeLogicalPath": "{session.custom.configFileMenu.routeLogicalPath}"
           },
           "waitOnAll": true
         },
@@ -174,7 +172,7 @@
               "props.text": {
                 "binding": {
                   "config": {
-                    "expression": "replace({view.params.label}, \"crac\", \"CRAC\")"
+                    "expression": "{view.params.label}"
                   },
                   "type": "expr"
                 }

@@ -4,15 +4,10 @@
   },
   "params": {
     "menuDockId": "config-file-menu",
-    "closeMenuOnOutsideClick": true,
     "currentTabIndex": 0
   },
   "propConfig": {
     "params.menuDockId": {
-      "paramDirection": "input",
-      "persistent": true
-    },
-    "params.closeMenuOnOutsideClick": {
       "paramDirection": "input",
       "persistent": true
     },

@@ -77,7 +77,7 @@
           "struct": {
             "path": "{page.props.path}",
             "requestedPath": "{view.params.requestedPath}",
-            "logicalPagePath": "{session.custom.configFileMenu.logicalPagePath}"
+            "routeLogicalPath": "{session.custom.configFileMenu.routeLogicalPath}"
           },
           "waitOnAll": true
         },
@@ -338,38 +338,6 @@
               },
               "type": "expr"
             }
-          },
-          "props.style.classes": {
-            "binding": {
-              "config": {
-                "expression": "concat('cfm-menu__section-tree-items cfm-menu__arrow-left')"
-              },
-              "type": "expr"
-            }
-          },
-          "props.appearance.expandIcons.collapsed.style.marginLeft": {
-            "binding": {
-              "config": {
-                "expression": "'0px'"
-              },
-              "type": "expr"
-            }
-          },
-          "props.appearance.expandIcons.expanded.style.marginLeft": {
-            "binding": {
-              "config": {
-                "expression": "'0px'"
-              },
-              "type": "expr"
-            }
-          },
-          "props.appearance.expandIcons.empty.style.marginLeft": {
-            "binding": {
-              "config": {
-                "expression": "'0px'"
-              },
-              "type": "expr"
-            }
           }
         },
         "props": {
@@ -389,20 +357,23 @@
               "collapsed": {
                 "path": "material/arrow_right",
                 "style": {
-                  "overflow": "hidden"
+                  "overflow": "hidden",
+                  "marginLeft": "0px"
                 }
               },
               "empty": {
                 "style": {
                   "opacity": 0,
-                  "overflow": "hidden"
+                  "overflow": "hidden",
+                  "marginLeft": "0px"
                 },
                 "path": "material/arrow_right"
               },
               "expanded": {
                 "path": "material/arrow_drop_down",
                 "style": {
-                  "overflow": "hidden"
+                  "overflow": "hidden",
+                  "marginLeft": "0px"
                 }
               }
             },
@@ -431,7 +402,7 @@
           ],
           "style": {
             "overflow": "hidden",
-            "classes": "cfm-menu__section-tree-items"
+            "classes": "cfm-menu__section-tree-items cfm-menu__arrow-left"
           }
         },
         "scripts": {

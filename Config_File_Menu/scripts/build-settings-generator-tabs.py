@@ -44,39 +44,115 @@ CONVERTER_VIEW = MENU_DIR / "Menu Settings Config Converter" / "view.json"
 
 TAG_MENU_SCRIPT = jython_tag_menu_generate_script()
 
+CONVERTER_INSTRUCTIONS = (
+    "Prefer JSON for your menu? Convert your menu YAML here.\n\n"
+    "1. Paste menu YAML on the left.\n"
+    "2. Click **Convert to JSON**.\n"
+    "3. Copy the output into the session property `configFileMenu.contentSource`.\n"
+    "4. Set `configFileMenu.contentSourceType` to `json`."
+)
+CONVERTER_INSTRUCTIONS_BASIS = "170px"
+
 HELP_MARKDOWN = """# Config File Menu Help
 
-Config File Menu turns one YAML-lite or JSON configuration into a responsive Ignition Perspective navigation system.
+Config File Menu builds your Perspective navigation — the docked menu, breadcrumbs, and page titles — from one menu configuration written in YAML or JSON.
 
-## Import Order
+## Install
 
-1. Import `config-file-menu-library.zip`.
-2. Import `config-file-menu-sample.zip` to explore a reference project, or `config-file-menu-site.zip` to start a blank site.
-3. Open `/` for the landing page, `/cfm/settings` for authoring tools, and `/cfm/diagnostics` for evaluation diagnostics.
+1. Import `config-file-menu-library.zip` and keep the default project name `config-file-menu-library`.
+2. Import `config-file-menu-sample.zip` (working example) or `config-file-menu-site.zip` (blank starting point).
+3. In a browser session, `/` is the landing page, `/cfm/settings` opens these tools, and `/cfm/diagnostics` shows gateway diagnostics.
 
-## Configure The Menu
+## Edit The Menu
 
-- Edit `Config File Menu/MenuContent.params.menuConfig`.
-- Set `params.menuConfigType` to `yaml` or `json`.
-- Each menu item `target` should have a matching Page Configuration route.
-- Use `expanded: true` on sections that should start open.
-- Use `roles` to hide menu items by user role; still configure page-level security separately.
+1. In the Designer, open **Perspective → Session Properties → custom → `configFileMenu`**.
+2. Edit `contentSource` — this one value defines the whole menu (YAML or JSON).
+3. Set `contentSourceType` to `yaml` or `json` to match the format you used.
+4. In **Page Configuration**, add a page whose URL matches each menu `target`.
 
-## Settings Page Tabs
+Menu item options: `expanded: true` starts a section open. `roles` hides items from users without those roles — it does not secure the page itself, so also configure Perspective security on your views and pages.
 
-- **Settings** — pinned state, dock mode, outside-click behavior, menu width, top bar logo, and footer links for the current session.
-- **Help** — this documentation.
-- **Tag → Menu** — browse a tag path and generate a menu branch in a live session.
-- **Menu → Routes** — generate `page-config` merge JSON from menu YAML or JSON.
-- **YAML to JSON** — convert YAML-lite menu text to JSON.
+## Settings Tabs
 
-## Startup Defaults
+- **Settings** — menu behavior for your current session: pinned, dock mode, width, theme, logos, footer links.
+- **Help** — this page.
+- **Tag → Menu** — build menu YAML or JSON from your existing tags.
+- **Menu → Routes** — build Page Configuration JSON from your menu, so every `target` has a page.
+- **YAML to JSON** — convert menu YAML to JSON.
 
-The standard dock starts open, pinned, and in push mode. Project-wide startup defaults are defined in the `exchange.cfm.runtime` project library script (`ensure_dock_defaults`). The Settings tab changes current-session state only.
+## Defaults
 
-## Routes
+The menu starts open, pinned, and in push mode. All settings live in one session object — **Perspective → Session Properties → custom → `configFileMenu`**. To change project-wide defaults, edit its boolean `dockPinned`, `dockContentPush` (`true` = push, `false` = cover), and `dockCloseOnOutsideClick` keys. Changes made on the Settings tab last only for the current session.
 
-Keep the fixed routes `/`, `/cfm/settings`, `/cfm/diagnostics`, `/cfm/target-no-route`, `/cfm/tools`, and `/cfm/tools/config-converter` when merging generated page configuration.
+## All Settings (`configFileMenu`)
+
+Every setting lives in the one session object **Perspective → Session Properties → custom → `configFileMenu`**. Keys are grouped by prefix. Session defaults apply to each new session; the Settings tab overrides them for the current session only.
+
+**content — the menu itself**
+
+| Key | Type | Default | Purpose |
+|-----|------|---------|---------|
+| `contentSource` | string | *(stub menu)* | The menu definition (YAML-lite or JSON); drives dock menu, breadcrumbs, titles |
+| `contentSourceType` | string | `yaml` | Format of `contentSource`: `yaml` or `json` |
+| `contentDockId` | string | `config-file-menu` | Dock ID the menu uses; must match the `sharedDocks` id in Page Configuration |
+| `contentBreadcrumbPrefix` | string | `cfm` | Route prefix treated as the root when building breadcrumbs |
+
+**dock — startup + live open/pin/mode**
+
+| Key | Type | Default | Purpose |
+|-----|------|---------|---------|
+| `dockOpen` | boolean | `true` | Menu open state; default is the initial state. Start closed: `false` **and** `dockPinned:false` |
+| `dockPinned` | boolean | `true` | Pins the menu open (always push + open; no outside-click dismiss) |
+| `dockContentPush` | boolean | `true` | `true` = push (menu pushes content aside); `false` = cover (menu overlays content) |
+| `dockCloseOnOutsideClick` | boolean | `true` | When open and unpinned, a click outside closes the menu |
+
+**brand — site name and logos**
+
+| Key | Type | Default | Purpose |
+|-----|------|---------|---------|
+| `brandSiteName` | string | `Default Site` | Home label at the start of the breadcrumb trail |
+| `brandLogoLarge` | string | *(empty)* | Source for the large logo (shown in the menu header); empty uses the embedded default |
+| `brandLogoSmall` | string | *(empty)* | Source for the small logo (shown in the top bar); empty uses the embedded default |
+| `brandLogoLink` | string | `/` | URL opened when a logo is clicked |
+
+**layout — typography and width**
+
+| Key | Type | Default | Purpose |
+|-----|------|---------|---------|
+| `layoutFont` | string | *(empty)* | CSS font-family for the menu (empty = inherit) |
+| `layoutFontSize` | string | `14px` | CSS font-size for menu text |
+| `layoutWidthOpen` | string | `220px` | Menu/dock width when open |
+
+**show — visibility toggles**
+
+| Key | Type | Default | Purpose |
+|-----|------|---------|---------|
+| `showMenuLogo` | boolean | `true` | Show the large logo in the menu header (`false` hides it) |
+| `showTopBarClock` | boolean | `true` | Show the top-bar clock. `false` also stops the recurring clock script (poll rate → 0) |
+| `clockRefreshSeconds` | integer | `5` | Clock refresh interval in seconds (min 1); `1` = smooth seconds, larger = fewer gateway calls. Ignored when the clock is hidden |
+| `showTopBarSmallLogo` | boolean | `true` | Show the small logo in the top bar |
+| `showFooterUser` | boolean | `true` | Show the signed-in user block in the menu footer |
+| `showFooterSettings` | boolean | `true` | Show the Settings link in the menu footer |
+| `showFooterDiagnostics` | boolean | `true` | Show the Diagnostics link in the menu footer |
+
+**route — shell / fallback navigation**
+
+| Key | Type | Default | Purpose |
+|-----|------|---------|---------|
+| `routeFallbackEnabled` | boolean | `true` | Enable shell fallback for menu targets that have no page of their own |
+| `routeFallbackPath` | string | `/cfm/target-no-route` | Route used when a target has no dedicated page |
+
+**diagnostics — performance logging**
+
+| Key | Type | Default | Purpose |
+|-----|------|---------|---------|
+| `perfLogging` | boolean | `false` | Opt-in timing of the script hot paths to the `CFM.perf` logger. Off = zero overhead. Toggle it here on **General → Performance logging**, or set the `CFM.perf` logger to `TRACE`. See the README Logging & health section |
+
+**Runtime-only (leave at defaults):** `routeLogicalPath` (string) — the logical target requested via fallback, for breadcrumbs/titles; `settingsCurrentTab` (integer) — the active Settings tab index.
+
+## Keep These Pages
+
+When editing Page Configuration, keep the built-in pages: `/`, `/cfm/settings`, `/cfm/diagnostics`, `/cfm/target-no-route`, `/cfm/tools`, and `/cfm/tools/config-converter`.
 """
 
 
@@ -132,7 +208,6 @@ def persist_text_events(state_key: str, field_key: str) -> dict:
         },
         "dom": {
             "onBlur": {"config": {"script": script}, "scope": "G", "type": "script"},
-            "onKeyUp": {"config": {"script": script}, "scope": "G", "type": "script"},
         },
     }
 
@@ -264,10 +339,10 @@ STATUS_LABEL_CLASS = "cfm-menu__settings-status"
 OUTPUT_MODE_DYNAMIC = "dynamic"
 OUTPUT_MODE_CREATE_VIEWS = "createViews"
 OUTPUT_MODE_DYNAMIC_EXPR = (
-	"coalesce({session.custom.configFileMenu.menuRoutesGenerator.outputMode}, 'dynamic')='dynamic'"
+	"coalesce({session.custom.configFileMenu.settingsMenuRoutes.outputMode}, 'dynamic')='dynamic'"
 )
 OUTPUT_MODE_CREATE_VIEWS_EXPR = (
-	"coalesce({session.custom.configFileMenu.menuRoutesGenerator.outputMode}, 'dynamic')='createViews'"
+	"coalesce({session.custom.configFileMenu.settingsMenuRoutes.outputMode}, 'dynamic')='createViews'"
 )
 
 
@@ -680,13 +755,17 @@ def build_tag_menu_view() -> dict:
             "children": [
                 {
                     "meta": {"name": "Instructions"},
-                    "position": {"basis": "120px", "shrink": 0},
+                    "position": {"basis": "210px", "shrink": 0},
                     "props": {
                         "source": (
-                            "Browse a **tag provider path** and generate a menu YAML or JSON branch for copy/paste into "
-                            "`MenuContent.params.menuConfig`. Run in a **live session** (not Designer preview). "
-                            "**Max levels** limits nesting below the browse path (1 = direct children only). "
-                            "Field values persist in `session.custom.configFileMenu.tagMenuGenerator` while the session is open."
+                            "Build menu items from your existing tags. Use this page in a running "
+                            "**Perspective Browser session** — tag browsing does not work in the Designer preview.\n\n"
+                            "1. Enter a **tag path**, for example `[default]Site/Area 1`.\n"
+                            "2. Click **Generate menu**.\n"
+                            "3. Edit the generated menu YAML in the output box or text editor as needed — labels, icons, targets.\n"
+                            "4. Copy the output into the session property `configFileMenu.contentSource`.\n"
+                            "5. Optional: paste the same YAML into **Menu → Routes** to build the matching Page Configuration pages.\n\n"
+                            "**Max levels** sets how many folder levels to include (1 = direct children only)."
                         ),
                         "style": {"padding": "8px 16px"},
                     },
@@ -746,15 +825,19 @@ def build_routes_view() -> dict:
             "children": [
                 {
                     "meta": {"name": "Instructions"},
-                    "position": {"basis": "100px", "shrink": 0},
+                    "position": {"basis": "210px", "shrink": 0},
                     "props": {
                         "source": (
-                            "Paste **menu YAML or JSON**, then click **Generate output**.\n\n"
-                            "**Dynamic Default** — every route uses the **Dynamic viewPath** (default: View Dynamic Fallback). "
-                            "Copy the `pages` object into `page-config/config.json`.\n\n"
-                            "**Create Views** — each route gets a unique `viewPath` derived from its target URL, "
-                            "and a matching `views` manifest for copy/paste view creation. "
-                            "Preserve `sharedDocks` and fixed routes (`/cfm/settings`, `/cfm/diagnostics`)."
+                            "Every menu `target` needs a matching page in **Page Configuration** — "
+                            "this tool builds that page list from your menu.\n\n"
+                            "1. Paste your menu YAML or JSON on the left.\n"
+                            "2. Choose an **Output mode**:\n"
+                            "   - **Dynamic Default** — every page shares one view (**Dynamic viewPath**); the quickest way to start.\n"
+                            "   - **Create Views** — every page gets its own `viewPath`, plus a **Views manifest** listing the views to create in the Designer.\n"
+                            "3. Click **Generate output**.\n"
+                            "4. In your project import zip (site or sample), merge the output into "
+                            "`com.inductiveautomation.perspective/page-config/config.json` before importing — "
+                            "keep the existing `sharedDocks` and built-in pages such as `/cfm/settings` and `/cfm/diagnostics`."
                         ),
                         "style": {"padding": "8px 16px"},
                     },
@@ -1004,7 +1087,10 @@ def patch_config_converter_view() -> None:
         if not isinstance(node, dict):
             return
         meta = node.get("meta") or {}
-        if meta.get("name") == "ConvertButton":
+        if meta.get("name") == "Instructions":
+            node.setdefault("props", {})["source"] = CONVERTER_INSTRUCTIONS
+            node.setdefault("position", {})["basis"] = CONVERTER_INSTRUCTIONS_BASIS
+        elif meta.get("name") == "ConvertButton":
             node.setdefault("events", {}).setdefault("component", {})["onActionPerformed"] = {
                 "config": {"script": script},
                 "scope": "G",
@@ -1020,70 +1106,10 @@ def patch_config_converter_view() -> None:
 
 
 def patch_help_view() -> None:
+    # HELP_MARKDOWN is the single source for Help content and already reflects the
+    # current runtime (Settings → General for footer/top-bar toggles). Write it as-is.
     data = json.loads(HELP_VIEW.read_text(encoding="utf-8"))
-    source = HELP_MARKDOWN
-    source = source.replace(
-        "Import `config-file-menu.zip` into your Perspective project.",
-        "Import `config-file-menu-library.zip` first, then `config-file-menu-site.zip` or `config-file-menu-sample.zip` as the child project.",
-    )
-    if "Advanced Stylesheet" not in source:
-        source = source.replace(
-            "4. For host projects, merge `config/cfm-menu-theme-merge.css` into your active theme.",
-            "4. Set Session Properties **theme** to **light**, **dark**, or your custom gateway theme. CFM styling comes from the library Advanced Stylesheet (`stylesheet.css`).",
-        )
-    source = source.replace(
-        "- **footer.showSettings** — show Settings link in the menu footer (default on in the demo sample).\n"
-        "- **Settings → General → Menu footer user** — show login block in the menu footer.\n"
-        "- **Settings → General → Menu footer diagnostics** — show Diagnostics link in the menu footer.\n",
-        "- **Settings → General → Menu footer user** — show login block in the menu footer.\n"
-        "- **Settings → General → Menu footer settings** — show Settings link in the menu footer.\n"
-        "- **Settings → General → Menu footer diagnostics** — show Diagnostics link in the menu footer.\n",
-    )
-    source = source.replace(
-        "- **footer.showUser** — show login block in the menu footer.\n"
-        "- **footer.showSettings** — show Settings link in the menu footer (default on in the demo sample).\n"
-        "- **footer.showDiagnostics** — show Diagnostics link in the menu footer (default on in the demo sample).\n",
-        "- **Settings → General → Menu footer user** — show login block in the menu footer.\n"
-        "- **Settings → General → Menu footer settings** — show Settings link in the menu footer.\n"
-        "- **Settings → General → Menu footer diagnostics** — show Diagnostics link in the menu footer.\n",
-    )
-    if "footer.showDiagnostics" not in source:
-        source = source.replace(
-            "- **footer.showSettings** — show Settings link in the menu footer (default on in the demo sample).\n"
-            "- Clock and theme moved to the **top bar** and **Settings** page.\n"
-            "- **Diagnostics** is a bundled main menu item at `/cfm/diagnostics`.\n",
-            "- **footer.showSettings** — show Settings link in the menu footer (default on in the demo sample).\n"
-            "- **footer.showDiagnostics** — show Diagnostics link in the menu footer (default on in the demo sample).\n"
-            "- Clock and theme are in the **top bar** and **Settings** page (not footer config flags).\n",
-        )
-    source = source.replace(
-        "### Settings page tabs\n"
-        "- **Settings** — pinned, dock mode, outside-click, menu width, top bar logo, footer user/diagnostics.\n"
-        "- **YAML to JSON** — convert menu YAML-lite to JSON.\n"
-        "- **Tag → Menu** — browse a tag path and generate a menu branch (live session).\n"
-        "- **Menu → Routes** — generate `page-config` merge JSON from menu YAML/JSON.\n"
-        "- **Help** — this documentation.\n",
-        "### Settings page tabs\n"
-        "- **Settings** — pinned, dock mode, outside-click, menu width, top bar logo, footer user/diagnostics.\n"
-        "- **Help** — this documentation.\n"
-        "- **Tag → Menu** — browse a tag path and generate a menu branch (live session).\n"
-        "- **Menu → Routes** — generate `page-config` merge JSON from menu YAML/JSON.\n"
-        "- **YAML to JSON** — convert menu YAML-lite to JSON.\n",
-    )
-    if "Tag → Menu" not in source:
-        source = source.replace(
-            "### Settings page tabs\n"
-            "- **Settings** — pinned, dock mode, outside-click, menu width, top bar logo, footer user/diagnostics.\n"
-            "- **YAML to JSON** — authoring utility for menu config.\n"
-            "- **Help** — this documentation.\n",
-            "### Settings page tabs\n"
-            "- **Settings** — pinned, dock mode, outside-click, menu width, top bar logo, footer user/diagnostics.\n"
-            "- **Help** — this documentation.\n"
-            "- **Tag → Menu** — browse a tag path and generate a menu branch (live session).\n"
-            "- **Menu → Routes** — generate `page-config` merge JSON from menu YAML/JSON.\n"
-            "- **YAML to JSON** — convert menu YAML-lite to JSON.\n",
-        )
-    data["root"]["children"][0]["props"]["source"] = source
+    data["root"]["children"][0]["props"]["source"] = HELP_MARKDOWN
     HELP_VIEW.write_text(json.dumps(data, indent=2) + "\n", encoding="utf-8")
 
 
@@ -1103,7 +1129,7 @@ def main() -> None:
     patch_config_converter_view()
     patch_settings_view()
     patch_help_view()
-    thumbs = ensure_view_thumbnails(MENU_DIR.parent.parent)
+    thumbs = ensure_view_thumbnails(MENU_DIR.parent.parent, force=True)
     print("Wrote Menu Settings Tag Menu and Menu Settings Menu Routes")
     print("Patched Menu Settings tab bar (5 tabs)")
     print(f"View thumbnails created: {thumbs}")

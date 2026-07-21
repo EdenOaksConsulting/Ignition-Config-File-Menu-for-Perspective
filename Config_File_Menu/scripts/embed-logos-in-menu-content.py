@@ -91,13 +91,6 @@ def patch_menu_content_logo_sources(menu_content_path: Path, logo_large: Path, l
             node.setdefault("propConfig", {})["props.source"] = {
                 **logo_source_binding("large", large_uri)
             }
-        elif name == "MenuSmallBreakpoint":
-            props = node.setdefault("props", {})
-            props["fit"] = {"height": 40, "mode": "contain", "width": 40}
-            props.pop("source", None)
-            node.setdefault("propConfig", {})["props.source"] = {
-                **logo_source_binding("small", small_uri)
-            }
         for child in node.get("children") or []:
             walk(child)
 

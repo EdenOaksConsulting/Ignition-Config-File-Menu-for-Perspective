@@ -1,0 +1,3 @@
+# Dev-only tooling for running the test suite (NOT a runtime dependency of the
+# deployed Ignition project). See tests/README.md.
+pytest>=7

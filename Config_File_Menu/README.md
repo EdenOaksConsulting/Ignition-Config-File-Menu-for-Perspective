@@ -3,7 +3,7 @@
 **Author:** EdenOaks Consulting  
 **Maintainer:** Matt McPheeters
 
-Config File Menu is a beginner-friendly Perspective navigation library for Ignition. Import the library once, then import either a sample project to learn from or a blank site project to customize. Your menu lives in one place: `Config File Menu/MenuContent.params.menuConfig`, written as YAML-lite or JSON.
+Config File Menu is a beginner-friendly Perspective navigation library for Ignition. Import the library once, then import either a sample project to learn from or a blank site project to customize. Your menu lives in one place: the session custom property `configFileMenu.contentSource` (**Perspective → Session Properties → custom**), written as YAML-lite or JSON.
 
 ## Start Here
 
@@ -32,8 +32,8 @@ Use the import zips in this order:
 1. Import `config-file-menu-library.zip` with project name exactly `config-file-menu-library`.
 2. Extract `config-file-menu-site.zip` to a working folder.
 3. Edit `project.json` to rename **Config File Menu — Your Site Name**.
-4. Edit `Config File Menu/MenuContent.params.menuConfig` in `com.inductiveautomation.perspective/views/Config File Menu/MenuContent/view.json`.
-5. Set `params.menuConfigType` to `yaml` or `json`.
+4. Edit `custom.configFileMenu.contentSource` in `com.inductiveautomation.perspective/session-props/props.json`.
+5. Set `custom.configFileMenu.contentSourceType` to `yaml` or `json`.
 6. Add or merge page routes for every menu `target` in `com.inductiveautomation.perspective/page-config/config.json`.
 7. Replace `logo-upload/cfm/*.png` if desired, then run the logo embed helper.
 8. Re-zip the folder contents and import the site zip.
@@ -43,13 +43,13 @@ For detailed zip editing, route generation, and logo steps, follow [DEPLOYMENT.m
 
 ## Overview
 
-Config File Menu is a **config-driven Perspective navigation system**. Instead of rebuilding menu links, nested sections, icons, and breadcrumbs in Designer every time your application structure changes, you define the menu once in `MenuContent.params.menuConfig`.
+Config File Menu is a **config-driven Perspective navigation system**. Instead of rebuilding menu links, nested sections, icons, and breadcrumbs in Designer every time your application structure changes, you define the menu once in `configFileMenu.contentSource`.
 
-On startup, `MenuContent` copies that configuration into `session.custom.configFileMenu`. The docked menu, top-bar breadcrumbs, and page titles all read from the same source, so edits stay synchronized.
+That configuration ships in `session.custom.configFileMenu` and applies to every session. The docked menu, top-bar breadcrumbs, and page titles all read from the same object, so edits stay synchronized.
 
 ### Why use it
 
-- **One place to edit the menu** — Update `params.menuConfig` on `MenuContent`; the dock, breadcrumbs, and titles stay in sync.
+- **One place to edit the menu** — Update `configFileMenu.contentSource` in Session Properties; the dock, breadcrumbs, and titles stay in sync.
 - **Nested navigation without manual wiring** — Unlimited depth via `children`, with icons at every level.
 - **YAML or JSON** — Author in YAML-lite for readability, or JSON for structured editing; a built-in converter tab helps during setup.
 - **Responsive by design** — Push/cover dock modes, pin, hamburger controls, and optional click-outside close.
@@ -60,7 +60,7 @@ On startup, `MenuContent` copies that configuration into `session.custom.configF
 
 1. Import the library zip.
 2. Import either the sample zip or the site zip.
-3. Edit `MenuContent.params.menuConfig`.
+3. Edit `configFileMenu.contentSource`.
 4. Make sure every menu `target` has a matching page route.
 5. Save and publish.
 
@@ -93,7 +93,7 @@ The Ignition import zips contain `project.json` and Perspective resources. Docum
 - `Config File Menu/Resources/View Landing` — default informational landing page for `/`.
 - `Config File Menu/Resources/View Dynamic Fallback` — registered sample page view (HMI content placeholder).
 - `Config File Menu/Resources/View Route Fallback` — `/cfm/target-no-route` route fallback (route-configuration warning).
-- `Config File Menu/Resources/Menu/Menu Settings` is the tabbed settings hub (`/cfm/settings`); also linked from the menu footer when `footer.showSettings` is true.
+- `Config File Menu/Resources/Menu/Menu Settings` is the tabbed settings hub (`/cfm/settings`); also linked from the menu footer when **Settings → General → Menu footer settings** is set to **Show**.
 - `Config File Menu/Resources/Diagnostics/Diagnostics Dashboard` is the bundled Diagnostics Dashboard (`/cfm/diagnostics`).
 - Datetime clock in the top bar (far right), not in the menu footer.
 - `Config File Menu/Resources/Menu/Menu Settings Config Converter` — YAML to JSON tab inside Settings.
@@ -141,7 +141,7 @@ Use this advanced path when importing the menu into a host project that already 
 3. Set **Session Properties → theme** to **`light`**, **`dark`**, or your custom gateway theme name.
 4. Add custom gateway theme names to `config/cfm-theme-options.json` and rebuild, or edit the Settings theme dropdown in Designer.
 5. Tune site colors and layout in the **Site overrides** section of `stylesheet.css` (or `config/cfm-menu-theme-merge.css` before rebuild).
-6. Configure `Config File Menu/MenuContent.params.menuConfig` and `params.menuConfigType`.
+6. Configure `Config File Menu/configFileMenu.contentSource` and `configFileMenu.contentSourceType`.
 7. Add or merge page routes for every configured menu `target`.
 8. Save and publish the host project.
 
@@ -154,11 +154,32 @@ The top bar shows the hamburger, breadcrumbs, a **datetime clock**, and a **smal
 - `material/menu` opens the menu dock when it is hidden.
 - `material/menu_open` closes the menu dock when it is visible.
 
-The buttons call `system.perspective.openDock()` and `system.perspective.closeDock()` using `params.menuDockId` (default `cfm`). Button visibility follows actual dock state: in **push** mode or when **pinned**, the hamburger icons compare viewport width to primary view width so they stay in sync with the dock handle. In **cover** mode (unpinned), icons follow `session.custom.configFileMenu.isOpen`. The hamburger and dock handle both work when pinned; pin only blocks click-outside dismiss.
+The buttons call `system.perspective.openDock()` and `system.perspective.closeDock()` using `configFileMenu.contentDockId` (default `cfm`). Button visibility follows actual dock state: in **push** mode or when **pinned**, the hamburger icons compare viewport width to primary view width so they stay in sync with the dock handle. In **cover** mode (unpinned), icons follow `session.custom.configFileMenu.dockOpen`. The hamburger and dock handle both work when pinned; pin only blocks click-outside dismiss.
 
-Set `params.menuDockId` on `Config File Menu/Resources/Menu/Menu Top Bar` to match the dock ID configured in your host project's `page-config/config.json`.
+Set `configFileMenu.contentDockId` on `Config File Menu/Resources/Menu/Menu Top Bar` to match the dock ID configured in your host project's `page-config/config.json`.
 
-The standard layout starts open, pinned, and in push mode. To change those project-wide startup defaults, edit `ensure_dock_defaults(state)` in `scripts/jython_lib/cfm/dock.py`, then rebuild the import zips. The four values are `isOpen`, `menuMode`, `isPinned`, and `dockContent`; keep `isOpen` and `menuMode` aligned. The Settings tab changes current session state only; it is not a persistent project-default editor.
+## Configuration: one session object
+
+All project configuration lives in a single session custom object, **`session.custom.configFileMenu`**, shipped with the library (a `session-props` resource) so it exists on import. Edit it in Designer under **Perspective → Session Properties → custom → `configFileMenu`**. The keys are flat and group-prefixed so related settings sort together:
+
+| Group | Keys |
+|---|---|
+| `content*` | `contentSource` (the menu YAML/JSON), `contentSourceType` (`yaml`/`json`), `contentDockId`, `contentBreadcrumbPrefix` |
+| `dock*` | `dockPinned`, `dockContentPush` (`true` = push, `false` = cover), `dockCloseOnOutsideClick`, `dockOpen` (the initial open/closed state) |
+| `brand*` | `brandSiteName`, `brandLogoLarge` (menu header), `brandLogoSmall` (top bar), `brandLogoLink` |
+| `layout*` | `layoutFont`, `layoutFontSize`, `layoutWidthOpen` |
+| `show*` | `showMenuLogo`, `showTopBarClock`, `clockRefreshSeconds`, `showTopBarSmallLogo`, `showFooterUser`, `showFooterSettings`, `showFooterDiagnostics` |
+| `route*` | `routeFallbackEnabled`, `routeFallbackPath`, `routeLogicalPath` |
+
+**Set the menu:** edit `configFileMenu.contentSource` (and `contentSourceType`). **Set startup dock behavior:** edit `dockPinned` / `dockContentPush` / `dockCloseOnOutsideClick` (all default `true`). A child project overrides the inherited `configFileMenu` to set its own menu.
+
+See **[CONFIG_REFERENCE.md](CONFIG_REFERENCE.md)** for every key with its type, default, and purpose.
+
+Session-custom defaults apply to every new session, so these are the values a fresh session starts with. Runtime toggles keep the invariants: cover mode is always unpinned, and a pinned dock is always push + open.
+
+**Start the menu closed:** set `dockOpen: false` **together with** `dockPinned: false` (a pinned dock always opens). The physical dock is closed on menu render via the reliable MenuItems binding, so this works even though a shared dock's `onStartup` does not fire reliably in Perspective 8.3.3.
+
+The **Settings** tab changes the **current session only** and overrides these defaults; a Settings override survives page navigation and MenuContent remounts, and a new session returns to the shipped defaults. Settings is not a persistent project-default editor.
 
 ## Dock Layout and Click-Outside Close
 
@@ -166,12 +187,12 @@ The bundled demo configures the left menu dock with `content: "push"` by default
 
 Clicking outside the menu to close it is not built into Perspective docks opened by script. The sample page shell and Settings close the menu when their root container receives a click:
 
-- `params.menuDockId` (default `cfm`)
-- `params.closeMenuOnOutsideClick` (default `true`)
+- `configFileMenu.contentDockId` (default `cfm`)
+- `configFileMenu.dockCloseOnOutsideClick` (default `true`)
 
 When integrating into a host project, copy that root `onClick` script onto each page view that should dismiss the menu on background click. Set `closeMenuOnOutsideClick` to `false` on pages where background clicks should not close the menu.
 
-**Note:** With `cover` mode, the dock handle and top-bar buttons can briefly disagree on icon state if the handle is used without updating `session.custom.configFileMenu.isOpen`. The demo relies on session state for icon sync because cover mode does not change primary view width.
+**Note:** With `cover` mode, the dock handle and top-bar buttons can briefly disagree on icon state if the handle is used without updating `session.custom.configFileMenu.dockOpen`. The demo relies on session state for icon sync because cover mode does not change primary view width.
 
 ## Pin and Dock Mode Controls
 
@@ -192,25 +213,22 @@ Session state is stored on `session.custom.configFileMenu`:
 - `showFooterDiagnostics` — show Diagnostics link in menu footer (Settings → General)
 - `breadcrumbPathPrefix` — route prefix omitted from breadcrumbs (default `cfm`)
 
-Set `params.menuDockId` on `MenuContent` to match the left dock ID in `page-config/config.json` (default `cfm`).
+Set `configFileMenu.contentDockId` on `MenuContent` to match the left dock ID in `page-config/config.json` (default `cfm`).
 
-The menu header logo has two size variants for the **left menu dock**. Set `params.logoVariant` on `Config File Menu/MenuContent` to choose the dock header logo:
+Each logo is dedicated to one location:
 
-- `large` shows the large logo in the menu dock header.
-- `small` shows the small logo in the menu dock header.
-- Any other value hides both dock logo variants.
-
-The **top bar** shows the small logo to the right of the clock when `topbar.showSmallLogo` is not `false` in `params.menuConfig` (default on in site/sample templates) or when **Settings → General → Top bar small logo** is set to **Show**, and the viewport is wider than 450px. This is independent of `logoVariant`.
+- **Menu header** — the **large** logo (`brandLogoLarge`). Toggle it with `configFileMenu.showMenuLogo` (default on).
+- **Top bar** (top right) — the **small** logo (`brandLogoSmall`). Shown when **Settings → General → Top bar small logo** is set to **Show** (session `showTopBarSmallLogo`, default on) and the viewport is wider than 450px.
 
 Site and sample import zips include editable PNGs at **`logo-upload/cfm/cfm-logo-large.png`** and **`logo-upload/cfm/cfm-logo-small.png`**. Logos display immediately after import via embedded PNG data URIs in `MenuContent/view.json`. After replacing PNG files in an extracted zip, run `python Config_File_Menu/scripts/embed-logos-in-menu-content.py <extracted-folder>` before re-importing.
 
 **Maintainers:** replace `config/cfm-logo-source.png` (or edit `config/cfm-logos/*.png` directly), then run `python Config_File_Menu/scripts/build-hmi-menu-sample.py` to refresh embedded URIs and child zip assets.
 
-Set `params.logoLargePath`, `params.logoSmallPath`, and `params.logoLinkTarget` (default `/`) on `MenuContent` only if using **Tools → Image Management** mounted paths instead (upload the same PNGs to gateway folder `cfm`). The header logo is clickable and navigates to `logoLinkTarget`.
+Set `configFileMenu.brandLogoLarge`, `configFileMenu.brandLogoSmall`, and `configFileMenu.brandLogoLink` (default `/`) only if using **Tools → Image Management** mounted paths instead (upload the same PNGs to gateway folder `cfm`). Logos are clickable and navigate to `brandLogoLink`.
 
 ## Configuration Samples
 
-`config/menuSampleConfig.yaml` and `config/menuSampleConfig.json` are samples only. Ignition does not read them automatically. Copy/paste one sample into `params.menuConfig`, then set `params.menuConfigType` to match.
+`config/menuSampleConfig.yaml` and `config/menuSampleConfig.json` are samples only. Ignition does not read them automatically. Copy/paste one sample into `configFileMenu.contentSource`, then set `configFileMenu.contentSourceType` to match.
 
 Every configured `target` should have a matching route in `com.inductiveautomation.perspective/page-config/config.json` for **direct browser URLs** and bookmarks. The library also ships **shell fallback navigation** (enabled by default): when a menu `target` is not registered, menu clicks navigate to `/cfm/target-no-route` with the logical path passed as `requestedPath`. Configure fallback on **Settings → General** (`shellFallbackEnabled`, `shellFallbackRoute`). **Keep the fallback route** (default `/cfm/target-no-route`) in page-config — do not delete it when removing other routes. That route uses **`View Route Fallback`** (warning to create a Page Configuration route). Registered menu URLs should map to **`View Dynamic Fallback`** (or your own view) with the HMI content placeholder. Nested menu leaves (Tree) and top-level links both use fallback.
 
@@ -256,7 +274,7 @@ Top-level entries under `items` become menu sections. Entries without children b
 
 ## Breadcrumb Links
 
-`Config File Menu/Resources/Menu/Menu Top Bar` builds breadcrumbs from the current page path. It reads `session.custom.configFileMenu.menuConfig` and resolves each breadcrumb segment against the configured menu hierarchy.
+`Config File Menu/Resources/Menu/Menu Top Bar` builds breadcrumbs from the current page path. It reads `session.custom.configFileMenu.contentSource` and resolves each breadcrumb segment against the configured menu hierarchy.
 
 Breadcrumb targets resolve in this order:
 
@@ -268,7 +286,7 @@ For example, `/cfm/areas/area-01/line-01` displays `Areas > Area 01 > Line 01` b
 
 ## Settings Page
 
-Open **Settings** from the menu footer (`footer.showSettings`, default on in site/sample templates) or directly at `/cfm/settings`. The legacy route `/cfm/tools/config-converter` redirects to the same view.
+Open **Settings** from the menu footer (shown by default; toggle with **Settings → General → Menu footer settings**) or directly at `/cfm/settings`. The legacy route `/cfm/tools/config-converter` redirects to the same view.
 
 The Settings page has five tabs:
 
@@ -278,13 +296,13 @@ The Settings page has five tabs:
 | **Help** | Quick start, menu schema summary, dock behavior, host integration notes |
 | **Tag → Menu** | Browse a tag provider path; generate a menu YAML/JSON branch for review and merge (live session) |
 | **Menu → Routes** | Paste menu YAML/JSON; generate a `page-config` `pages` merge snippet (default view: View Dynamic Fallback) |
-| **YAML to JSON** | Paste YAML-lite, convert to JSON, copy into `MenuContent.params.menuConfig` |
+| **YAML to JSON** | Paste YAML-lite, convert to JSON, copy into `configFileMenu.contentSource` |
 
 ### Tag → Menu workflow
 
 1. Open **Settings → Tag → Menu** in a **live Perspective session** (tag browse may fail in Designer preview).
 2. Enter a tag path (e.g. `[default]Plant/Areas`), route prefix (e.g. `/cfm/plant`), and **Max levels** (1 = direct children only).
-3. Click **Generate menu**, review the output, and merge the branch into `MenuContent.params.menuConfig`.
+3. Click **Generate menu**, review the output, and merge the branch into `configFileMenu.contentSource`.
 4. Field values and last output persist in `session.custom.configFileMenu.tagMenuGenerator` for the session.
 5. Optional `sourceTagPath` keys are authoring metadata; the menu ignores unknown fields at runtime.
 
@@ -295,12 +313,7 @@ The Settings page has five tabs:
 3. Preserve `sharedDocks` and fixed routes (`/cfm/settings`, `/cfm/diagnostics`, etc.).
 4. Map `viewPath` to your Perspective views in Designer or in the zip before import.
 
-`params.menuConfig` defines the menu tree (`items` only). Footer links, footer user login, Diagnostics, and top bar logo visibility are controlled in **Settings → General** (session state).
-
-Top bar flags (legacy `menuConfig` keys are ignored; use Settings):
-
-- `topbar.showSmallLogo` — use **Settings → General → Top bar small logo** instead (session `showTopBarSmallLogo`)
-- `expandArrowSide` — fixed to `left` in menu config (tree-style chevrons on the left of each row)
+`configFileMenu.contentSource` defines the menu tree (`items` only). Footer links, footer user login, Diagnostics, and top bar logo visibility are controlled in **Settings → General** (session state).
 
 Menu links and breadcrumbs close the dock when unpinned (same as navigating away from the menu).
 
@@ -319,9 +332,23 @@ Views were remapped into the CFM namespace from a Gateway export. Card layout st
 
 To hide Diagnostics, Settings, or the footer user block, open **Settings → General**.
 
-To hide the top bar small logo, set `topbar.showSmallLogo: false` in `params.menuConfig`, or open **Settings → General** and set **Top bar small logo** to **Hide** (session override for the current session).
+To hide the top bar small logo, open **Settings → General** and set **Top bar small logo** to **Hide** (session override for the current session).
 
-Expand chevrons are fixed on the **left** (tree style). Tune hierarchy indent with `--cfm-menu-tree-indent` and `--cfm-menu-tree-indent-step` in the canonical CSS file.
+Expand chevrons are fixed on the **left** (tree style). To tighten nested child indent, override these CSS tokens (defaults are `10px` each):
+
+- `--cfm-menu-tree-indent` — left padding on the tree container under each section
+- `--cfm-menu-tree-indent-step` — extra left padding per nested tree level
+
+Example (gateway theme `cfm-overrides.css`, or the library Advanced Stylesheet):
+
+```css
+:root {
+  --cfm-menu-tree-indent: 6px;
+  --cfm-menu-tree-indent-step: 6px;
+}
+```
+
+Optional: `--cfm-menu-tree-shift` nudges the whole tree block; `--cfm-menu-tree-expand-margin` adjusts chevron spacing. See `config/cfm-overrides.template.css`.
 
 See [ATTRIBUTION.md](ATTRIBUTION.md) for Diagnostics Dashboard attribution and license.
 
@@ -377,9 +404,9 @@ YAML-lite mode uses the small parser in `exchange.cfm.runtime` (`scripts/jython_
 
 ## How It Works
 
-`Config File Menu/MenuContent` contains one `MenuItems` FlexRepeater. The repeater reads `session.custom.configFileMenu.menuConfig` (with a designer fallback to `view.params.menuConfig` while editing), then calls `exchange.cfm.runtime.menu_items_transform`. For `yaml`, Runtime parses YAML-lite text. For `json`, Runtime accepts either a Perspective object/array value or JSON text and generates instances for `Config File Menu/Resources/Menu/Menu Parent`.
+`Config File Menu/MenuContent` contains one `MenuItems` FlexRepeater. The repeater binds to `view.configFileMenu.contentSource` and `view.configFileMenu.contentSourceType` only (the authored source), then calls `exchange.cfm.runtime.menu_items_transform`. Binding to the params — not the session mirror — means navigation-time session writes do not re-render the whole menu. For `yaml`, Runtime parses YAML-lite text. For `json`, Runtime accepts either a Perspective object/array value or JSON text and generates instances for `Config File Menu/Resources/Menu/Menu Parent`.
 
-`Menu Parent` works for both direct links with no children and expandable sections with nested child items. `Menu Top Bar` uses the same session configuration to resolve breadcrumb links. View bindings stay intentionally thin: path resolution, logo fallback, dock toggles, settings state, tag-menu generation, and close-on-outside-click behavior delegate to `exchange.cfm.runtime`.
+`Menu Parent` works for both direct links with no children and expandable sections with nested child items. `MenuContent` startup copies `configFileMenu.contentSource`/`menuConfigType` into `session.custom.configFileMenu` so other views can read them; `Menu Top Bar` breadcrumbs and the shell-page titles resolve against that session copy (they have no direct access to MenuContent's params). View bindings stay intentionally thin: path resolution, logo fallback, dock toggles, settings state, tag-menu generation, and close-on-outside-click behavior delegate to `exchange.cfm.runtime`.
 
 ## Security Note
 
@@ -394,11 +421,56 @@ Production projects should also secure the bundled tool routes:
 
 If the menu shows `Menu YAML Error`, check indentation, missing labels, invalid `children:` blocks, and unsupported inline YAML objects.
 
-If the menu shows `Menu JSON Error`, confirm `params.menuConfigType` is `json` and `params.menuConfig` is an object with an `items` array, a direct array of menu items, or valid JSON text.
+If the menu shows `Menu JSON Error`, confirm `configFileMenu.contentSourceType` is `json` and `configFileMenu.contentSource` is an object with an `items` array, a direct array of menu items, or valid JSON text.
 
-If a link or breadcrumb does nothing, confirm the target route exists in Perspective page configuration and that `MenuContent` has been opened once in the session so `session.custom.configFileMenu.menuConfig` is populated.
+If a link does nothing, confirm the target route exists in Perspective page configuration. Breadcrumbs and page titles resolve against the session copy of the menu config, which `MenuContent` (the shared left dock) populates on startup — so if breadcrumbs are blank, confirm `MenuContent` is mounted as a shared dock on the page.
 
 If the menu renders but looks unstyled, confirm **Advanced Stylesheet** is enabled under **Styles** in Designer and that `stylesheet.css` contains `psc-cfm-menu__settings-tabbar`. Re-import the library zip if the stylesheet resource is missing. In DevTools, search loaded CSS for `psc-cfm-menu__settings-tabbar`.
+
+## Logging & health
+
+The runtime logs **genuine faults** to the gateway under stable **`CFM.*`** logger names — without flooding, since these handlers run on every render/navigation. Logging is **additive**: success paths are unchanged (the fail-open role check still fails open; inline UI errors are unchanged).
+
+**Logger names & levels.** Messages go to `CFM` and `CFM.<area>` (`CFM.menu`, `CFM.breadcrumb`, `CFM.nav`, `CFM.config`, `CFM.settings`, `CFM.health`). Adjust verbosity at runtime in **Gateway → Status → Diagnostics → Logs** (changes persist to `wrapper.log`).
+
+| Area | Level | When |
+|------|-------|------|
+| `CFM.menu` | ERROR | Menu config failed to parse (menu shows the inline error item) |
+| `CFM.menu` | WARN | A role check errored; the item is shown anyway (fail-open) |
+| `CFM.breadcrumb` | ERROR | Breadcrumb build failed |
+| `CFM.nav` | WARN | A menu target has no registered route and no usable fallback |
+| `CFM.config` | DEBUG | `get_state` fell back to empty (diagnostic breadcrumb; off by default) |
+| `CFM.settings` | WARN | A Settings generator (Tag→Menu / Menu→Routes / YAML→JSON) failed |
+| `CFM.health` | INFO/WARN | Result of the **Validate menu config** action |
+
+**Flood-safety.** High-frequency paths use de-duplication — a repeating fault logs **once** (per distinct message) rather than every render; the dedup cache is bounded. Low-frequency, user-triggered paths (Settings actions) log every time. Log messages are prefixed with **`[CFM ...]`** / **`[CFM health]`** so they're easy to scrape for alerting.
+
+**Validate menu config.** On **Settings → General**, the **Validate menu config** button parses the current menu and reports, in the adjacent output and one `CFM.health` line: total items/targets, **missing routes** (targets with no page and no fallback), **duplicate targets**, and a reminder for items using `roles` (visibility only — secure the destination pages).
+
+### Performance
+
+Opt-in timing for the specific script hot paths, logged to the **`CFM.perf`** logger. It is **off by default and zero-overhead when off** — nothing is timed or formatted unless perf logging is enabled — and **flood-safe when on**.
+
+**Two gates, either turns it on:**
+
+- **`CFM.perf` logger level** — set it to `TRACE` in **Gateway → Status → Diagnostics → Logs**. Timings then log at TRACE.
+- **`perfLogging` session property** (boolean, default `false`) — toggle **Performance logging** on **Settings → General**, no gateway access needed. When on, timings log at **INFO** so they're visible at default gateway levels.
+
+**What's measured** (each line is `[CFM perf] <label> <ms>ms <extra>`, unit **milliseconds**):
+
+| Label | What | Honors `perfLogging` property |
+|-------|------|-------------------------------|
+| `breadcrumb.build` | Breadcrumb build per navigation (re-parses config + `getProjectInfo()`) | yes |
+| `nav.navigate` | Navigation incl. `getRegisteredPages()`/`getProjectInfo()`; notes `direct`/`fallback`/`unrouted` | yes |
+| `menu.render` | Menu parse + tree render | TRACE only¹ |
+| `menu.title` | Page-title resolution (parses the menu) | TRACE only¹ |
+| `settings.tagMenu` / `settings.menuRoutes` | The Tag→Menu / Menu→Routes generators (user-triggered) | yes |
+
+¹ The menu-structure and title paths deliberately avoid a session read on every navigation, so they are gated on the `CFM.perf` TRACE logger only — the `perfLogging` property does not force them.
+
+`perf(...)` also accepts a **`threshold_ms`** so a caller can surface only slow cases (a timing below the threshold is not logged); the shipped call sites use no threshold (every occurrence logs when enabled). The `[CFM perf]` marker is stable for alert scraping.
+
+> **Scope.** `CFM.perf` measures only these script hot paths. For **gateway-wide** performance use the platform tools: Perspective session/component metrics, the Designer script & transform **profiler**, and the shipped **Diagnostics Dashboard**.
 
 ## License
 

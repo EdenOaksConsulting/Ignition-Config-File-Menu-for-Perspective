@@ -1,0 +1,101 @@
+{
+  "custom": {
+    "configFileMenu": {
+      "dockOpen": true,
+      "dockPinned": true,
+      "dockContentPush": true,
+      "dockCloseOnOutsideClick": true,
+      "contentSource": "# Set your menu on the session custom property configFileMenu.contentSource\n# (Perspective -> Session Properties -> custom -> configFileMenu -> contentSource).\nmenu:\n  items: []\n",
+      "contentSourceType": "yaml",
+      "contentDockId": "config-file-menu",
+      "contentBreadcrumbPrefix": "cfm",
+      "layoutFont": "",
+      "layoutFontSize": "14px",
+      "layoutWidthOpen": "220px",
+      "brandSiteName": "Default Site",
+      "brandLogoLarge": "",
+      "brandLogoSmall": "",
+      "brandLogoLink": "/",
+      "showMenuLogo": true,
+      "showTopBarClock": true,
+      "clockRefreshSeconds": 5,
+      "showTopBarSmallLogo": true,
+      "showFooterUser": true,
+      "showFooterSettings": true,
+      "showFooterDiagnostics": true,
+      "routeFallbackEnabled": true,
+      "routeFallbackPath": "/cfm/target-no-route",
+      "routeLogicalPath": "",
+      "settingsCurrentTab": 0,
+      "perfLogging": false
+    }
+  },
+  "propConfig": {
+    "props.auth": {
+      "access": "PRIVATE",
+      "persistent": false
+    },
+    "props.device.accelerometer": {
+      "access": "SYSTEM",
+      "persistent": false
+    },
+    "props.device.identifier": {
+      "access": "SYSTEM",
+      "persistent": false
+    },
+    "props.device.timezone": {
+      "access": "SYSTEM",
+      "persistent": false
+    },
+    "props.device.type": {
+      "access": "SYSTEM",
+      "persistent": false
+    },
+    "props.device.userAgent": {
+      "access": "SYSTEM",
+      "persistent": false
+    },
+    "props.gateway": {
+      "access": "SYSTEM",
+      "persistent": false
+    },
+    "props.geolocation.data": {
+      "access": "SYSTEM",
+      "persistent": false
+    },
+    "props.geolocation.permissionGranted": {
+      "access": "SYSTEM",
+      "persistent": false
+    },
+    "props.host": {
+      "access": "SYSTEM",
+      "persistent": false
+    },
+    "props.id": {
+      "access": "SYSTEM",
+      "persistent": false
+    },
+    "props.lastActivity": {
+      "access": "SYSTEM",
+      "persistent": false
+    },
+    "props.offline.capable": {
+      "access": "SYSTEM",
+      "persistent": false
+    },
+    "props.offline.enabled": {
+      "access": "SYSTEM",
+      "persistent": false
+    },
+    "props.offline.lastSynced": {
+      "access": "SYSTEM",
+      "persistent": false
+    }
+  },
+  "props": {
+    "device": {},
+    "geolocation": {},
+    "locale": "en-US",
+    "offline": {}
+  }
+}

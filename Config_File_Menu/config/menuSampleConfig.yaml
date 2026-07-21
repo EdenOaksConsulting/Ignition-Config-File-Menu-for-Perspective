@@ -1,4 +1,4 @@
-# SAMPLE ONLY - Copy/paste into Config File Menu/MenuContent.params.menuConfig.
+# SAMPLE ONLY - paste into the session property configFileMenu.contentSource.
 # Every target needs a matching route in page-config/config.json.
 # expanded: true|false on a top-level section (or nested tree item) controls whether
 # that branch starts open. Sections still auto-open when the current page is under them.
@@ -162,5 +162,3 @@ menu:
     - label: Reports
       icon: material/assessment
       target: /cfm/reports
-
-  expandArrowSide: left

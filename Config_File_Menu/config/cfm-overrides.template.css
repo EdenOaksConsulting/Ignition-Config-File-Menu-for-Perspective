@@ -9,18 +9,29 @@
 */
 
 :root {
+  /* Accent — the single highest-impact knob. This RGB triple drives every hover,
+     open, selected, and active-tab tint (used as rgba(var(--cfm-menu-accent-rgb), a)). */
+  /* --cfm-menu-accent-rgb: 0, 99, 177; */
+
   /* Menu dock */
   /* --cfm-menu-width-open: 280px; */
-  /* --cfm-menu-tree-indent: 20px; */
+  /* --cfm-menu-width-closed: 56px; */
+  /* --cfm-menu-tree-indent: 6px; */
+  /* --cfm-menu-tree-indent-step: 6px; */
+
+  /* Menu colors */
+  /* --cfm-menu-bg: var(--neutral-10, #f7f8fa); */
+  /* --cfm-menu-color: var(--neutral-90, #1f2933); */
+  /* --cfm-menu-border: var(--neutral-30, #d6dce3); */
 
   /* Settings tabs */
   /* --cfm-settings-tabbar-bg: var(--container--background, var(--neutral-10, #f7f8fa)); */
   /* --cfm-settings-tab-bg: var(--neutral-30, #d6dce3); */
   /* --cfm-settings-tab-active-bg: #ffffff; */
-  /* --cfm-settings-tab-border: var(--neutral-40, #b8c0cc); */
+  /* --cfm-settings-tab-border: var(--neutral-30, #d6dce3); */
   /* --cfm-settings-tab-active-color: var(--callToAction--color, #005eb8); */
 
   /* Diagnostics cards */
   /* --cfm-diag-card-bg: var(--container--background, #ffffff); */
-  /* --cfm-diag-title-bg: rgba(0, 94, 184, 0.12); */
+  /* --cfm-diag-title-bg: rgba(var(--cfm-menu-accent-rgb), 0.12); */
 }

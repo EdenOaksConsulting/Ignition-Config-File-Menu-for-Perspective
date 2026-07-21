@@ -11,25 +11,25 @@ def convert_yaml_to_json(component):
 			obj = parsed
 		component.getSibling("JsonOutput").props.text = system.util.jsonEncode(obj, 2)
 	except Exception as exc:
+		cfm.log.log_always("settings", "warn", "YAML->JSON conversion failed", exc)
 		component.getSibling("JsonOutput").props.text = "Conversion error: " + str(exc)
 
 
 def set_session_block_field(session, block_key, field_key, value):
 	state = cfm.config.get_state(session)
-	block = state.get(block_key)
-	if block is None or not hasattr(block, "get"):
-		block = {}
-	else:
-		block = dict(block)
+	block = cfm.config.dict_block(state, block_key)
 	block[field_key] = value
-	state[block_key] = block
-	session.custom.configFileMenu = state
+	cfm.config.set_state_fields(session, {block_key: block})
 
 
 def set_state_field(session, field_key, value):
-	state = cfm.config.get_state(session)
-	state[field_key] = value
-	session.custom.configFileMenu = state
+	cfm.config.set_state_fields(session, {field_key: value})
+
+
+def on_settings_perf_logging_change(component):
+	# Settings toggle: write the perfLogging session property so operators can turn the
+	# opt-in CFM.perf timing on/off from the app without gateway access.
+	set_state_field(component.session, "perfLogging", cfm.config.is_true(component.props.value))
 
 
 def settings_tab_view_path(index):
@@ -59,22 +59,32 @@ def settings_tab_class(tab_index, active_index):
 	except:
 		active_idx = 0
 	if tab_idx == active_idx:
-		return "cfm-menu__settings-tab cfm-menu__settings-tab--active cfm-diag__title"
+		return "cfm-menu__settings-tab cfm-menu__settings-tab--active"
 	return "cfm-menu__settings-tab"
+
+
+# Keys the Settings shell owns. Excludes contentSource/contentSourceType and the dock
+# keys (dockPinned / dockContentPush / dockCloseOnOutsideClick / dockOpen).
+# All config ships in the session object; these setdefaults are a safety net only.
+SETTINGS_SHELL_OWNED_KEYS = (
+	"contentDockId", "contentBreadcrumbPrefix",
+	"layoutFont", "layoutFontSize", "layoutWidthOpen", "settingsTagMenu", "settingsMenuRoutes",
+	"routeFallbackEnabled", "routeFallbackPath", "routeLogicalPath", "settingsCurrentTab",
+	"showMenuLogo", "showTopBarClock", "clockRefreshSeconds", "showTopBarSmallLogo",
+	"showFooterUser", "showFooterSettings", "showFooterDiagnostics",
+	"perfLogging",
+)
 
 
 def init_settings_shell_state(component):
 	state = cfm.config.get_state(component.session)
-	state.setdefault("closeMenuOnOutsideClick", False)
-	state.setdefault("logoVariant", "large")
-	state.setdefault("menuConfigType", "yaml")
-	state.setdefault("menuDockId", "config-file-menu")
-	state.setdefault("breadcrumbPathPrefix", "cfm")
-	cfm.dock.ensure_dock_defaults(state)
-	state.setdefault("menuFont", "")
-	state.setdefault("menuFontSize", "14px")
-	state.setdefault("menuWidthOpen", "220px")
-	state.setdefault("tagMenuGenerator", {
+	state.setdefault("showMenuLogo", True)
+	state.setdefault("contentDockId", "config-file-menu")
+	state.setdefault("contentBreadcrumbPrefix", "cfm")
+	state.setdefault("layoutFont", "")
+	state.setdefault("layoutFontSize", "14px")
+	state.setdefault("layoutWidthOpen", "220px")
+	state.setdefault("settingsTagMenu", {
 		"tagPath": "[default]",
 		"routePrefix": "/cfm",
 		"maxDepth": "2",
@@ -85,7 +95,7 @@ def init_settings_shell_state(component):
 		"udtIcon": "material/settings",
 		"output": "",
 	})
-	state.setdefault("menuRoutesGenerator", {
+	state.setdefault("settingsMenuRoutes", {
 		"menuInput": "",
 		"menuType": "yaml",
 		"outputMode": "dynamic",
@@ -93,10 +103,11 @@ def init_settings_shell_state(component):
 		"output": "",
 		"viewsOutput": "",
 	})
-	state.setdefault("shellFallbackEnabled", True)
-	state.setdefault("shellFallbackRoute", "/cfm/target-no-route")
-	state.setdefault("logicalPagePath", "")
-	state.setdefault("currentTabIndex", 0)
+	state.setdefault("routeFallbackEnabled", True)
+	state.setdefault("routeFallbackPath", "/cfm/target-no-route")
+	state.setdefault("routeLogicalPath", "")
+	state.setdefault("settingsCurrentTab", 0)
+	state.setdefault("perfLogging", False)
 	try:
 		idx = int(getattr(component.view.params, "currentTabIndex", 0) or 0)
 	except:
@@ -104,10 +115,13 @@ def init_settings_shell_state(component):
 	if idx < 0 or idx > 4:
 		idx = 0
 	component.view.custom.currentTabIndex = idx
-	state["currentTabIndex"] = idx
+	state["settingsCurrentTab"] = idx
 	cfm.menu.ensure_show_topbar_small_logo_state(state)
 	cfm.menu.ensure_footer_visibility_state(state)
-	component.session.custom.configFileMenu = state
+	cfm.config.set_state_fields(
+		component.session,
+		dict((k, state[k]) for k in SETTINGS_SHELL_OWNED_KEYS if k in state),
+	)
 
 
 def _tag_slugify(name):
@@ -172,11 +186,7 @@ def _emit_yaml(value, indent=0):
 
 def save_tag_menu_generator(session, root):
 	state = cfm.config.get_state(session)
-	tm = state.get("tagMenuGenerator")
-	if tm is None or not hasattr(tm, "get"):
-		tm = {}
-	else:
-		tm = dict(tm)
+	tm = cfm.config.dict_block(state, "settingsTagMenu")
 	tm["tagPath"] = cfm.ui.child_text(root, "TagPathInput", "")
 	tm["routePrefix"] = cfm.ui.child_text(root, "RoutePrefixInput", "")
 	tm["maxDepth"] = cfm.ui.child_text(root, "MaxDepthInput", "2")
@@ -185,8 +195,7 @@ def save_tag_menu_generator(session, root):
 	tm["appendLeaves"] = cfm.ui.child_value(root, "AppendLeavesDropdown", "false")
 	tm["folderIcon"] = cfm.ui.child_text(root, "FolderIconInput", "material/folder")
 	tm["udtIcon"] = cfm.ui.child_text(root, "UdtIconInput", "material/settings")
-	state["tagMenuGenerator"] = tm
-	session.custom.configFileMenu = state
+	cfm.config.set_state_fields(session, {"settingsTagMenu": tm})
 
 
 def _tag_kind(path, browse_tag_type):
@@ -265,6 +274,11 @@ def _browse_tag_menu_items(tag_path, route_prefix, levels_below, include_mode, f
 
 
 def generate_tag_menu(component):
+	# Perf gate (opt-in): this is a rare, user-triggered action, so resolving perfLogging via
+	# get_state here adds no hot-path cost. Nothing is timed when perf logging is off.
+	perf_prop = cfm.config.is_true(cfm.config.get_state(component.session).get("perfLogging", False))
+	_perf = cfm.log.perf_enabled(perf_prop)
+	_t0 = cfm.log.now_nanos() if _perf else 0
 	try:
 		root = cfm.ui.root_component(component)
 		save_tag_menu_generator(component.session, root)
@@ -310,7 +324,7 @@ def generate_tag_menu(component):
 		if branch_children:
 			branch["children"] = branch_children
 		menu_obj = {"menu": {"items": [branch]}}
-		header = "# Generated from " + tag_path + " - review and merge into MenuContent.params.menuConfig\n"
+		header = "# Generated from " + tag_path + " - review and merge into the session prop configFileMenu.contentSource\n"
 		header += "# Max levels below browse path: " + str(max_depth) + "\n"
 		header += "# Remove sourceTagPath keys before pasting if desired (menu ignores unknown keys).\n"
 		if output_format == "json":
@@ -318,14 +332,18 @@ def generate_tag_menu(component):
 		else:
 			output = header + _emit_yaml(menu_obj)
 		output_box.props.text = output
-		set_session_block_field(component.session, "tagMenuGenerator", "output", output)
+		set_session_block_field(component.session, "settingsTagMenu", "output", output)
 		status = cfm.ui.find_child(root, "StatusLabel")
 		if status is not None:
 			status.props.text = (
 				"Generated " + str(len(branch_children)) + " children at max "
 				+ str(max_depth) + " level(s) below browse path."
 			)
+		if _perf:
+			cfm.log.perf("settings.tagMenu", cfm.log.now_nanos() - _t0,
+				"children=%d depth=%d" % (len(branch_children), max_depth), force=perf_prop)
 	except Exception as exc:
+		cfm.log.log_always("settings", "warn", "Tag menu generation failed", exc)
 		root = cfm.ui.root_component(component)
 		out = cfm.ui.find_child(root, "TagMenuOutput")
 		if out is not None:
@@ -342,19 +360,8 @@ def save_menu_routes_generator(
 	views_output_text=None,
 	default_shell_path="Config File Menu/Resources/View Dynamic Fallback",
 ):
-	try:
-		cfg = session.custom.configFileMenu
-		if cfg is None:
-			cfg = {}
-		else:
-			cfg = dict(cfg)
-	except:
-		cfg = {}
-	mr = cfg.get("menuRoutesGenerator")
-	if mr is None or not hasattr(mr, "get"):
-		mr = {}
-	else:
-		mr = dict(mr)
+	cfg = cfm.config.get_state(session)
+	mr = cfm.config.dict_block(cfg, "settingsMenuRoutes")
 	mr["menuInput"] = cfm.ui.child_text_preserve(root, "MenuInput", "")
 	mr["menuType"] = cfm.ui.child_value(root, "MenuTypeDropdown", "yaml")
 	mr["outputMode"] = cfm.ui.child_value(root, "OutputModeDropdown", "dynamic")
@@ -373,8 +380,7 @@ def save_menu_routes_generator(
 			mr["viewsOutput"] = cfm.ui.child_text_preserve(root, "ViewsOutput", "")
 		except:
 			pass
-	cfg["menuRoutesGenerator"] = mr
-	session.custom.configFileMenu = cfg
+	cfm.config.set_state_fields(session, {"settingsMenuRoutes": mr})
 
 
 def load_menu_routes_generator(component, default_menu_input, default_output, default_shell_path):
@@ -382,7 +388,7 @@ def load_menu_routes_generator(component, default_menu_input, default_output, de
 		cfg = component.session.custom.configFileMenu
 		if cfg is None:
 			return
-		mr = cfg.get("menuRoutesGenerator")
+		mr = cfg.get("settingsMenuRoutes")
 		if mr is None or not hasattr(mr, "get"):
 			return
 		mr = dict(mr)
@@ -458,7 +464,7 @@ def _get_path_prefix(session):
 	try:
 		cfg = session.custom.configFileMenu
 		if cfg and hasattr(cfg, "get"):
-			return str(cfg.get("breadcrumbPathPrefix") or "cfm")
+			return str(cfg.get("contentBreadcrumbPrefix") or "cfm")
 	except:
 		pass
 	return "cfm"
@@ -490,13 +496,9 @@ def _build_view_template(title):
 	return {
 		"custom": {},
 		"params": {
-			"menuDockId": "config-file-menu",
-			"closeMenuOnOutsideClick": True,
 			"requestedPath": "",
 		},
 		"propConfig": {
-			"params.menuDockId": {"paramDirection": "input", "persistent": True},
-			"params.closeMenuOnOutsideClick": {"paramDirection": "input", "persistent": True},
 			"params.requestedPath": {"paramDirection": "input", "persistent": True},
 		},
 		"props": {"defaultSize": {"height": 900, "width": 1200}},
@@ -589,6 +591,11 @@ def _build_view_template(title):
 
 
 def generate_output(component, default_shell_path):
+	# Perf gate (opt-in): rare, user-triggered action, so resolving perfLogging via get_state
+	# here adds no hot-path cost. Nothing is timed when perf logging is off.
+	perf_prop = cfm.config.is_true(cfm.config.get_state(component.session).get("perfLogging", False))
+	_perf = cfm.log.perf_enabled(perf_prop)
+	_t0 = cfm.log.now_nanos() if _perf else 0
 	try:
 		root = cfm.ui.root_component(component)
 		save_menu_routes_generator(component.session, root, default_shell_path=default_shell_path)
@@ -650,7 +657,11 @@ def generate_output(component, default_shell_path):
 				)
 			else:
 				status.props.text = "Generated " + str(len(pages)) + " page routes."
+		if _perf:
+			cfm.log.perf("settings.menuRoutes", cfm.log.now_nanos() - _t0,
+				"routes=%d views=%d" % (len(pages), len(views_manifest)), force=perf_prop)
 	except Exception as exc:
+		cfm.log.log_always("settings", "warn", "Menu routes generation failed", exc)
 		root = cfm.ui.root_component(component)
 		out = cfm.ui.find_child(root, "RoutesOutput")
 		if out is not None:
@@ -658,4 +669,94 @@ def generate_output(component, default_shell_path):
 		status = cfm.ui.find_child(root, "RoutesStatusLabel")
 		if status is not None:
 			status.props.text = "Generation failed."
+
+
+def check_menu_health(items, registered_pages, fallback_enabled, fallback_path):
+	# Pure, dependency-free menu-config health check. Walks the menu tree (via
+	# cfm.config.get_children) and reports, for each item that carries a target:
+	#   missingRoutes    - target has no registered page and no usable fallback
+	#   duplicateTargets - a target used by more than one menu item
+	#   roleWarnings     - labels of items that declare `roles` (a reminder that menu
+	#                      roles are visibility-only; secure the destination pages)
+	# Makes NO system calls (takes already-parsed items + page list), so it is unit-testable.
+	pages = set(cfm.config.normalize_path(p) for p in (registered_pages or []))
+	fallback = cfm.config.normalize_path(fallback_path) if fallback_path else ""
+	fallback_ok = cfm.config.is_true(fallback_enabled) and bool(fallback) and fallback in pages
+	result = {
+		"itemCount": 0,
+		"targetsChecked": 0,
+		"missingRoutes": [],
+		"duplicateTargets": [],
+		"roleWarnings": [],
+	}
+	seen = {}
+
+	def walk(node_items):
+		for item in node_items or []:
+			if not cfm.config.is_mapping(item):
+				continue
+			result["itemCount"] += 1
+			target = str(cfm.config.get_prop(item, "target", "") or "").strip()
+			if target:
+				norm = cfm.config.normalize_path(target)
+				result["targetsChecked"] += 1
+				seen[norm] = seen.get(norm, 0) + 1
+				if norm not in pages and not fallback_ok and norm not in result["missingRoutes"]:
+					result["missingRoutes"].append(norm)
+			if cfm.config.get_prop(item, "roles", None):
+				label = str(cfm.config.get_prop(item, "label", "") or "").strip()
+				result["roleWarnings"].append(label if label else "(unlabeled)")
+			walk(cfm.config.get_children(item))
+
+	walk(items)
+	result["duplicateTargets"] = sorted([t for t in seen if seen[t] > 1])
+	return result
+
+
+def _format_menu_health_summary(health):
+	# One-line human-readable summary; callers prefix it with [CFM health].
+	missing = health.get("missingRoutes") or []
+	dupes = health.get("duplicateTargets") or []
+	roles = health.get("roleWarnings") or []
+	parts = [
+		str(health.get("itemCount", 0)) + " items",
+		str(health.get("targetsChecked", 0)) + " targets",
+	]
+	if missing:
+		parts.append(str(len(missing)) + " missing route(s): " + ", ".join(missing))
+	if dupes:
+		parts.append(str(len(dupes)) + " duplicate target(s): " + ", ".join(dupes))
+	if roles:
+		parts.append(str(len(roles)) + " item(s) use roles (visibility only; secure pages separately)")
+	if not missing and not dupes:
+		parts.append("OK")
+	return "; ".join(parts)
+
+
+def validate_menu_config(component):
+	# Settings action: parse the current menu and report route/duplicate/role health into
+	# the MenuHealthOutput label, plus one summary line to the CFM.health logger.
+	try:
+		session = component.session
+		state = cfm.config.get_state(session)
+		items = cfm.config.load_menu_items(
+			state.get("contentSource", ""), str(state.get("contentSourceType", "yaml") or "yaml")
+		)
+		pages = cfm.nav.get_registered_pages()
+		fallback_enabled = cfm.config.is_true(state.get("routeFallbackEnabled", True))
+		fallback_path = state.get("routeFallbackPath") or "/cfm/target-no-route"
+		health = check_menu_health(items, pages, fallback_enabled, fallback_path)
+		summary = "[CFM health] " + _format_menu_health_summary(health)
+		cfm.ui.set_text(cfm.ui.root_component(component), "MenuHealthOutput", summary)
+		has_problems = bool(health["missingRoutes"] or health["duplicateTargets"])
+		cfm.log.log_always("health", "warn" if has_problems else "info", summary)
+	except Exception as exc:
+		cfm.log.log_always("health", "warn", "Menu validation failed", exc)
+		try:
+			cfm.ui.set_text(
+				cfm.ui.root_component(component), "MenuHealthOutput",
+				"[CFM health] validation error: " + str(exc),
+			)
+		except:
+			pass
 

@@ -210,7 +210,11 @@ def stage_child(
         / "MenuContent"
         / "view.json"
     )
-    build_mod.patch_view_menu_config(menu_content, menu_yaml)
+    # The child overrides the inherited configFileMenu session object with its own menu.
+    build_mod.write_session_props(
+        dest / "com.inductiveautomation.perspective" / "session-props",
+        build_mod.build_config_file_menu_object(menu_yaml),
+    )
     logo_large, logo_small = resolve_logo_paths()
     build_mod.patch_logo_sources(menu_content, logo_large=logo_large, logo_small=logo_small)
     build_mod.patch_top_bar_small_logo(

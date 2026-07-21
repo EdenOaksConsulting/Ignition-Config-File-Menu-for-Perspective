@@ -14,11 +14,11 @@
           "name": "Instructions"
         },
         "position": {
-          "basis": "120px",
+          "basis": "210px",
           "shrink": 0
         },
         "props": {
-          "source": "Browse a **tag provider path** and generate a menu YAML or JSON branch for copy/paste into `MenuContent.params.menuConfig`. Run in a **live session** (not Designer preview). **Max levels** limits nesting below the browse path (1 = direct children only). Field values persist in `session.custom.configFileMenu.tagMenuGenerator` while the session is open.",
+          "source": "Build menu items from your existing tags. Use this page in a running **Perspective Browser session** \u2014 tag browsing does not work in the Designer preview.\n\n1. Enter a **tag path**, for example `[default]Site/Area 1`.\n2. Click **Generate menu**.\n3. Edit the generated menu YAML in the output box or text editor as needed \u2014 labels, icons, targets.\n4. Copy the output into the session property `configFileMenu.contentSource`.\n5. Optional: paste the same YAML into **Menu \u2192 Routes** to build the matching Page Configuration pages.\n\n**Max levels** sets how many folder levels to include (1 = direct children only).",
           "style": {
             "padding": "8px 16px"
           }
@@ -112,13 +112,6 @@
               },
               "dom": {
                 "onBlur": {
-                  "config": {
-                    "script": "\texchange.cfm.runtime.set_session_block_field(self.session, 'tagMenuGenerator', 'tagPath', str(self.props.text or '').strip())\n"
-                  },
-                  "scope": "G",
-                  "type": "script"
-                },
-                "onKeyUp": {
                   "config": {
                     "script": "\texchange.cfm.runtime.set_session_block_field(self.session, 'tagMenuGenerator', 'tagPath', str(self.props.text or '').strip())\n"
                   },
@@ -223,13 +216,6 @@
                   },
                   "scope": "G",
                   "type": "script"
-                },
-                "onKeyUp": {
-                  "config": {
-                    "script": "\texchange.cfm.runtime.set_session_block_field(self.session, 'tagMenuGenerator', 'routePrefix', str(self.props.text or '').strip())\n"
-                  },
-                  "scope": "G",
-                  "type": "script"
                 }
               }
             },
@@ -324,13 +310,6 @@
               },
               "dom": {
                 "onBlur": {
-                  "config": {
-                    "script": "\texchange.cfm.runtime.set_session_block_field(self.session, 'tagMenuGenerator', 'maxDepth', str(self.props.text or '').strip())\n"
-                  },
-                  "scope": "G",
-                  "type": "script"
-                },
-                "onKeyUp": {
                   "config": {
                     "script": "\texchange.cfm.runtime.set_session_block_field(self.session, 'tagMenuGenerator', 'maxDepth', str(self.props.text or '').strip())\n"
                   },
@@ -733,13 +712,6 @@
                   },
                   "scope": "G",
                   "type": "script"
-                },
-                "onKeyUp": {
-                  "config": {
-                    "script": "\texchange.cfm.runtime.set_session_block_field(self.session, 'tagMenuGenerator', 'folderIcon', str(self.props.text or '').strip())\n"
-                  },
-                  "scope": "G",
-                  "type": "script"
                 }
               }
             },
@@ -834,13 +806,6 @@
               },
               "dom": {
                 "onBlur": {
-                  "config": {
-                    "script": "\texchange.cfm.runtime.set_session_block_field(self.session, 'tagMenuGenerator', 'udtIcon', str(self.props.text or '').strip())\n"
-                  },
-                  "scope": "G",
-                  "type": "script"
-                },
-                "onKeyUp": {
                   "config": {
                     "script": "\texchange.cfm.runtime.set_session_block_field(self.session, 'tagMenuGenerator', 'udtIcon', str(self.props.text or '').strip())\n"
                   },
@@ -986,13 +951,6 @@
               },
               "dom": {
                 "onBlur": {
-                  "config": {
-                    "script": "\texchange.cfm.runtime.set_session_block_field(self.session, 'tagMenuGenerator', 'output', str(self.props.text or '').strip())\n"
-                  },
-                  "scope": "G",
-                  "type": "script"
-                },
-                "onKeyUp": {
                   "config": {
                     "script": "\texchange.cfm.runtime.set_session_block_field(self.session, 'tagMenuGenerator', 'output', str(self.props.text or '').strip())\n"
                   },

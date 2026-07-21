@@ -1,15 +1,10 @@
 {
   "custom": {},
   "params": {
-    "menuDockId": "config-file-menu",
-    "closeMenuOnOutsideClick": true
+    "menuDockId": "config-file-menu"
   },
   "propConfig": {
     "params.menuDockId": {
-      "paramDirection": "input",
-      "persistent": true
-    },
-    "params.closeMenuOnOutsideClick": {
       "paramDirection": "input",
       "persistent": true
     }
@@ -94,7 +89,7 @@
                   "grow": 1
                 },
                 "props": {
-                  "source": "# Config File Menu for Perspective\n\nThis project turns one YAML-lite or JSON menu configuration into a responsive Ignition Perspective navigation system.\n\n## Start Here\n\n- Open `/cfm/settings` for Settings, Help, Tag to Menu, Menu to Routes, and YAML to JSON tools.\n- Edit `Config File Menu/MenuContent.params.menuConfig` to define the menu tree.\n- Add Page Configuration routes for each menu `target`.\n- Use `/cfm/diagnostics` to review the bundled diagnostics dashboard during evaluation.\n\n## Dock Defaults\n\nThe standard layout starts open, pinned, and in push mode. Project-wide startup defaults live in the `exchange.cfm.runtime` project library script (`ensure_dock_defaults`).\n\n## Next Step\n\nFor a blank production site, import `config-file-menu-library.zip` first, then `config-file-menu-site.zip`. For a reference project with sample routes, import `config-file-menu-sample.zip` after the library.\n",
+                  "source": "# Config File Menu for Perspective\n\nWelcome! This project builds its navigation \u2014 the docked menu, breadcrumbs, and page titles \u2014 from one menu configuration written in YAML or JSON.\n\n## Start Here\n\n1. Use the menu on the left to explore.\n2. Open `/cfm/settings` for the tools: Settings, Help, Tag \u2192 Menu, Menu \u2192 Routes, and YAML to JSON.\n3. In the Designer, edit the session custom property `configFileMenu.contentSource` (Perspective \u2192 Session Properties \u2192 custom) to change the menu.\n4. In **Page Configuration**, add a page whose URL matches each menu `target`.\n5. Open `/cfm/diagnostics` to see the bundled diagnostics dashboard.\n\n## Defaults\n\nThe menu starts open, pinned, and in push mode. All settings live in one session object \u2014 **Perspective \u2192 Session Properties \u2192 custom \u2192 `configFileMenu`**. To change project-wide defaults, edit its boolean `dockPinned`, `dockContentPush` (`true` = push, `false` = cover), and `dockCloseOnOutsideClick` keys. The Settings tab changes the current session only.\n\n## Building A Site\n\nImport `config-file-menu-library.zip` first, then `config-file-menu-sample.zip` (working example) or `config-file-menu-site.zip` (blank production starter).\n",
                   "style": {
                     "padding": "24px",
                     "fontSize": "15px",

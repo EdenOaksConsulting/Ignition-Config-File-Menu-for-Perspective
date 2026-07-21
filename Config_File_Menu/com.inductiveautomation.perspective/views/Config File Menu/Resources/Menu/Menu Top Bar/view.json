@@ -42,9 +42,9 @@
               "config": {
                 "struct": {
                   "deviceType": "{session.props.device.type}",
-                  "dockContent": "{session.custom.configFileMenu.dockContent}",
-                  "isPinned": "{session.custom.configFileMenu.isPinned}",
-                  "isOpen": "{session.custom.configFileMenu.isOpen}",
+                  "dockContent": "{session.custom.configFileMenu.dockContentPush}",
+                  "isPinned": "{session.custom.configFileMenu.dockPinned}",
+                  "isOpen": "{session.custom.configFileMenu.dockOpen}",
                   "viewportWidth": "{page.props.dimensions.viewport.width}",
                   "primaryViewWidth": "{page.props.dimensions.primaryView.width}"
                 },
@@ -64,9 +64,9 @@
               "config": {
                 "struct": {
                   "deviceType": "{session.props.device.type}",
-                  "dockContent": "{session.custom.configFileMenu.dockContent}",
-                  "isPinned": "{session.custom.configFileMenu.isPinned}",
-                  "isOpen": "{session.custom.configFileMenu.isOpen}",
+                  "dockContent": "{session.custom.configFileMenu.dockContentPush}",
+                  "isPinned": "{session.custom.configFileMenu.dockPinned}",
+                  "isOpen": "{session.custom.configFileMenu.dockOpen}",
                   "viewportWidth": "{page.props.dimensions.viewport.width}",
                   "primaryViewWidth": "{page.props.dimensions.primaryView.width}"
                 },
@@ -108,15 +108,17 @@
                 "struct": {
                   "path": "{page.props.path}",
                   "viewportWidth": "{page.props.dimensions.viewport.width}",
-                  "menuConfig": "{session.custom.configFileMenu.menuConfig}",
-                  "menuConfigType": "{session.custom.configFileMenu.menuConfigType}",
-                  "menuDockId": "{session.custom.configFileMenu.menuDockId}",
-                  "pathPrefix": "{session.custom.configFileMenu.breadcrumbPathPrefix}",
-                  "siteName": "{session.custom.configFileMenu.siteName}",
-                  "prefMenuDockId": "{session.custom.configFileMenu.menuDockId}",
-                  "shellFallbackEnabled": "{session.custom.configFileMenu.shellFallbackEnabled}",
+                  "menuConfig": "{session.custom.configFileMenu.contentSource}",
+                  "menuConfigType": "{session.custom.configFileMenu.contentSourceType}",
+                  "menuDockId": "{session.custom.configFileMenu.contentDockId}",
+                  "pathPrefix": "{session.custom.configFileMenu.contentBreadcrumbPrefix}",
+                  "siteName": "{session.custom.configFileMenu.brandSiteName}",
+                  "prefMenuDockId": "{session.custom.configFileMenu.contentDockId}",
+                  "shellFallbackEnabled": "{session.custom.configFileMenu.routeFallbackEnabled}",
                   "requestedPath": "{view.params.requestedPath}",
-                  "logicalPagePath": "{session.custom.configFileMenu.logicalPagePath}"
+                  "logicalPagePath": "{session.custom.configFileMenu.routeLogicalPath}",
+                  "routeLogicalPath": "{session.custom.configFileMenu.routeLogicalPath}",
+                  "routeFallbackEnabled": "{session.custom.configFileMenu.routeFallbackEnabled}"
                 },
                 "waitOnAll": true
               },
@@ -171,7 +173,7 @@
           "position.display": {
             "binding": {
               "config": {
-                "expression": "{page.props.dimensions.viewport.width}>450"
+                "expression": "{page.props.dimensions.viewport.width}>450 && {session.custom.configFileMenu.showTopBarClock}"
               },
               "type": "expr"
             }
@@ -179,7 +181,7 @@
           "props.text": {
             "binding": {
               "config": {
-                "expression": "runScript(\"exchange.cfm.runtime.format_topbar_clock\", 1000)"
+                "expression": "runScript(\"exchange.cfm.runtime.format_topbar_clock\", if({session.custom.configFileMenu.showTopBarClock}, max(1, {session.custom.configFileMenu.clockRefreshSeconds}) * 1000, 0))"
               },
               "type": "expr"
             }
@@ -217,11 +219,8 @@
             "binding": {
               "config": {
                 "struct": {
-                  "sessionMenuConfig": "{session.custom.configFileMenu.menuConfig}",
-                  "sessionMenuConfigType": "{session.custom.configFileMenu.menuConfigType}",
-                  "paramMenuConfig": "{view.params.menuConfig}",
-                  "paramMenuConfigType": "{view.params.menuConfigType}",
-                  "viewportWidth": "{page.props.dimensions.viewport.width}"
+                  "viewportWidth": "{page.props.dimensions.viewport.width}",
+                  "showTopBarSmallLogo": "{session.custom.configFileMenu.showTopBarSmallLogo}"
                 },
                 "waitOnAll": true
               },
@@ -239,8 +238,7 @@
               "config": {
                 "struct": {
                   "variant": "'small'",
-                  "sessionSource": "{session.custom.configFileMenu.logoSmallPath}",
-                  "paramSource": "{view.params.logoSmallPath}",
+                  "sessionSource": "{session.custom.configFileMenu.brandLogoSmall}",
                   "defaultSource": "'data:image/png;base64,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'"
                 },
                 "waitOnAll": true

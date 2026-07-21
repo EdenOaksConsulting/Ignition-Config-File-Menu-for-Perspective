@@ -26,7 +26,7 @@ RESOURCE_ACTOR = "content-author"
 SCRIPT_FILES = ("code.py",)
 
 # Dependency-safe merge order for a single runtime module.
-BUNDLE_ORDER = ("config", "ui", "nav", "dock", "menu", "tree", "breadcrumb", "settings")
+BUNDLE_ORDER = ("log", "config", "ui", "nav", "dock", "menu", "tree", "breadcrumb", "settings")
 
 
 def normalize_lf_bytes(path: Path) -> bytes:

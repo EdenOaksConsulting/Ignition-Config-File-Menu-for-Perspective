@@ -14,11 +14,11 @@
           "name": "Instructions"
         },
         "position": {
-          "basis": "100px",
+          "basis": "170px",
           "shrink": 0
         },
         "props": {
-          "source": "Paste YAML-lite on the left, click **Convert to JSON**, then copy the output into `MenuContent.params.menuConfig` and set `params.menuConfigType` to `json`.",
+          "source": "Prefer JSON for your menu? Convert your menu YAML here.\n\n1. Paste menu YAML on the left.\n2. Click **Convert to JSON**.\n3. Copy the output into the session property `configFileMenu.contentSource`.\n4. Set `configFileMenu.contentSourceType` to `json`.",
           "style": {
             "padding": "8px 16px"
           }
@@ -36,7 +36,7 @@
               "grow": 1
             },
             "props": {
-              "text": "# SAMPLE ONLY - Copy/paste into Config File Menu/MenuContent.params.menuConfig.\n# Every target needs a matching route in page-config/config.json.\n# expanded: true|false on a top-level section (or nested tree item) controls whether\n# that branch starts open. Sections still auto-open when the current page is under them.\nmenu:\n  items:\n    - label: Dashboard\n      icon: material/home\n      target: /cfm/dashboard\n",
+              "text": "# SAMPLE ONLY - paste into the session property configFileMenu.contentSource.\n# Every target needs a matching route in page-config/config.json.\n# expanded: true|false on a top-level section (or nested tree item) controls whether\n# that branch starts open. Sections still auto-open when the current page is under them.\nmenu:\n  items:\n    - label: Dashboard\n      icon: material/home\n      target: /cfm/dashboard\n",
               "style": {
                 "fontFamily": "monospace",
                 "fontSize": "14px"
