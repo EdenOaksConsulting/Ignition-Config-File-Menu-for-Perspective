@@ -3,9 +3,15 @@
 **Generate your entire Perspective navigation from one configuration file — YAML or JSON drives nested menus, icons, breadcrumbs, and page titles that stay in sync on every publish.**
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](Config_File_Menu/LICENSE)
+[![Latest release](https://img.shields.io/github/v/release/EdenOaksConsulting/Ignition-Config-File-Menu-for-Perspective)](https://github.com/EdenOaksConsulting/Ignition-Config-File-Menu-for-Perspective/releases/latest)
 
 **Author:** EdenOaks Consulting  
 **Maintainer:** Matt McPheeters
+
+![Config File Menu — the YAML on the left builds the menu, breadcrumbs, and page title on the right](Config_File_Menu/screenshots/config-file-menu-hero.png)
+
+*One session property, `configFileMenu.contentSource`, drives the docked menu, the top-bar
+breadcrumbs, and the page title.*
 
 ---
 
@@ -35,7 +41,7 @@ Config File Menu turns your Perspective navigation into **data you can generate 
 
 ## Quick start
 
-1. Download **`config-file-menu-library.zip`** plus one child zip from Releases or [`dist/`](dist/).
+1. Download **`config-file-menu-library.zip`** plus one child zip from the [latest release](https://github.com/EdenOaksConsulting/Ignition-Config-File-Menu-for-Perspective/releases/latest).
 2. Import **`config-file-menu-library.zip`** first.
 3. Choose a child:
    - Import **`config-file-menu-sample.zip`** to learn with a working reference project.
@@ -77,9 +83,24 @@ Set `params.menuConfigType` to `yaml` or `json`. Every `target` needs a matching
 
 ## Screenshots
 
-| Menu (expanded) | Settings hub | Breadcrumbs |
-|---|---|---|
-| *Add `screenshots/config-file-menu-expanded.png`* | *Add settings tab capture* | *Add top-bar capture* |
+**Dock behavior** — hamburger open/close, expanding a nested section, breadcrumbs updating
+on navigation, pin, push/cover, and click-outside close.
+
+![Animated walkthrough of the docked menu: opening, expanding a nested section, navigating, pinning, and switching between push and cover modes](Config_File_Menu/screenshots/config-file-menu-overview.gif)
+
+**Nested menu and breadcrumbs** — multi-level tree with icons at every level; the top-bar
+trail and page title resolve from the same config.
+
+![Expanded menu four levels deep, with the breadcrumb trail Default Site › Areas › Area 02 › Line 02 › Details](Config_File_Menu/screenshots/config-file-menu-expanded.png)
+
+**Tag → Menu generator** — browse a tag path and generate a menu branch to paste into
+`contentSource`, one of five Settings tabs.
+
+![Settings Tag to Menu tab with generated YAML output](Config_File_Menu/screenshots/config-file-menu-settings.png)
+
+**Light and dark** — the same page under both session themes.
+
+![The same Reports page rendered in light theme and dark theme](Config_File_Menu/screenshots/config-file-menu-themes.png)
 
 ## Requirements
 
@@ -105,10 +126,17 @@ See **[DESIGNER_IMPORT_CHECKLIST.md](Config_File_Menu/DESIGNER_IMPORT_CHECKLIST.
 | Path | Purpose |
 |---|---|
 | [`Config_File_Menu/`](Config_File_Menu/) | Perspective project source (library manifest in working tree) |
-| [`dist/`](dist/) | Build artifacts — library, site, and sample zips |
-| [`dist/config-file-menu-library.zip`](dist/config-file-menu-library.zip) | Inheritable library import (views, docks, Advanced Stylesheet) |
-| [`dist/config-file-menu-site.zip`](dist/config-file-menu-site.zip) | Site deployment child (empty menu, editable logos) |
-| [`dist/config-file-menu-sample.zip`](dist/config-file-menu-sample.zip) | Sample child (reference routes + menuConfig) |
+| [`dist/`](dist/) | Local build output — zips are built here, then published to Releases |
+
+Import zips are attached to each [release](https://github.com/EdenOaksConsulting/Ignition-Config-File-Menu-for-Perspective/releases/latest), not committed to the repository:
+
+| Release asset | Purpose |
+|---|---|
+| `config-file-menu-library.zip` | Inheritable library import (views, docks, Advanced Stylesheet) — import first |
+| `config-file-menu-site.zip` | Site deployment child (empty menu, editable logos) |
+| `config-file-menu-sample.zip` | Sample child (reference routes + menuConfig) |
+
+To build them yourself: `python Config_File_Menu/scripts/build-inheritance-zips.py`
 
 ## License & attribution
 

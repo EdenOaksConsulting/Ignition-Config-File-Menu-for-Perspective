@@ -3,17 +3,17 @@
 All notable changes after the **1.0.0** Exchange candidate are documented here.
 
 
-## Unreleased
+## 2.0.0 — 2026-07-21
 
 > **Migration note (schema change).** All configuration moved into a single session
 > custom object, **`session.custom.configFileMenu`**, shipped as a `session-props`
 > resource. The old per-view `MenuContent` params (`menuConfig`, `menuConfigType`, logos,
 > `siteName`, `menuDockId`, …), the three top-level `menuControl*` session props, and the
 > old flat state keys (`isPinned`, `dockContent`, `menuMode`, `logicalPagePath`,
-> `shellFallback*`, `brandLogoVariant`, …) **no longer exist**. When re-importing over an
-> existing project, refresh the `configFileMenu` session custom object from the new
-> `session-props` resource so a stale object doesn't shadow the new keys. See
-> `CONFIG_REFERENCE.md` for the full key list.
+> `shellFallback*`, `brandLogoVariant`, `tagMenuGenerator`, `menuRoutesGenerator`, …)
+> **no longer exist**. When re-importing over an existing project, refresh the
+> `configFileMenu` session custom object from the new `session-props` resource so a stale
+> object doesn't shadow the new keys. See `CONFIG_REFERENCE.md` for the full key list.
 
 ### Changed
 - **Centralized all configuration** into one flat, group-prefixed session object
@@ -22,6 +22,11 @@ All notable changes after the **1.0.0** Exchange candidate are documented here.
   params and the Designer-vs-session reconciliation; the runtime reads/writes the object
   directly. `dockContent` string became the boolean `dockContentPush`; removed the
   redundant `dockMode` mirror of `dockOpen`.
+- **Settings generator state keys renamed** to match the `settings*` grouping:
+  `tagMenuGenerator` → **`settingsTagMenu`** and `menuRoutesGenerator` →
+  **`settingsMenuRoutes`**. These hold the Settings tab form fields and last output only —
+  no menu configuration — so the only effect of the rename is that saved generator field
+  values from 1.0.0 are not carried over; re-enter them on the tab.
 - **Logos dedicated by location:** the menu header shows the **large** logo (toggled by
   `showMenuLogo`); the top bar shows the **small** logo (`showTopBarSmallLogo`). Replaced
   the `brandLogoVariant` (large/small/other) selector.
@@ -31,6 +36,13 @@ All notable changes after the **1.0.0** Exchange candidate are documented here.
   duplicate declaration blocks.
 - **Clock refresh default** changed from `1`s to **`5`s** to lower the per-session gateway
   tick cost. Set `clockRefreshSeconds: 1` for a smooth ticking-seconds display.
+- **Reduced redundant breadcrumb work on navigation.** The parsed menu items (keyed by
+  source/type) and the registered page-url list (`getProjectInfo()`, ~2s TTL) are now
+  **cached and shared** across breadcrumb build, navigation, and page-title resolution, so
+  the burst of breadcrumb binding re-evaluations Perspective fires per navigation reuses one
+  parse and one gateway call instead of repeating both. Both caches are bounded; behavior is
+  unchanged. Removed the duplicate `logicalPagePath` key from the Top Bar breadcrumb struct
+  (it mirrored `routeLogicalPath`, doubling that binding's trigger for no benefit).
 
 ### Added
 - **Top-bar clock controls:** `showTopBarClock` (setting it `false` sets the `runScript`
@@ -80,3 +92,8 @@ All notable changes after the **1.0.0** Exchange candidate are documented here.
 - Corrected the misleading concurrency comment on `set_state_fields` (it is a whole-object
   last-writer-wins read-modify-write, not a per-key isolated write) and documented the
   intentional fail-open on the menu-item `roles` visibility check.
+- **Skip no-op `routeLogicalPath` session writes on navigation.** A direct-hit navigation no
+  longer rewrites `routeLogicalPath` when it is already empty, the shell fallback only writes
+  when the logical target actually changes, and `sync_shell_session` skips an unchanged write.
+  Each avoided whole-object session write is one fewer needless re-fire of the breadcrumb
+  binding. Navigation behavior is unchanged.

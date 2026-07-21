@@ -95,7 +95,10 @@ def build_instances(value, page):
 		# All menu config lives in the session object (shipped with the library).
 		menu_config, menu_config_type = cfm.config.pick_menu_block(session, value)
 		path_prefix = str(state.get("contentBreadcrumbPrefix", "cfm") or "cfm").strip().lower()
-		all_pages = [i["url"] for i in system.perspective.getProjectInfo()["pageConfigs"]]
+		# Shared caches: the registered page list (TTL'd, shared with nav) and the parsed menu
+		# items (keyed by source, shared with the menu render + title resolvers). A burst of
+		# breadcrumb builds on one navigation reuses both instead of re-parsing + re-fetching.
+		all_pages = cfm.config.get_project_page_urls_cached()
 		items = cfm.config.load_menu_items(menu_config, menu_config_type)
 		lookup = {}
 		_add_lookup(items, [], lookup)

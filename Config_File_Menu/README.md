@@ -303,7 +303,7 @@ The Settings page has five tabs:
 1. Open **Settings → Tag → Menu** in a **live Perspective session** (tag browse may fail in Designer preview).
 2. Enter a tag path (e.g. `[default]Plant/Areas`), route prefix (e.g. `/cfm/plant`), and **Max levels** (1 = direct children only).
 3. Click **Generate menu**, review the output, and merge the branch into `configFileMenu.contentSource`.
-4. Field values and last output persist in `session.custom.configFileMenu.tagMenuGenerator` for the session.
+4. Field values and last output persist in `session.custom.configFileMenu.settingsTagMenu` for the session.
 5. Optional `sourceTagPath` keys are authoring metadata; the menu ignores unknown fields at runtime.
 
 ### Menu → Routes workflow
@@ -469,6 +469,8 @@ Opt-in timing for the specific script hot paths, logged to the **`CFM.perf`** lo
 ¹ The menu-structure and title paths deliberately avoid a session read on every navigation, so they are gated on the `CFM.perf` TRACE logger only — the `perfLogging` property does not force them.
 
 `perf(...)` also accepts a **`threshold_ms`** so a caller can surface only slow cases (a timing below the threshold is not logged); the shipped call sites use no threshold (every occurrence logs when enabled). The `[CFM perf]` marker is stable for alert scraping.
+
+> **Multiple `breadcrumb.build` lines per navigation are expected, not a flood bug.** Perspective re-evaluates the Top Bar breadcrumb binding 2–5× per navigation (each dependency settle re-fires it); with `perfLogging` on you'll see one `[CFM perf] breadcrumb.build` INFO line per fire. To keep those cheap, the parsed menu items and the registered-page list are **cached and shared** across breadcrumb, navigation, and title resolution — the first build in a burst parses/fetches; the rest are cache hits (much lower ms). No-op `routeLogicalPath` writes are also skipped so a direct-hit navigation doesn't needlessly re-trigger the binding. The line count reflects Perspective's binding re-evaluation, not repeated expensive work.
 
 > **Scope.** `CFM.perf` measures only these script hot paths. For **gateway-wide** performance use the platform tools: Perspective session/component metrics, the Designer script & transform **profiler**, and the shipped **Diagnostics Dashboard**.
 

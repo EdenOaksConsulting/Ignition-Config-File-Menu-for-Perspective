@@ -116,7 +116,6 @@
                   "prefMenuDockId": "{session.custom.configFileMenu.contentDockId}",
                   "shellFallbackEnabled": "{session.custom.configFileMenu.routeFallbackEnabled}",
                   "requestedPath": "{view.params.requestedPath}",
-                  "logicalPagePath": "{session.custom.configFileMenu.routeLogicalPath}",
                   "routeLogicalPath": "{session.custom.configFileMenu.routeLogicalPath}",
                   "routeFallbackEnabled": "{session.custom.configFileMenu.routeFallbackEnabled}"
                 },

@@ -148,7 +148,7 @@
               "props.value": {
                 "binding": {
                   "config": {
-                    "path": "session.custom.configFileMenu.menuRoutesGenerator.outputMode"
+                    "path": "session.custom.configFileMenu.settingsMenuRoutes.outputMode"
                   },
                   "transforms": [
                     {
@@ -183,7 +183,7 @@
               "component": {
                 "onActionPerformed": {
                   "config": {
-                    "script": "\texchange.cfm.runtime.set_session_block_field(self.session, 'menuRoutesGenerator', 'outputMode', str(self.props.value or ''))\n"
+                    "script": "\texchange.cfm.runtime.set_session_block_field(self.session, 'settingsMenuRoutes', 'outputMode', str(self.props.value or ''))\n"
                   },
                   "scope": "G",
                   "type": "script"
@@ -246,7 +246,7 @@
               "props.text": {
                 "binding": {
                   "config": {
-                    "path": "session.custom.configFileMenu.menuRoutesGenerator.shellViewPath"
+                    "path": "session.custom.configFileMenu.settingsMenuRoutes.shellViewPath"
                   },
                   "transforms": [
                     {
@@ -273,7 +273,7 @@
               "component": {
                 "onActionPerformed": {
                   "config": {
-                    "script": "\texchange.cfm.runtime.set_session_block_field(self.session, 'menuRoutesGenerator', 'shellViewPath', str(self.props.text or '').strip())\n"
+                    "script": "\texchange.cfm.runtime.set_session_block_field(self.session, 'settingsMenuRoutes', 'shellViewPath', str(self.props.text or '').strip())\n"
                   },
                   "scope": "G",
                   "type": "script"
@@ -282,7 +282,7 @@
               "dom": {
                 "onBlur": {
                   "config": {
-                    "script": "\texchange.cfm.runtime.set_session_block_field(self.session, 'menuRoutesGenerator', 'shellViewPath', str(self.props.text or '').strip())\n"
+                    "script": "\texchange.cfm.runtime.set_session_block_field(self.session, 'settingsMenuRoutes', 'shellViewPath', str(self.props.text or '').strip())\n"
                   },
                   "scope": "G",
                   "type": "script"
@@ -547,7 +547,7 @@
                       "props.text": {
                         "binding": {
                           "config": {
-                            "path": "session.custom.configFileMenu.menuRoutesGenerator.viewsOutput"
+                            "path": "session.custom.configFileMenu.settingsMenuRoutes.viewsOutput"
                           },
                           "transforms": [
                             {
@@ -578,7 +578,7 @@
                       "component": {
                         "onActionPerformed": {
                           "config": {
-                            "script": "\texchange.cfm.runtime.set_session_block_field(self.session, 'menuRoutesGenerator', 'viewsOutput', str(self.props.text or '').strip())\n"
+                            "script": "\texchange.cfm.runtime.set_session_block_field(self.session, 'settingsMenuRoutes', 'viewsOutput', str(self.props.text or '').strip())\n"
                           },
                           "scope": "G",
                           "type": "script"
@@ -587,7 +587,7 @@
                       "dom": {
                         "onBlur": {
                           "config": {
-                            "script": "\texchange.cfm.runtime.set_session_block_field(self.session, 'menuRoutesGenerator', 'viewsOutput', str(self.props.text or '').strip())\n"
+                            "script": "\texchange.cfm.runtime.set_session_block_field(self.session, 'settingsMenuRoutes', 'viewsOutput', str(self.props.text or '').strip())\n"
                           },
                           "scope": "G",
                           "type": "script"

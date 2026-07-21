@@ -1401,6 +1401,10 @@ def patch_top_bar_library_scripts(view_path: Path) -> None:
         elif name == "FlexRepeater":
             binding = node["propConfig"]["props.instances"]["binding"]
             struct = binding["config"]["struct"]
+            # logicalPagePath duplicated routeLogicalPath (same expression, unread by the
+            # runtime, which resolves via requestedPath -> routeLogicalPath -> path). Drop it so
+            # the struct depends on that session key once, not twice.
+            struct.pop("logicalPagePath", None)
             struct["path"] = "{page.props.path}"
             struct["requestedPath"] = "{view.params.requestedPath}"
             struct["routeLogicalPath"] = "{session.custom.configFileMenu.routeLogicalPath}"

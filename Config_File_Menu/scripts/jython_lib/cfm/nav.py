@@ -9,8 +9,10 @@ def normalize_page_url(url):
 
 
 def get_registered_pages():
+	# Normalized registered page urls. Backed by the shared, TTL'd page-url cache so a burst of
+	# nav/breadcrumb evaluations on one navigation shares a single getProjectInfo() call.
 	try:
-		return [normalize_page_url(page["url"]) for page in system.perspective.getProjectInfo()["pageConfigs"]]
+		return [normalize_page_url(url) for url in cfm.config.get_project_page_urls_cached()]
 	except:
 		return []
 
@@ -32,11 +34,16 @@ def navigate_with_fallback(component, target_path, close_dock=False):
 	fallback_enabled = cfm.config.is_true(state.get("routeFallbackEnabled", True))
 	fallback_route = normalize_page_url(state.get("routeFallbackPath") or "/cfm/target-no-route")
 	if target in pages:
-		cfm.config.set_state_fields(component.session, {"routeLogicalPath": ""})
+		# Only clear routeLogicalPath when it is actually set — a no-op write would re-fire the
+		# breadcrumb binding for nothing.
+		if cfm.config.should_write_route_logical(state.get("routeLogicalPath"), ""):
+			cfm.config.set_state_fields(component.session, {"routeLogicalPath": ""})
 		system.perspective.navigate(page=target)
 		outcome = "direct"
 	elif fallback_enabled and fallback_route in pages:
-		cfm.config.set_state_fields(component.session, {"routeLogicalPath": target})
+		# Only write when the logical target actually changes.
+		if cfm.config.should_write_route_logical(state.get("routeLogicalPath"), target):
+			cfm.config.set_state_fields(component.session, {"routeLogicalPath": target})
 		system.perspective.navigate(page=fallback_route, params={"requestedPath": target})
 		outcome = "fallback"
 	else:

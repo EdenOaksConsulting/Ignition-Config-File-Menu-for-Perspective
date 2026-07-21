@@ -551,7 +551,7 @@ def tag_menu_form_rows() -> list[dict]:
             "Tag path",
             bound_text_field(
                 "TagPathInput",
-                "tagMenuGenerator",
+                "settingsTagMenu",
                 "tagPath",
                 "[default]",
             ),
@@ -562,7 +562,7 @@ def tag_menu_form_rows() -> list[dict]:
             "Route prefix",
             bound_text_field(
                 "RoutePrefixInput",
-                "tagMenuGenerator",
+                "settingsTagMenu",
                 "routePrefix",
                 "/cfm",
             ),
@@ -571,7 +571,7 @@ def tag_menu_form_rows() -> list[dict]:
             "MaxDepthRow",
             "MaxDepthLabel",
             "Max levels",
-            bound_text_field("MaxDepthInput", "tagMenuGenerator", "maxDepth", "2"),
+            bound_text_field("MaxDepthInput", "settingsTagMenu", "maxDepth", "2"),
         ),
         form_row(
             "IncludeRow",
@@ -579,7 +579,7 @@ def tag_menu_form_rows() -> list[dict]:
             "Include",
             bound_dropdown(
                 "IncludeDropdown",
-                "tagMenuGenerator",
+                "settingsTagMenu",
                 "includeMode",
                 [
                     {"label": "Folders and UDTs", "value": "all"},
@@ -595,7 +595,7 @@ def tag_menu_form_rows() -> list[dict]:
             "Output",
             bound_dropdown(
                 "OutputFormatDropdown",
-                "tagMenuGenerator",
+                "settingsTagMenu",
                 "outputFormat",
                 [
                     {"label": "YAML", "value": "yaml"},
@@ -610,7 +610,7 @@ def tag_menu_form_rows() -> list[dict]:
             "UDT leaves",
             bound_dropdown(
                 "AppendLeavesDropdown",
-                "tagMenuGenerator",
+                "settingsTagMenu",
                 "appendLeaves",
                 [
                     {"label": "None", "value": "false"},
@@ -625,7 +625,7 @@ def tag_menu_form_rows() -> list[dict]:
             "Folder icon",
             bound_text_field(
                 "FolderIconInput",
-                "tagMenuGenerator",
+                "settingsTagMenu",
                 "folderIcon",
                 "material/folder",
             ),
@@ -636,7 +636,7 @@ def tag_menu_form_rows() -> list[dict]:
             "UDT icon",
             bound_text_field(
                 "UdtIconInput",
-                "tagMenuGenerator",
+                "settingsTagMenu",
                 "udtIcon",
                 "material/settings",
             ),
@@ -666,7 +666,7 @@ def routes_form_rows() -> list[dict]:
             "Output mode",
             bound_dropdown(
                 "OutputModeDropdown",
-                "menuRoutesGenerator",
+                "settingsMenuRoutes",
                 "outputMode",
                 [
                     {"label": "Dynamic Default", "value": OUTPUT_MODE_DYNAMIC},
@@ -681,7 +681,7 @@ def routes_form_rows() -> list[dict]:
             "Dynamic viewPath",
             bound_text_field(
                 "ShellViewInput",
-                "menuRoutesGenerator",
+                "settingsMenuRoutes",
                 "shellViewPath",
                 SHELL_VIEW_PATH,
             ),
@@ -697,7 +697,7 @@ def routes_form_rows() -> list[dict]:
 def _routes_views_output_area() -> dict:
     node = bound_text_area(
         "ViewsOutput",
-        "menuRoutesGenerator",
+        "settingsMenuRoutes",
         "viewsOutput",
         "",
         grow=1,
@@ -787,7 +787,7 @@ def build_tag_menu_view() -> dict:
                     "children": [
                         bound_text_area(
                             "TagMenuOutput",
-                            "tagMenuGenerator",
+                            "settingsTagMenu",
                             "output",
                             "",
                             grow=1,
@@ -1012,7 +1012,7 @@ def patch_menu_routes_generator_defaults(startup: str) -> str:
     menu_input = json.dumps(MENU_ROUTES_INPUT_DEFAULT)
     routes_default = json.dumps(ROUTES_OUTPUT_DEFAULT)
     block = (
-        '\tstate.setdefault("menuRoutesGenerator", {\n'
+        '\tstate.setdefault("settingsMenuRoutes", {\n'
         f'\t\t"menuInput": {menu_input},\n'
         '\t\t"menuType": "yaml",\n'
         '\t\t"outputMode": "dynamic",\n'
@@ -1021,9 +1021,9 @@ def patch_menu_routes_generator_defaults(startup: str) -> str:
         '\t\t"viewsOutput": ""\n'
         '\t})\n'
     )
-    if "menuRoutesGenerator" in startup:
+    if "settingsMenuRoutes" in startup:
         return re.sub(
-            r'\tstate\.setdefault\("menuRoutesGenerator", \{.*?\}\)\n',
+            r'\tstate\.setdefault\("settingsMenuRoutes", \{.*?\}\)\n',
             block,
             startup,
             count=1,
@@ -1032,7 +1032,7 @@ def patch_menu_routes_generator_defaults(startup: str) -> str:
     return startup.replace(
         '\tstate.setdefault("menuWidthOpen", "220px")\n',
         '\tstate.setdefault("menuWidthOpen", "220px")\n'
-        '\tstate.setdefault("tagMenuGenerator", {\n'
+        '\tstate.setdefault("settingsTagMenu", {\n'
         '\t\t"tagPath": "[default]",\n'
         '\t\t"routePrefix": "/cfm",\n'
         '\t\t"maxDepth": "2",\n'

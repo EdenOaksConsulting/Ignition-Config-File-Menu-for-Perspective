@@ -1,3 +1,6 @@
-# Dev-only tooling for running the test suite (NOT a runtime dependency of the
-# deployed Ignition project). See tests/README.md.
+# Dev-only tooling for running the test suite and building the import zips (NOT
+# runtime dependencies of the deployed Ignition project). See tests/README.md.
 pytest>=7
+
+# Required by scripts/build-inheritance-zips.py to resize the logo PNGs.
+Pillow>=10

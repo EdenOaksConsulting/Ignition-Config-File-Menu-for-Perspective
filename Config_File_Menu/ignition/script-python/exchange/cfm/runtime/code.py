@@ -296,13 +296,80 @@ def dict_block(container, key):
 	return dict(blk)
 
 
+# Bounded parse cache. The menu render, breadcrumbs, and page-title resolvers all parse the
+# same session menu source, and they re-run on every navigation, so the parse is cached by
+# (type, source). The gateway interpreter is long-lived; the cache is capped and cleared
+# wholesale when it fills so it cannot grow without limit if operators paste many configs.
+_MENU_ITEMS_CACHE = {}
+_MENU_ITEMS_CACHE_CAP = 4
+
+
+def _load_menu_items_uncached(menu_config, menu_config_type):
+	cfg = load_config(menu_config, menu_config_type)
+	menu = get_prop(cfg, "menu", cfg)
+	return get_prop(menu, "items", menu if is_sequence(menu) else [])
+
+
 def load_menu_items(menu_config, menu_config_type):
 	# Parse a menu config and return its top-level item list, unwrapping the optional
 	# `menu:` root and tolerating a bare list. Shared by the menu render, breadcrumbs,
 	# and page-title resolvers.
-	cfg = load_config(menu_config, menu_config_type)
-	menu = get_prop(cfg, "menu", cfg)
-	return get_prop(menu, "items", menu if is_sequence(menu) else [])
+	#
+	# For a string source (the hot-path shape — session contentSource is a string) the result
+	# is cached by (type, source): a changed source/type is a new key, so the cache self-
+	# invalidates and never serves a stale parse. The returned list is SHARED and must be
+	# treated READ-ONLY — callers iterate it (menu render / lookups) and never mutate it in
+	# place. A non-string source (an already-parsed document) is unhashable and off the hot
+	# path, so it bypasses the cache.
+	if isinstance(menu_config, basestring):
+		cfg_type = str(menu_config_type or "yaml").lower().strip()
+		key = (cfg_type, menu_config)
+		cached = _MENU_ITEMS_CACHE.get(key)
+		if cached is not None:
+			return cached
+		items = _load_menu_items_uncached(menu_config, menu_config_type)
+		if len(_MENU_ITEMS_CACHE) >= _MENU_ITEMS_CACHE_CAP:
+			_MENU_ITEMS_CACHE.clear()
+		_MENU_ITEMS_CACHE[key] = items
+		return items
+	return _load_menu_items_uncached(menu_config, menu_config_type)
+
+
+# Bounded, TTL'd cache of the registered page-url list. A single navigation triggers a burst
+# of breadcrumb/nav binding evaluations that each call getProjectInfo(); caching the url list
+# for a short window lets that burst share ONE gateway call. TTL-based so no session write is
+# needed to invalidate; on error the last good list is served.
+_PAGE_URLS_CACHE = {"urls": None, "at": 0}
+_PAGE_URLS_TTL_NANOS = 2000000000  # ~2 seconds
+
+
+def get_project_page_urls_cached():
+	# The raw page-url list from getProjectInfo()["pageConfigs"], cached for ~2s. nav
+	# normalizes these (leading slash); breadcrumb uses them as-is, which matches its previous
+	# inline read (Perspective page urls already start with "/"). Refreshes when the entry is
+	# missing or older than the TTL (a non-positive elapsed also forces a refresh).
+	try:
+		now = now_nanos()
+	except:
+		now = 0
+	cached = _PAGE_URLS_CACHE.get("urls")
+	elapsed = now - _PAGE_URLS_CACHE.get("at", 0)
+	if cached is not None and 0 < elapsed < _PAGE_URLS_TTL_NANOS:
+		return cached
+	try:
+		urls = [page["url"] for page in system.perspective.getProjectInfo()["pageConfigs"]]
+	except:
+		return cached if cached is not None else []
+	_PAGE_URLS_CACHE["urls"] = urls
+	_PAGE_URLS_CACHE["at"] = now
+	return urls
+
+
+def should_write_route_logical(current, new):
+	# True when routeLogicalPath actually needs to change. Skipping a no-op write avoids a
+	# whole-object session write that would needlessly re-fire the breadcrumb binding on
+	# navigation. Compares as strings so None and "" are equivalent.
+	return str(current or "") != str(new or "")
 
 
 def resolve_dock_id(state):
@@ -482,8 +549,10 @@ def normalize_page_url(url):
 
 
 def get_registered_pages():
+	# Normalized registered page urls. Backed by the shared, TTL'd page-url cache so a burst of
+	# nav/breadcrumb evaluations on one navigation shares a single getProjectInfo() call.
 	try:
-		return [normalize_page_url(page["url"]) for page in system.perspective.getProjectInfo()["pageConfigs"]]
+		return [normalize_page_url(url) for url in get_project_page_urls_cached()]
 	except:
 		return []
 
@@ -505,11 +574,16 @@ def navigate_with_fallback(component, target_path, close_dock=False):
 	fallback_enabled = is_true(state.get("routeFallbackEnabled", True))
 	fallback_route = normalize_page_url(state.get("routeFallbackPath") or "/cfm/target-no-route")
 	if target in pages:
-		set_state_fields(component.session, {"routeLogicalPath": ""})
+		# Only clear routeLogicalPath when it is actually set — a no-op write would re-fire the
+		# breadcrumb binding for nothing.
+		if should_write_route_logical(state.get("routeLogicalPath"), ""):
+			set_state_fields(component.session, {"routeLogicalPath": ""})
 		system.perspective.navigate(page=target)
 		outcome = "direct"
 	elif fallback_enabled and fallback_route in pages:
-		set_state_fields(component.session, {"routeLogicalPath": target})
+		# Only write when the logical target actually changes.
+		if should_write_route_logical(state.get("routeLogicalPath"), target):
+			set_state_fields(component.session, {"routeLogicalPath": target})
 		system.perspective.navigate(page=fallback_route, params={"requestedPath": target})
 		outcome = "fallback"
 	else:
@@ -776,7 +850,10 @@ def sync_shell_session(component):
 	except:
 		requested = ""
 	if requested:
-		set_state_fields(component.session, {"routeLogicalPath": requested})
+		# Only write when it actually changes — a no-op write re-fires the breadcrumb binding.
+		state = get_state(component.session)
+		if should_write_route_logical(state.get("routeLogicalPath"), requested):
+			set_state_fields(component.session, {"routeLogicalPath": requested})
 
 
 def _parse_width(raw, default=220):
@@ -1421,7 +1498,10 @@ def build_instances(value, page):
 		# All menu config lives in the session object (shipped with the library).
 		menu_config, menu_config_type = pick_menu_block(session, value)
 		path_prefix = str(state.get("contentBreadcrumbPrefix", "cfm") or "cfm").strip().lower()
-		all_pages = [i["url"] for i in system.perspective.getProjectInfo()["pageConfigs"]]
+		# Shared caches: the registered page list (TTL'd, shared with nav) and the parsed menu
+		# items (keyed by source, shared with the menu render + title resolvers). A burst of
+		# breadcrumb builds on one navigation reuses both instead of re-parsing + re-fetching.
+		all_pages = get_project_page_urls_cached()
 		items = load_menu_items(menu_config, menu_config_type)
 		lookup = {}
 		_add_lookup(items, [], lookup)

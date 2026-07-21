@@ -240,7 +240,10 @@ def sync_shell_session(component):
 	except:
 		requested = ""
 	if requested:
-		cfm.config.set_state_fields(component.session, {"routeLogicalPath": requested})
+		# Only write when it actually changes — a no-op write re-fires the breadcrumb binding.
+		state = cfm.config.get_state(component.session)
+		if cfm.config.should_write_route_logical(state.get("routeLogicalPath"), requested):
+			cfm.config.set_state_fields(component.session, {"routeLogicalPath": requested})
 
 
 def _parse_width(raw, default=220):

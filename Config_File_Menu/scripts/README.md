@@ -14,6 +14,12 @@
 
 ## Build
 
+Requires **Pillow** (used to resize the logo PNGs); everything else is standard library:
+
+```bash
+pip install -r Config_File_Menu/requirements-dev.txt
+```
+
 From repository root:
 
 ```bash

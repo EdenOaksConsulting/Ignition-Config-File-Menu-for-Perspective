@@ -77,7 +77,7 @@
               "props.text": {
                 "binding": {
                   "config": {
-                    "path": "session.custom.configFileMenu.tagMenuGenerator.tagPath"
+                    "path": "session.custom.configFileMenu.settingsTagMenu.tagPath"
                   },
                   "transforms": [
                     {
@@ -104,7 +104,7 @@
               "component": {
                 "onActionPerformed": {
                   "config": {
-                    "script": "\texchange.cfm.runtime.set_session_block_field(self.session, 'tagMenuGenerator', 'tagPath', str(self.props.text or '').strip())\n"
+                    "script": "\texchange.cfm.runtime.set_session_block_field(self.session, 'settingsTagMenu', 'tagPath', str(self.props.text or '').strip())\n"
                   },
                   "scope": "G",
                   "type": "script"
@@ -113,7 +113,7 @@
               "dom": {
                 "onBlur": {
                   "config": {
-                    "script": "\texchange.cfm.runtime.set_session_block_field(self.session, 'tagMenuGenerator', 'tagPath', str(self.props.text or '').strip())\n"
+                    "script": "\texchange.cfm.runtime.set_session_block_field(self.session, 'settingsTagMenu', 'tagPath', str(self.props.text or '').strip())\n"
                   },
                   "scope": "G",
                   "type": "script"
@@ -176,7 +176,7 @@
               "props.text": {
                 "binding": {
                   "config": {
-                    "path": "session.custom.configFileMenu.tagMenuGenerator.routePrefix"
+                    "path": "session.custom.configFileMenu.settingsTagMenu.routePrefix"
                   },
                   "transforms": [
                     {
@@ -203,7 +203,7 @@
               "component": {
                 "onActionPerformed": {
                   "config": {
-                    "script": "\texchange.cfm.runtime.set_session_block_field(self.session, 'tagMenuGenerator', 'routePrefix', str(self.props.text or '').strip())\n"
+                    "script": "\texchange.cfm.runtime.set_session_block_field(self.session, 'settingsTagMenu', 'routePrefix', str(self.props.text or '').strip())\n"
                   },
                   "scope": "G",
                   "type": "script"
@@ -212,7 +212,7 @@
               "dom": {
                 "onBlur": {
                   "config": {
-                    "script": "\texchange.cfm.runtime.set_session_block_field(self.session, 'tagMenuGenerator', 'routePrefix', str(self.props.text or '').strip())\n"
+                    "script": "\texchange.cfm.runtime.set_session_block_field(self.session, 'settingsTagMenu', 'routePrefix', str(self.props.text or '').strip())\n"
                   },
                   "scope": "G",
                   "type": "script"
@@ -275,7 +275,7 @@
               "props.text": {
                 "binding": {
                   "config": {
-                    "path": "session.custom.configFileMenu.tagMenuGenerator.maxDepth"
+                    "path": "session.custom.configFileMenu.settingsTagMenu.maxDepth"
                   },
                   "transforms": [
                     {
@@ -302,7 +302,7 @@
               "component": {
                 "onActionPerformed": {
                   "config": {
-                    "script": "\texchange.cfm.runtime.set_session_block_field(self.session, 'tagMenuGenerator', 'maxDepth', str(self.props.text or '').strip())\n"
+                    "script": "\texchange.cfm.runtime.set_session_block_field(self.session, 'settingsTagMenu', 'maxDepth', str(self.props.text or '').strip())\n"
                   },
                   "scope": "G",
                   "type": "script"
@@ -311,7 +311,7 @@
               "dom": {
                 "onBlur": {
                   "config": {
-                    "script": "\texchange.cfm.runtime.set_session_block_field(self.session, 'tagMenuGenerator', 'maxDepth', str(self.props.text or '').strip())\n"
+                    "script": "\texchange.cfm.runtime.set_session_block_field(self.session, 'settingsTagMenu', 'maxDepth', str(self.props.text or '').strip())\n"
                   },
                   "scope": "G",
                   "type": "script"
@@ -374,7 +374,7 @@
               "props.value": {
                 "binding": {
                   "config": {
-                    "path": "session.custom.configFileMenu.tagMenuGenerator.includeMode"
+                    "path": "session.custom.configFileMenu.settingsTagMenu.includeMode"
                   },
                   "transforms": [
                     {
@@ -413,7 +413,7 @@
               "component": {
                 "onActionPerformed": {
                   "config": {
-                    "script": "\texchange.cfm.runtime.set_session_block_field(self.session, 'tagMenuGenerator', 'includeMode', str(self.props.value or ''))\n"
+                    "script": "\texchange.cfm.runtime.set_session_block_field(self.session, 'settingsTagMenu', 'includeMode', str(self.props.value or ''))\n"
                   },
                   "scope": "G",
                   "type": "script"
@@ -476,7 +476,7 @@
               "props.value": {
                 "binding": {
                   "config": {
-                    "path": "session.custom.configFileMenu.tagMenuGenerator.outputFormat"
+                    "path": "session.custom.configFileMenu.settingsTagMenu.outputFormat"
                   },
                   "transforms": [
                     {
@@ -511,7 +511,7 @@
               "component": {
                 "onActionPerformed": {
                   "config": {
-                    "script": "\texchange.cfm.runtime.set_session_block_field(self.session, 'tagMenuGenerator', 'outputFormat', str(self.props.value or ''))\n"
+                    "script": "\texchange.cfm.runtime.set_session_block_field(self.session, 'settingsTagMenu', 'outputFormat', str(self.props.value or ''))\n"
                   },
                   "scope": "G",
                   "type": "script"
@@ -574,7 +574,7 @@
               "props.value": {
                 "binding": {
                   "config": {
-                    "path": "session.custom.configFileMenu.tagMenuGenerator.appendLeaves"
+                    "path": "session.custom.configFileMenu.settingsTagMenu.appendLeaves"
                   },
                   "transforms": [
                     {
@@ -609,7 +609,7 @@
               "component": {
                 "onActionPerformed": {
                   "config": {
-                    "script": "\texchange.cfm.runtime.set_session_block_field(self.session, 'tagMenuGenerator', 'appendLeaves', str(self.props.value or ''))\n"
+                    "script": "\texchange.cfm.runtime.set_session_block_field(self.session, 'settingsTagMenu', 'appendLeaves', str(self.props.value or ''))\n"
                   },
                   "scope": "G",
                   "type": "script"
@@ -672,7 +672,7 @@
               "props.text": {
                 "binding": {
                   "config": {
-                    "path": "session.custom.configFileMenu.tagMenuGenerator.folderIcon"
+                    "path": "session.custom.configFileMenu.settingsTagMenu.folderIcon"
                   },
                   "transforms": [
                     {
@@ -699,7 +699,7 @@
               "component": {
                 "onActionPerformed": {
                   "config": {
-                    "script": "\texchange.cfm.runtime.set_session_block_field(self.session, 'tagMenuGenerator', 'folderIcon', str(self.props.text or '').strip())\n"
+                    "script": "\texchange.cfm.runtime.set_session_block_field(self.session, 'settingsTagMenu', 'folderIcon', str(self.props.text or '').strip())\n"
                   },
                   "scope": "G",
                   "type": "script"
@@ -708,7 +708,7 @@
               "dom": {
                 "onBlur": {
                   "config": {
-                    "script": "\texchange.cfm.runtime.set_session_block_field(self.session, 'tagMenuGenerator', 'folderIcon', str(self.props.text or '').strip())\n"
+                    "script": "\texchange.cfm.runtime.set_session_block_field(self.session, 'settingsTagMenu', 'folderIcon', str(self.props.text or '').strip())\n"
                   },
                   "scope": "G",
                   "type": "script"
@@ -771,7 +771,7 @@
               "props.text": {
                 "binding": {
                   "config": {
-                    "path": "session.custom.configFileMenu.tagMenuGenerator.udtIcon"
+                    "path": "session.custom.configFileMenu.settingsTagMenu.udtIcon"
                   },
                   "transforms": [
                     {
@@ -798,7 +798,7 @@
               "component": {
                 "onActionPerformed": {
                   "config": {
-                    "script": "\texchange.cfm.runtime.set_session_block_field(self.session, 'tagMenuGenerator', 'udtIcon', str(self.props.text or '').strip())\n"
+                    "script": "\texchange.cfm.runtime.set_session_block_field(self.session, 'settingsTagMenu', 'udtIcon', str(self.props.text or '').strip())\n"
                   },
                   "scope": "G",
                   "type": "script"
@@ -807,7 +807,7 @@
               "dom": {
                 "onBlur": {
                   "config": {
-                    "script": "\texchange.cfm.runtime.set_session_block_field(self.session, 'tagMenuGenerator', 'udtIcon', str(self.props.text or '').strip())\n"
+                    "script": "\texchange.cfm.runtime.set_session_block_field(self.session, 'settingsTagMenu', 'udtIcon', str(self.props.text or '').strip())\n"
                   },
                   "scope": "G",
                   "type": "script"
@@ -914,7 +914,7 @@
               "props.text": {
                 "binding": {
                   "config": {
-                    "path": "session.custom.configFileMenu.tagMenuGenerator.output"
+                    "path": "session.custom.configFileMenu.settingsTagMenu.output"
                   },
                   "transforms": [
                     {
@@ -943,7 +943,7 @@
               "component": {
                 "onActionPerformed": {
                   "config": {
-                    "script": "\texchange.cfm.runtime.set_session_block_field(self.session, 'tagMenuGenerator', 'output', str(self.props.text or '').strip())\n"
+                    "script": "\texchange.cfm.runtime.set_session_block_field(self.session, 'settingsTagMenu', 'output', str(self.props.text or '').strip())\n"
                   },
                   "scope": "G",
                   "type": "script"
@@ -952,7 +952,7 @@
               "dom": {
                 "onBlur": {
                   "config": {
-                    "script": "\texchange.cfm.runtime.set_session_block_field(self.session, 'tagMenuGenerator', 'output', str(self.props.text or '').strip())\n"
+                    "script": "\texchange.cfm.runtime.set_session_block_field(self.session, 'settingsTagMenu', 'output', str(self.props.text or '').strip())\n"
                   },
                   "scope": "G",
                   "type": "script"
