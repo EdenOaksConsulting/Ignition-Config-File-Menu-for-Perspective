@@ -24,8 +24,8 @@ Use these checks for **Config File Menu Sample**.
 - Set **Session Properties → theme** to `light` or `dark`.
 - Launch `/cfm/dashboard`.
 - Confirm the left menu dock, top bar, breadcrumbs, datetime, and sample page content appear.
-- Open `Config File Menu/MenuContent` and confirm `params.menuConfigType` is `yaml`.
-- Confirm `params.menuConfig` contains the sample menu.
+- Open **Session Properties → custom → `configFileMenu`** and confirm `contentSourceType` is `yaml`.
+- Confirm `contentSource` contains the sample menu.
 - Click several `/cfm/...` sample routes and confirm navigation does not produce route errors.
 - Open `/cfm/settings` and confirm the Settings page loads.
 - Open `/cfm/diagnostics` and confirm Diagnostics cards load.
@@ -37,8 +37,8 @@ Use these checks for **Config File Menu — Your Site Name**.
 - Confirm the project title was renamed if you edited `project.json`.
 - Confirm Page Configuration includes the fixed routes `/cfm/settings`, `/cfm/diagnostics`, and `/cfm/target-no-route`.
 - Confirm `sharedDocks` is still present.
-- Confirm `Config File Menu/MenuContent.params.menuConfig` contains either `items: []` or your customized menu.
-- Confirm `params.menuConfigType` matches the menu text format: `yaml` or `json`.
+- Confirm `configFileMenu.contentSource` contains either `items: []` or your customized menu.
+- Confirm `contentSourceType` matches the menu text format: `yaml` or `json`.
 - Confirm every menu `target` you added has a matching page route.
 - Confirm logos display. If you replaced PNGs in an extracted zip, confirm you ran `embed-logos-in-menu-content.py` before re-import.
 
@@ -64,10 +64,10 @@ Use these checks for **Config File Menu — Your Site Name**.
 
 ## Optional Advanced Checks
 
-- Copy `config/menuSampleConfig.json` into `params.menuConfig`, set `params.menuConfigType` to `json`, and confirm the menu still renders.
+- Copy `config/menuSampleConfig.json` into `contentSource`, set `contentSourceType` to `json`, and confirm the menu still renders.
 - On **Tag → Menu**, enter a valid tag path in a live session, click **Generate menu**, and confirm YAML/JSON output appears. Designer preview may not browse tags.
 - On **Menu → Routes**, paste sample menu YAML, click **Generate output**, and confirm a `pages` merge JSON snippet is produced.
 - Map at least one generated route `viewPath` to a custom Perspective view and confirm navigation loads that view.
 - Test users with and without `Operator` or `Administrator` roles to review menu visibility.
-- Set `params.menuDockId` on `Menu Top Bar` to match a custom left dock ID when integrating into a host project.
+- Set `configFileMenu.contentDockId` to match a custom left dock ID when integrating into a host project.
 - Tune the Site overrides section in `stylesheet.css` after import, or edit `config/cfm-menu-theme-merge.css` before rebuilding.

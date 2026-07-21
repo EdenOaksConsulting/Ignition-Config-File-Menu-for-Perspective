@@ -1,0 +1,4 @@
+# Git hooks are executed by `sh`, which fails on CRLF ("bad interpreter: No such file or
+# directory"). core.autocrlf=true is common on Windows clones, so pin these to LF or the
+# hook breaks on every fresh checkout.
+Config_File_Menu/scripts/hooks/* text eol=lf

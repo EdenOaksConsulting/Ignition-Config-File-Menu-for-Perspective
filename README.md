@@ -17,7 +17,7 @@ breadcrumbs, and the page title.*
 
 ## What it does
 
-Config File Menu turns your Perspective navigation into **data you can generate and maintain outside Designer**. Define labels, icons, routes, nested sections, and optional role visibility once in `menuConfig`; the docked side menu, top-bar breadcrumbs, and sample page titles are built from that same definition at runtime.
+Config File Menu turns your Perspective navigation into **data you can generate and maintain outside Designer**. Define labels, icons, routes, nested sections, and optional role visibility once in `configFileMenu.contentSource`; the docked side menu, top-bar breadcrumbs, and sample page titles are built from that same definition at runtime.
 
 **Advantages of configuration-file menu generation:**
 
@@ -31,7 +31,7 @@ Config File Menu turns your Perspective navigation into **data you can generate 
 
 | Capability | Detail |
 |---|---|
-| **Config-driven menu** | Edit `MenuContent.params.menuConfig` — YAML-lite or JSON |
+| **Config-driven menu** | Edit `configFileMenu.contentSource` — YAML-lite or JSON |
 | **Deep nesting** | Multi-level `children` with icons at every level |
 | **Smart breadcrumbs** | Top bar resolves paths from the same menu config |
 | **Responsive docks** | Push/cover modes, pin, hamburger open/close |
@@ -76,7 +76,7 @@ menu:
               target: /cfm/areas/area-01/line-01
 ```
 
-Set `params.menuConfigType` to `yaml` or `json`. Every `target` needs a matching route in `page-config/config.json`. Samples:
+Set `contentSourceType` to `yaml` or `json`. Every `target` needs a matching route in `page-config/config.json`. Samples:
 [`menuSampleConfig.yaml`](Config_File_Menu/config/menuSampleConfig.yaml) · [`menuSampleConfig.json`](Config_File_Menu/config/menuSampleConfig.json)
 
 > **Security note:** Menu visibility by role is a convenience only. Always enforce access control on destination Perspective pages, views, or actions.
@@ -117,7 +117,7 @@ trail and page title resolve from the same config.
 
 **Deploy a site** — Import library + site zip; customize in the zip before import ([DEPLOYMENT.md](Config_File_Menu/DEPLOYMENT.md)).
 
-**Add to an existing project** — Import views, merge shared docks and page routes, confirm Advanced Stylesheet is enabled, set Session Properties **theme** to light/dark or your custom gateway theme, configure `MenuContent.params.menuConfig`.
+**Add to an existing project** — Import views, merge shared docks and page routes, confirm Advanced Stylesheet is enabled, set Session Properties **theme** to light/dark or your custom gateway theme, configure `configFileMenu.contentSource`.
 
 See **[DESIGNER_IMPORT_CHECKLIST.md](Config_File_Menu/DESIGNER_IMPORT_CHECKLIST.md)** before publishing to production.
 
@@ -134,7 +134,7 @@ Import zips are attached to each [release](https://github.com/EdenOaksConsulting
 |---|---|
 | `config-file-menu-library.zip` | Inheritable library import (views, docks, Advanced Stylesheet) — import first |
 | `config-file-menu-site.zip` | Site deployment child (empty menu, editable logos) |
-| `config-file-menu-sample.zip` | Sample child (reference routes + menuConfig) |
+| `config-file-menu-sample.zip` | Sample child (reference routes + menu config) |
 
 To build them yourself: `python Config_File_Menu/scripts/build-inheritance-zips.py`
 

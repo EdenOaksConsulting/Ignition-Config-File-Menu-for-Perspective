@@ -62,7 +62,7 @@ Only these files need changes for a typical first site:
 | `logo-upload/cfm/cfm-logo-large.png` | Dock header large logo |
 | `logo-upload/cfm/cfm-logo-small.png` | Dock small logo + top-bar logo |
 
-**Do not edit** in the child zip: Runtime, Settings views, Advanced Stylesheet, or `View Dynamic Fallback` (reads menu from session; no duplicate `menuConfig` on view params).
+**Do not edit** in the child zip: Runtime, Settings views, Advanced Stylesheet, or `View Dynamic Fallback` (reads menu from session; no duplicate menu text on view params).
 
 ### Minimum Site Menu
 
@@ -190,7 +190,7 @@ Then re-zip and import.
 
 Project dock startup defaults are **not** MenuContent params — they are session custom properties (see below).
 
-Top bar small logo visibility is a runtime session setting, not a `menuConfig` key: use **Settings → General → Top bar small logo** (session `showTopBarSmallLogo`, default on).
+Top bar small logo visibility is a runtime session setting, not a menu-config key: use **Settings → General → Top bar small logo** (session `showTopBarSmallLogo`, default on).
 
 The standard dock starts open, pinned, and in push mode. All configuration lives in one session custom object, **`configFileMenu`** (**Perspective → Session Properties → custom → `configFileMenu`**), shipped with the library so it exists on import. To change project-wide startup behavior, edit its boolean `dockPinned`, `dockContentPush` (`true` = push, `false` = cover), and `dockCloseOnOutsideClick` keys (all default `true`). Session-custom defaults apply to every new session (cover normalizes to unpinned, pinned normalizes to push + open). The Settings tab controls current-session dock state only and overrides these defaults for that session.
 

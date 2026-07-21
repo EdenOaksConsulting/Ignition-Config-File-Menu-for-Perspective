@@ -1,0 +1,35 @@
+#!/bin/sh
+#
+# Block a push that would publish a maintainer-only file.
+#
+# Enable (once per clone):
+#     git config core.hooksPath Config_File_Menu/scripts/hooks
+#
+# Pushes to a known-private remote are skipped; everything else is checked. Bypass with
+# `git push --no-verify` if you are certain.
+#
+# All logic lives in scripts/verify_public_snapshot.py so it is unit-tested; this wrapper
+# only locates a Python interpreter and forwards git's stdin records.
+
+set -e
+
+repo_root=$(git rev-parse --show-toplevel)
+guard="$repo_root/Config_File_Menu/scripts/verify_public_snapshot.py"
+
+if [ ! -f "$guard" ]; then
+	# Not the maintainer repo (or a partial checkout) — nothing to enforce.
+	exit 0
+fi
+
+# Probe each candidate by actually running it, not just by `command -v`. On Windows
+# `python3` resolves to the Microsoft Store App Execution Alias, which exists on PATH but
+# exits non-zero printing "Python was not found" — trusting `command -v` there made the
+# hook reject every push, good ones included.
+for candidate in python py python3; do
+	if command -v "$candidate" >/dev/null 2>&1 && "$candidate" -c "" >/dev/null 2>&1; then
+		exec "$candidate" "$guard" --pre-push "$1" "$2"
+	fi
+done
+
+echo "cfm snapshot guard: no working Python interpreter found; skipping check." >&2
+exit 0

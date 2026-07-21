@@ -3,6 +3,34 @@
 All notable changes after the **1.0.0** Exchange candidate are documented here.
 
 
+## 2.0.1 — 2026-07-21
+
+Documentation only. **No runtime, view, or stylesheet changes** — the import zips are
+functionally identical to 2.0.0, so there is no need to re-import if you are already on it.
+
+### Fixed
+- **Docs still described the removed 1.0.0 schema.** 2.0.0 moved every setting into
+  `session.custom.configFileMenu`, but 33 references to the old view params and flat state
+  keys survived the refactor. `DESIGNER_IMPORT_CHECKLIST.md` told readers to confirm
+  `params.menuConfigType`, and `OVERVIEW.md` told them to edit
+  `MenuContent.params.menuConfig` — both removed by 2.0.0. Also corrected: the MenuItems
+  binding description (it reads the session object, not view params) and a paragraph
+  describing a startup copy that the refactor deleted.
+- Renamed throughout: `menuConfig` → `contentSource`, `menuConfigType` → `contentSourceType`,
+  `menuDockId` → `contentDockId`, `isPinned` → `dockPinned`, `dockContent` → `dockContentPush`,
+  `shellFallbackEnabled`/`shellFallbackRoute` → `routeFallbackEnabled`/`routeFallbackPath`,
+  `breadcrumbPathPrefix` → `contentBreadcrumbPrefix`.
+
+### Added
+- **Doc-drift guard** (`scripts/verify_doc_keys.py` + a test): every `configFileMenu.<key>`
+  in a doc is checked against the live key set — `session-props` plus the runtime's
+  `setdefault` keys — and the removed names are rejected by name, so a failure reports what
+  to write instead.
+- **Public-snapshot guard** (`scripts/verify_public_snapshot.py` + a test) and a `pre-push`
+  hook that blocks publishing maintainer-only files. Enable with
+  `git config core.hooksPath Config_File_Menu/scripts/hooks`.
+
+
 ## 2.0.0 — 2026-07-21
 
 > **Migration note (schema change).** All configuration moved into a single session

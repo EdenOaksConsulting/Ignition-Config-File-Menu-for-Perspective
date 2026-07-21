@@ -10,7 +10,7 @@
 
 ## What it does
 
-Config File Menu turns your Perspective navigation into **data you can generate and maintain outside Designer**. Define labels, icons, routes, nested sections, and optional role visibility once in `menuConfig`; the docked side menu, top-bar breadcrumbs, and sample page titles are built from that same definition at runtime.
+Config File Menu turns your Perspective navigation into **data you can generate and maintain outside Designer**. Define labels, icons, routes, nested sections, and optional role visibility once in `configFileMenu.contentSource`; the docked side menu, top-bar breadcrumbs, and sample page titles are built from that same definition at runtime.
 
 **Advantages of configuration-file menu generation:**
 
@@ -22,7 +22,7 @@ Config File Menu turns your Perspective navigation into **data you can generate 
 
 ## Why use it
 
-- **One place to edit the menu** — Update `params.menuConfig` on `MenuContent`; the dock, breadcrumbs, and titles stay in sync.
+- **One place to edit the menu** — Update `configFileMenu.contentSource` in Session Properties; the dock, breadcrumbs, and titles stay in sync.
 - **Nested navigation without manual wiring** — Unlimited depth via `children`, with icons at every level.
 - **YAML or JSON** — Author in YAML-lite for readability, or JSON for structured editing; a built-in converter tab helps during setup.
 - **Responsive by design** — Push/cover dock modes, pin, hamburger controls, and optional click-outside close.
@@ -37,7 +37,7 @@ Config File Menu turns your Perspective navigation into **data you can generate 
    - **`config-file-menu-site.zip`** to start a blank production site.
 3. Set Session Properties **theme** to **`light`** or **`dark`**.
 4. For the sample, launch **`/cfm/dashboard`**.
-5. For a blank site, edit `Config File Menu/MenuContent.params.menuConfig`, add routes for each menu `target`, then publish.
+5. For a blank site, edit **Session Properties → custom → `configFileMenu` → `contentSource`**, add routes for each menu `target`, then publish.
 
 Use the generated import zips directly: import `config-file-menu-library.zip` first with project name exactly `config-file-menu-library`, then import either `config-file-menu-sample.zip` or `config-file-menu-site.zip`. See [DEPLOYMENT.md](DEPLOYMENT.md) for step-by-step site customization.
 
@@ -63,7 +63,7 @@ menu:
               target: /cfm/areas/area-01/line-01
 ```
 
-Set `params.menuConfigType` to `yaml` or `json`. Every `target` needs a matching route in `page-config/config.json`.
+Set `contentSourceType` to `yaml` or `json`. Every `target` needs a matching route in `page-config/config.json`.
 
 Samples: [`config/menuSiteTemplate.yaml`](config/menuSiteTemplate.yaml) · [`config/menuSampleConfig.yaml`](config/menuSampleConfig.yaml) · [`config/menuSampleConfig.json`](config/menuSampleConfig.json)
 
@@ -71,7 +71,7 @@ Samples: [`config/menuSiteTemplate.yaml`](config/menuSiteTemplate.yaml) · [`con
 
 | Component | Purpose |
 |---|---|
-| **MenuContent** | Docked responsive menu driven by `params.menuConfig` |
+| **MenuContent** | Docked responsive menu driven by `configFileMenu.contentSource` |
 | **Top Bar** | Hamburger, breadcrumbs, datetime clock |
 | **Settings hub** | Preferences, YAML→JSON, Tag→Menu, Menu→Routes, help (`/cfm/settings`) |
 | **View Dynamic Fallback** | Shared sample page view for generated routes |
@@ -92,7 +92,7 @@ Samples: [`config/menuSiteTemplate.yaml`](config/menuSiteTemplate.yaml) · [`con
 
 **Deploy a site** — Import library + site zip; customize menu, routes, and logos in the zip before import ([DEPLOYMENT.md](DEPLOYMENT.md)).
 
-**Add to an existing project** — Import views, merge shared docks and page routes, confirm Advanced Stylesheet is enabled, set Session Properties **theme**, configure `MenuContent.params.menuConfig`.
+**Add to an existing project** — Import views, merge shared docks and page routes, confirm Advanced Stylesheet is enabled, set Session Properties **theme**, configure `configFileMenu.contentSource`.
 
 ## Further reading
 

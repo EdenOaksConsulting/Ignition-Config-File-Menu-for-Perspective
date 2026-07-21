@@ -203,15 +203,15 @@ When integrating into a host project, copy that root `onClick` script onto each 
 
 Session state is stored on `session.custom.configFileMenu`:
 
-- `isOpen` — menu open/closed (top-bar icons and click-outside)
-- `isPinned` — pin lock
-- `dockContent` — `cover` or `push`
-- `menuConfig` / `menuConfigType` — menu tree text (synced from `MenuContent` on startup)
+- `dockOpen` — menu open/closed (top-bar icons and click-outside)
+- `dockPinned` — pin lock
+- `dockContentPush` — `true` = push, `false` = cover
+- `contentSource` / `contentSourceType` — menu tree text and its format (`yaml` or `json`)
 - `showTopBarSmallLogo` — session override for top-bar small logo visibility
 - `showFooterUser` — show login block in menu footer (Settings → General)
 - `showFooterSettings` — show Settings link in menu footer (Settings → General)
 - `showFooterDiagnostics` — show Diagnostics link in menu footer (Settings → General)
-- `breadcrumbPathPrefix` — route prefix omitted from breadcrumbs (default `cfm`)
+- `contentBreadcrumbPrefix` — route prefix omitted from breadcrumbs (default `cfm`)
 
 Set `configFileMenu.contentDockId` on `MenuContent` to match the left dock ID in `page-config/config.json` (default `cfm`).
 
@@ -230,7 +230,7 @@ Set `configFileMenu.brandLogoLarge`, `configFileMenu.brandLogoSmall`, and `confi
 
 `config/menuSampleConfig.yaml` and `config/menuSampleConfig.json` are samples only. Ignition does not read them automatically. Copy/paste one sample into `configFileMenu.contentSource`, then set `configFileMenu.contentSourceType` to match.
 
-Every configured `target` should have a matching route in `com.inductiveautomation.perspective/page-config/config.json` for **direct browser URLs** and bookmarks. The library also ships **shell fallback navigation** (enabled by default): when a menu `target` is not registered, menu clicks navigate to `/cfm/target-no-route` with the logical path passed as `requestedPath`. Configure fallback on **Settings → General** (`shellFallbackEnabled`, `shellFallbackRoute`). **Keep the fallback route** (default `/cfm/target-no-route`) in page-config — do not delete it when removing other routes. That route uses **`View Route Fallback`** (warning to create a Page Configuration route). Registered menu URLs should map to **`View Dynamic Fallback`** (or your own view) with the HMI content placeholder. Nested menu leaves (Tree) and top-level links both use fallback.
+Every configured `target` should have a matching route in `com.inductiveautomation.perspective/page-config/config.json` for **direct browser URLs** and bookmarks. The library also ships **shell fallback navigation** (enabled by default): when a menu `target` is not registered, menu clicks navigate to `/cfm/target-no-route` with the logical path passed as `requestedPath`. Configure fallback on **Settings → General** (`routeFallbackEnabled`, `routeFallbackPath`). **Keep the fallback route** (default `/cfm/target-no-route`) in page-config — do not delete it when removing other routes. That route uses **`View Route Fallback`** (warning to create a Page Configuration route). Registered menu URLs should map to **`View Dynamic Fallback`** (or your own view) with the HMI content placeholder. Nested menu leaves (Tree) and top-level links both use fallback.
 
 The sample child project includes reference routes for the full menu tree; the site child ships library routes only; the library alone registers Settings, Diagnostics, tools, and `/cfm/target-no-route`.
 
@@ -282,7 +282,7 @@ Breadcrumb targets resolve in this order:
 - Otherwise use the cumulative URL path when it exists in Perspective page configuration.
 - Otherwise render the breadcrumb as non-clickable.
 
-For example, `/cfm/areas/area-01/line-01` displays `Areas > Area 01 > Line 01` because the route prefix stored in `session.custom.configFileMenu.breadcrumbPathPrefix` (default `cfm`) is omitted from the breadcrumb trail.
+For example, `/cfm/areas/area-01/line-01` displays `Areas > Area 01 > Line 01` because the route prefix stored in `session.custom.configFileMenu.contentBreadcrumbPrefix` (default `cfm`) is omitted from the breadcrumb trail.
 
 ## Settings Page
 
@@ -404,9 +404,9 @@ YAML-lite mode uses the small parser in `exchange.cfm.runtime` (`scripts/jython_
 
 ## How It Works
 
-`Config File Menu/MenuContent` contains one `MenuItems` FlexRepeater. The repeater binds to `view.configFileMenu.contentSource` and `view.configFileMenu.contentSourceType` only (the authored source), then calls `exchange.cfm.runtime.menu_items_transform`. Binding to the params — not the session mirror — means navigation-time session writes do not re-render the whole menu. For `yaml`, Runtime parses YAML-lite text. For `json`, Runtime accepts either a Perspective object/array value or JSON text and generates instances for `Config File Menu/Resources/Menu/Menu Parent`.
+`Config File Menu/MenuContent` contains one `MenuItems` FlexRepeater. The repeater binds to `session.custom.configFileMenu.contentSource` and `.contentSourceType` only — the authored source, not the navigation-time keys — then calls `exchange.cfm.runtime.menu_items_transform`. Depending on just those two keys is what keeps a navigation-time session write from re-rendering the whole menu. For `yaml`, Runtime parses YAML-lite text. For `json`, Runtime accepts either a Perspective object/array value or JSON text and generates instances for `Config File Menu/Resources/Menu/Menu Parent`.
 
-`Menu Parent` works for both direct links with no children and expandable sections with nested child items. `MenuContent` startup copies `configFileMenu.contentSource`/`menuConfigType` into `session.custom.configFileMenu` so other views can read them; `Menu Top Bar` breadcrumbs and the shell-page titles resolve against that session copy (they have no direct access to MenuContent's params). View bindings stay intentionally thin: path resolution, logo fallback, dock toggles, settings state, tag-menu generation, and close-on-outside-click behavior delegate to `exchange.cfm.runtime`.
+`Menu Parent` works for both direct links with no children and expandable sections with nested child items. Every view reads the same session object directly, so there is no copy step and no Designer-vs-session reconciliation: `MenuContent` startup only applies the physical dock state (`init_menu_content_state`), and `Menu Top Bar` breadcrumbs and the shell-page titles resolve against `session.custom.configFileMenu` themselves. View bindings stay intentionally thin: path resolution, logo fallback, dock toggles, settings state, tag-menu generation, and close-on-outside-click behavior delegate to `exchange.cfm.runtime`.
 
 ## Security Note
 

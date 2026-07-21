@@ -7,10 +7,32 @@
 | [`build-hmi-menu-sample.py`](build-hmi-menu-sample.py) | Syncs views, Advanced Stylesheet, page-config, logos |
 | [`build_script_library.py`](build_script_library.py) | Bundles `jython_lib/cfm/*.py` → the deployed `exchange.cfm.runtime` (`code.py`). Run after editing any runtime module |
 | [`verify_script_library.py`](verify_script_library.py) | Fails (exit 1) if the committed `code.py` bundle is out of sync with the `cfm` source modules |
+| [`verify_public_snapshot.py`](verify_public_snapshot.py) | Fails (exit 1) if a maintainer-only file reached the public tree. Takes an optional ref (default `origin/main`); also backs the pre-push hook |
+| [`verify_doc_keys.py`](verify_doc_keys.py) | Fails (exit 1) if a doc references a `configFileMenu` key that no longer exists. Key set = `session-props` plus runtime `setdefault` |
+| [`hooks/pre-push`](hooks/pre-push) | Blocks a push that would publish a maintainer-only file. See **Hooks** below |
 | [`embed-logos-in-menu-content.py`](embed-logos-in-menu-content.py) | Refresh embedded logo URIs in extracted site/sample zip after PNG replacement (standalone Python 3, no packages) |
 | [`audit-css-classes.py`](audit-css-classes.py) | Compare extracted `cfm-*` view/build classes with canonical `.psc-cfm-*` CSS selectors |
 | [`verify-theme-css.py`](verify-theme-css.py) | Ensures generated Advanced Stylesheet matches canonical CSS |
 | [`apply-menu-sample-config.py`](apply-menu-sample-config.py) | Sync `config/menuSampleConfig.yaml` → JSON + embedded view defaults |
+
+## Hooks
+
+Enable once per clone (hooks are not cloned, so this is needed on every machine):
+
+```bash
+git config core.hooksPath Config_File_Menu/scripts/hooks
+```
+
+`pre-push` then blocks any push to a **public** remote whose commits still contain a
+maintainer-only file. Pushes to a known-private remote (URL containing `Working-Private`)
+are skipped; an unrecognized remote is treated as public, so a new fork gets checked rather
+than waved through. Bypass with `git push --no-verify`.
+
+The hook only locates a Python interpreter and forwards git's stdin records — the logic
+lives in `verify_public_snapshot.py` and is covered by `tests/test_public_snapshot.py`.
+
+> Setting `core.hooksPath` replaces `.git/hooks` entirely. If you later add other hooks,
+> put them in this directory too.
 
 ## Build
 
