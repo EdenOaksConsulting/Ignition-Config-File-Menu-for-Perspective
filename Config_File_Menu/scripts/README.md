@@ -9,6 +9,7 @@
 | [`verify_script_library.py`](verify_script_library.py) | Fails (exit 1) if the committed `code.py` bundle is out of sync with the `cfm` source modules |
 | [`verify_public_snapshot.py`](verify_public_snapshot.py) | Fails (exit 1) if a maintainer-only file reached the public tree. Takes an optional ref (default `origin/main`); also backs the pre-push hook |
 | [`verify_doc_keys.py`](verify_doc_keys.py) | Fails (exit 1) if a doc references a `configFileMenu` key that no longer exists. Key set = `session-props` plus runtime `setdefault` |
+| [`verify_view_params.py`](verify_view_params.py) | Fails (exit 1) if a view declares a param the 2.0.0 refactor moved into the session object, or if `MenuContent` declares any params |
 | [`hooks/pre-push`](hooks/pre-push) | Blocks a push that would publish a maintainer-only file. See **Hooks** below |
 | [`embed-logos-in-menu-content.py`](embed-logos-in-menu-content.py) | Refresh embedded logo URIs in extracted site/sample zip after PNG replacement (standalone Python 3, no packages) |
 | [`audit-css-classes.py`](audit-css-classes.py) | Compare extracted `cfm-*` view/build classes with canonical `.psc-cfm-*` CSS selectors |

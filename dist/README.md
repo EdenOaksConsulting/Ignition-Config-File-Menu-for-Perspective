@@ -12,4 +12,6 @@ or build them locally with that script.
 
 For Ignition Exchange submission, upload the project/package files above rather than the workspace root. For local import testing, import `config-file-menu-library.zip` first, then either `config-file-menu-site.zip` or `config-file-menu-sample.zip`.
 
-Ephemeral staging copies are written under `dist/staging/` during the build and removed when the build completes successfully.
+Ephemeral staging copies are written to a `cfm-dist-staging` directory under the system
+temp dir (see `scripts/build_paths.py`) and removed when the build completes successfully.
+Nothing but the zips and this file belongs in `dist/`.

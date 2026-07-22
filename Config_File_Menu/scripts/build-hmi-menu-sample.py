@@ -123,14 +123,17 @@ def sample_menu_yaml() -> str:
     return load_sample_menu_yaml()
 
 
+# The menu-source members are dependency triggers, not data: the transforms resolve the
+# menu through `cfm.config.pick_menu_block`, which reads the session object and ignores the
+# struct value. Naming them after the session keys they watch keeps that honest. This used
+# to carry four members — `session*` and `param*` pairs from the 1.0.0 param-vs-session
+# split — bound to only two distinct expressions, so each change was evaluated twice.
 MENU_PAGE_STRUCT = {
     "path": "{page.props.path}",
     "requestedPath": "{view.params.requestedPath}",
     "routeLogicalPath": "{session.custom.configFileMenu.routeLogicalPath}",
-    "sessionMenuConfig": "{session.custom.configFileMenu.contentSource}",
-    "sessionMenuConfigType": "{session.custom.configFileMenu.contentSourceType}",
-    "paramMenuConfig": "{session.custom.configFileMenu.contentSource}",
-    "paramMenuConfigType": "{session.custom.configFileMenu.contentSourceType}",
+    "contentSource": "{session.custom.configFileMenu.contentSource}",
+    "contentSourceType": "{session.custom.configFileMenu.contentSourceType}",
 }
 
 TITLE_RESOLVE_SCRIPT = jython_title_resolve_script()
@@ -986,12 +989,12 @@ def patch_menu_settings_general(view_path: Path) -> None:
     view_path.write_text(json.dumps(data, indent=2) + "\n", encoding="utf-8")
 
 
-def patch_view_menu_config(view_path: Path, menu_yaml: str) -> None:
-    data = json.loads(view_path.read_text(encoding="utf-8"))
-    data["params"]["menuConfig"] = menu_yaml.strip() + "\n"
-    if "menuConfigType" not in data.get("params", {}):
-        data["params"]["menuConfigType"] = "yaml"
-    view_path.write_text(json.dumps(data, indent=2) + "\n", encoding="utf-8")
+# A second `patch_view_menu_config` lived here, writing the stub into the removed
+# `MenuContent.params.menuConfig` / `.menuConfigType`. It had no callers even before 2.0.0
+# deleted those params — apply-menu-sample-config.py defined its own copy rather than
+# importing this one. The stub now reaches the library through
+# `build_config_file_menu_object(library_menu_stub(...))`, which writes
+# `configFileMenu.contentSource` into the session-props resource.
 
 
 # The three project dock defaults now live ONLY in the session custom properties
@@ -1294,15 +1297,15 @@ def patch_menu_repeater_transform(view_path: Path) -> None:
         if node.get("meta", {}).get("name") == "MenuItems":
             binding = node["propConfig"]["props.instances"]["binding"]
             binding["transforms"][0]["code"] = script
-            # Bind the menu structure to the authored source only. The session mirror
-            # (session.custom.configFileMenu.contentSource) is always set equal to the
-            # param at startup and never diverges, so depending on it added no value
-            # and made this expensive binding re-fire on every navigation-time write
-            # to session.custom.configFileMenu. Param-only keeps rendering identical
-            # while decoupling it from session churn.
+            # Depend on the authored menu source ONLY. The menu structure does not change
+            # when the user navigates, so adding navigation-time keys here would make this
+            # expensive full re-render re-fire on every write to
+            # session.custom.configFileMenu. These two members are dependency triggers, not
+            # data — menu_items_transform resolves the menu via cfm.config.pick_menu_block,
+            # which reads the session object and ignores the struct value.
             binding["config"]["struct"] = {
-                "paramMenuConfig": "{session.custom.configFileMenu.contentSource}",
-                "paramMenuConfigType": "{session.custom.configFileMenu.contentSourceType}",
+                "contentSource": "{session.custom.configFileMenu.contentSource}",
+                "contentSourceType": "{session.custom.configFileMenu.contentSourceType}",
             }
             return
         for child in node.get("children") or []:
@@ -1502,23 +1505,12 @@ def patch_top_bar_fallback(view_path: Path) -> None:
     patch_top_bar_library_scripts(view_path)
 
 
-SHELL_FALLBACK_DEFAULTS = (
-    "\tstate.setdefault('routeFallbackEnabled', True)\n"
-    f"\tstate.setdefault('routeFallbackPath', '{SHELL_FALLBACK_ROUTE}')\n"
-    "\tstate.setdefault('routeLogicalPath', '')\n"
-    "\tstate.setdefault('showTopBarSmallLogo', True)\n"
-)
-
-
-def patch_startup_shell_fallback_defaults(script: str) -> str:
-    script = script.replace("routeFallbackPath', '/cfm/page'", f"routeFallbackPath', '{SHELL_FALLBACK_ROUTE}'")
-    script = script.replace('routeFallbackPath", "/cfm/page"', f'routeFallbackPath", "{SHELL_FALLBACK_ROUTE}"')
-    if "routeFallbackEnabled" in script:
-        return script
-    marker = "\tself.session.custom.configFileMenu = state"
-    if marker in script:
-        return script.replace(marker, SHELL_FALLBACK_DEFAULTS + marker)
-    return script
+# `SHELL_FALLBACK_DEFAULTS` and `patch_startup_shell_fallback_defaults` lived here. They
+# spliced routeFallback*/routeLogicalPath/showTopBarSmallLogo defaults into a view startup
+# script. The function had no callers, and all four keys are now seeded by the runtime
+# (`cfm/settings.py`). Both of its anchors — the literal `'/cfm/page'` default and
+# `self.session.custom.configFileMenu = state` — stopped existing in 2.0.0, so it would
+# have returned the script unchanged had anything called it.
 
 
 def make_settings_row(
@@ -2527,19 +2519,11 @@ def patch_menu_section_tree_nav(view_path: Path) -> None:
     view_path.write_text(json.dumps(data, indent=2) + "\n", encoding="utf-8")
 
 
-def patch_menu_settings_topbar_logo_default(view_path: Path) -> None:
-    data = json.loads(view_path.read_text(encoding="utf-8"))
-    script = data["root"]["events"]["component"]["onStartup"]["config"]["script"]
-    changed = False
-    if "showTopBarSmallLogo" not in script:
-        marker = "\tstate.setdefault('routeLogicalPath', '')\n"
-        injection = marker + "\tstate.setdefault('showTopBarSmallLogo', True)\n"
-        if marker in script:
-            script = script.replace(marker, injection)
-            changed = True
-    if changed:
-        data["root"]["events"]["component"]["onStartup"]["config"]["script"] = script
-        view_path.write_text(json.dumps(data, indent=2) + "\n", encoding="utf-8")
+# `patch_menu_settings_topbar_logo_default` lived here. It seeded showTopBarSmallLogo into
+# the Menu Settings startup script after a `state.setdefault('routeLogicalPath', '')`
+# anchor. That view's startup is now a one-line runtime delegation
+# (`init_settings_shell_state`), so neither the key nor the anchor is present and the
+# function wrote nothing on every build. The key is seeded by the runtime instead.
 
 
 def sync_perspective_stylesheet() -> None:
@@ -2683,7 +2667,6 @@ def patch_shell_fallback_nav() -> None:
     patch_top_bar_fallback(menu_top_bar)
     patch_menu_settings_general_fallback(menu_settings_general)
     patch_menu_settings_general_health(menu_settings_general)
-    patch_menu_settings_topbar_logo_default(menu_settings)
 
     content = json.loads(menu_content.read_text(encoding="utf-8"))
 

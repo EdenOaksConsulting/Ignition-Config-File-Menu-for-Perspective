@@ -10,7 +10,7 @@ SAMPLE_MENU_JSON_PATH = PROJECT_ROOT / "config" / "menuSampleConfig.json"
 
 
 def library_menu_stub(yaml_text: str | None = None) -> str:
-    """Empty-items MenuContent param for the inheritable library."""
+    """Empty-items menu stub for the inheritable library's `configFileMenu.contentSource`."""
     return (
         "# Set your menu on the session custom property configFileMenu.contentSource\n"
         "# (Perspective -> Session Properties -> custom -> configFileMenu -> contentSource).\n"

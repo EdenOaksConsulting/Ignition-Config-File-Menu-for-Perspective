@@ -8,7 +8,7 @@ import uuid
 import zipfile
 from pathlib import Path
 
-from build_paths import DIST_ROOT, PROJECT_ROOT
+from build_paths import DIST_ROOT, PROJECT_ROOT, STAGING_ROOT
 
 STARTER_DIR = PROJECT_ROOT / "config" / "gateway-theme-cfm-light"
 MERGE_CSS = PROJECT_ROOT / "config" / "cfm-menu-theme-merge.css"
@@ -21,9 +21,12 @@ def build_gateway_theme_starter() -> Path:
     if not MERGE_CSS.is_file():
         raise SystemExit(f"Missing merge CSS: {MERGE_CSS}")
 
-    staging_root = DIST_ROOT / "staging"
-    staging_root.mkdir(parents=True, exist_ok=True)
-    staging = staging_root / f"gateway-theme-{uuid.uuid4().hex[:8]}"
+    # Stage outside dist/ (STAGING_ROOT is under the system temp dir), matching
+    # build-inheritance-zips.py. This used to stage in `dist/staging/` and remove only the
+    # inner folder, so every run left an empty `dist/staging/` behind and an interrupted
+    # run left its whole tree there — dist/ should hold nothing but the shipping zips.
+    STAGING_ROOT.mkdir(parents=True, exist_ok=True)
+    staging = STAGING_ROOT / f"gateway-theme-{uuid.uuid4().hex[:8]}"
     shutil.copytree(STARTER_DIR, staging)
     shutil.copy2(MERGE_CSS, staging / "cfm-menu-theme-merge.css")
 

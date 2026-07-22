@@ -115,10 +115,8 @@
                               "path": "{page.props.path}",
                               "requestedPath": "{view.params.requestedPath}",
                               "routeLogicalPath": "{session.custom.configFileMenu.routeLogicalPath}",
-                              "sessionMenuConfig": "{session.custom.configFileMenu.contentSource}",
-                              "sessionMenuConfigType": "{session.custom.configFileMenu.contentSourceType}",
-                              "paramMenuConfig": "{session.custom.configFileMenu.contentSource}",
-                              "paramMenuConfigType": "{session.custom.configFileMenu.contentSourceType}"
+                              "contentSource": "{session.custom.configFileMenu.contentSource}",
+                              "contentSourceType": "{session.custom.configFileMenu.contentSourceType}"
                             },
                             "waitOnAll": false
                           },
@@ -156,10 +154,8 @@
                               "path": "{page.props.path}",
                               "requestedPath": "{view.params.requestedPath}",
                               "routeLogicalPath": "{session.custom.configFileMenu.routeLogicalPath}",
-                              "sessionMenuConfig": "{session.custom.configFileMenu.contentSource}",
-                              "sessionMenuConfigType": "{session.custom.configFileMenu.contentSourceType}",
-                              "paramMenuConfig": "{session.custom.configFileMenu.contentSource}",
-                              "paramMenuConfigType": "{session.custom.configFileMenu.contentSourceType}"
+                              "contentSource": "{session.custom.configFileMenu.contentSource}",
+                              "contentSourceType": "{session.custom.configFileMenu.contentSourceType}"
                             },
                             "waitOnAll": false
                           },
@@ -202,10 +198,8 @@
                           "path": "{page.props.path}",
                           "requestedPath": "{view.params.requestedPath}",
                           "routeLogicalPath": "{session.custom.configFileMenu.routeLogicalPath}",
-                          "sessionMenuConfig": "{session.custom.configFileMenu.contentSource}",
-                          "sessionMenuConfigType": "{session.custom.configFileMenu.contentSourceType}",
-                          "paramMenuConfig": "{session.custom.configFileMenu.contentSource}",
-                          "paramMenuConfigType": "{session.custom.configFileMenu.contentSourceType}"
+                          "contentSource": "{session.custom.configFileMenu.contentSource}",
+                          "contentSourceType": "{session.custom.configFileMenu.contentSourceType}"
                         },
                         "waitOnAll": true
                       },

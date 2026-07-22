@@ -4,7 +4,6 @@
 from __future__ import annotations
 
 import json
-import re
 from datetime import datetime, timezone
 from pathlib import Path
 
@@ -1008,43 +1007,14 @@ def make_tab(
     }
 
 
-def patch_menu_routes_generator_defaults(startup: str) -> str:
-    menu_input = json.dumps(MENU_ROUTES_INPUT_DEFAULT)
-    routes_default = json.dumps(ROUTES_OUTPUT_DEFAULT)
-    block = (
-        '\tstate.setdefault("settingsMenuRoutes", {\n'
-        f'\t\t"menuInput": {menu_input},\n'
-        '\t\t"menuType": "yaml",\n'
-        '\t\t"outputMode": "dynamic",\n'
-        '\t\t"shellViewPath": "Config File Menu/Resources/View Dynamic Fallback",\n'
-        f'\t\t"output": {routes_default},\n'
-        '\t\t"viewsOutput": ""\n'
-        '\t})\n'
-    )
-    if "settingsMenuRoutes" in startup:
-        return re.sub(
-            r'\tstate\.setdefault\("settingsMenuRoutes", \{.*?\}\)\n',
-            block,
-            startup,
-            count=1,
-            flags=re.DOTALL,
-        )
-    return startup.replace(
-        '\tstate.setdefault("menuWidthOpen", "220px")\n',
-        '\tstate.setdefault("menuWidthOpen", "220px")\n'
-        '\tstate.setdefault("settingsTagMenu", {\n'
-        '\t\t"tagPath": "[default]",\n'
-        '\t\t"routePrefix": "/cfm",\n'
-        '\t\t"maxDepth": "2",\n'
-        '\t\t"includeMode": "all",\n'
-        '\t\t"outputFormat": "yaml",\n'
-        '\t\t"appendLeaves": "false",\n'
-        '\t\t"folderIcon": "material/folder",\n'
-        '\t\t"udtIcon": "material/settings",\n'
-        '\t\t"output": ""\n'
-        '\t})\n'
-        + block,
-    )
+# `patch_menu_routes_generator_defaults` lived here. It seeded the settingsTagMenu and
+# settingsMenuRoutes session defaults at build time by splicing them into the startup
+# script after a `state.setdefault("menuWidthOpen", ...)` anchor. It had no callers, and
+# the 2.0.0 refactor moved that seeding into the runtime (`cfm/settings.py`, immediately
+# after `layoutWidthOpen`) and renamed the anchor — so even if it had been called, the
+# `.replace()` would have matched nothing and silently returned the startup unchanged.
+# The sample prefill for Menu → Routes reaches the UI through the view component defaults
+# (MENU_ROUTES_INPUT_DEFAULT / ROUTES_OUTPUT_DEFAULT above), not through session state.
 
 
 def patch_settings_view() -> None:

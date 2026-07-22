@@ -975,11 +975,10 @@ def menu_item_instances(menu_text, session, view, picked_type="yaml"):
 
 def menu_items_transform(value, session, view):
 	# The menu STRUCTURE only depends on the authored menu config; it does not change when
-	# the user navigates. The binding passes the session menu source (see MenuContent
-	# MenuItems struct: menuConfig/menuConfigType bound to configFileMenu.contentSource /
-	# contentSourceType), so navigation-time session writes no longer re-trigger this
-	# expensive full re-render. All config ships in the session object, so there is nothing
-	# to seed here.
+	# the user navigates. The MenuItems struct depends on contentSource/contentSourceType
+	# only, so navigation-time session writes no longer re-trigger this expensive full
+	# re-render. `value` is unused — the menu is read from the session object below — and
+	# all config ships there, so there is nothing to seed here.
 	#
 	# A shared dock's onStartup does not reliably fire in Perspective 8.3.3, but this binding
 	# always runs on menu render — so this is where the authored startup open/closed state

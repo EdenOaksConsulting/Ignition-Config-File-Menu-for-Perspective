@@ -323,8 +323,8 @@
                 "binding": {
                   "config": {
                     "struct": {
-                      "paramMenuConfig": "{session.custom.configFileMenu.contentSource}",
-                      "paramMenuConfigType": "{session.custom.configFileMenu.contentSourceType}"
+                      "contentSource": "{session.custom.configFileMenu.contentSource}",
+                      "contentSourceType": "{session.custom.configFileMenu.contentSourceType}"
                     },
                     "waitOnAll": true
                   },

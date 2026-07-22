@@ -3,6 +3,37 @@
 All notable changes after the **1.0.0** Exchange candidate are documented here.
 
 
+## 2.0.2 — 2026-07-21
+
+Internal cleanup. **No behavior change** — the menu, breadcrumbs, titles, dock, and every
+setting work exactly as in 2.0.1. Re-import is not required.
+
+### Changed
+- **Binding struct members renamed to the session keys they watch.** The MenuItems and
+  page-title bindings carried 1.0.0 vocabulary (`paramMenuConfig` / `sessionMenuConfig`
+  pairs from the param-vs-session split that 2.0.0 removed). They are now `contentSource`
+  and `contentSourceType`. The fallback views declared all four names bound to only two
+  distinct expressions, so each menu-source change was evaluated twice; the duplicates are
+  collapsed. The names were never read — the transforms resolve the menu from the session
+  object — so rendering is identical.
+- `build-gateway-theme-starter.py` stages under the system temp dir instead of `dist/`.
+  It previously removed only its inner folder, leaving an empty `dist/staging/` after every
+  run and a full tree after an interrupted one.
+
+### Fixed
+- Removed build patchers stranded by the 2.0.0 refactor. One of them,
+  `apply-menu-sample-config.py`, wrote `MenuContent.params.menuConfig` — a param 2.0.0
+  deleted — back onto the view on every run, and nothing downstream cleaned it, so the dead
+  params would have shipped in a later library zip. The others had no callers or targeted
+  anchors that no longer exist.
+- `dist/README.md` documented the old staging location.
+
+### Added
+- **View-param guard** (`scripts/verify_view_params.py` + a test): no view may declare a
+  param the 2.0.0 refactor moved into the session object, and `MenuContent` must declare
+  none at all. This closes the surface the doc guard cannot see.
+
+
 ## 2.0.1 — 2026-07-21
 
 Documentation only. **No runtime, view, or stylesheet changes** — the import zips are
